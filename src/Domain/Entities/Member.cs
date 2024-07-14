@@ -24,10 +24,10 @@ namespace Domain.Entities
 
         private readonly List<MemberRole> _memberRoles = new();
 
-        public Member(string chandaNo, string firstname, string middlename, string lastname, string email, string phoneNo, Guid jamaatId, Guid memberLedgerId, string createdBy)
+        public Member(string chandaNo, string name, string email, string phoneNo, Guid jamaatId, Guid memberLedgerId, string createdBy)
         {
             ChandaNo = chandaNo;
-            Name = $"{firstname.Trim()} {middlename.Trim()} {lastname.Trim()}";
+            Name = name;
             Email = email;
             PhoneNo = phoneNo;
             JamaatId = jamaatId;
