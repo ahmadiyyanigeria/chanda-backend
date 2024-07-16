@@ -70,6 +70,11 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                     .WithOne(mr => mr.Member)
                     .HasForeignKey(mr => mr.MemberId).OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(m => m.MemberLedger)
+                    .WithOne(ml => ml.Member)
+                    .HasForeignKey<MemberLedger>(ml => ml.MemberId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }
