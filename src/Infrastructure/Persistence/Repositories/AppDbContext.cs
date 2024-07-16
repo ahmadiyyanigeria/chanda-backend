@@ -16,6 +16,10 @@ namespace Infrastructure.Persistence.Repositories
         public DbSet<Payment> Payments => Set<Payment>();
         public DbSet<ChandaType> ChandaTypes => Set<ChandaType>();
 
+        public DbSet<Invoice> Invoices => Set<Invoice>();
+        public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
+        public DbSet<Ledger> Ledgers => Set<Ledger>();
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
