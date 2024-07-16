@@ -1,3 +1,7 @@
+using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace Infrastructure.Persistence.EntityTypeConfigurations
 {
     public class ChandaItemEntityTypeConfiguration : IEntityTypeConfiguration<ChandaItem>
@@ -38,10 +42,6 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
 
             builder.Property(ci => ci.ModifiedOn)
                 .HasColumnName("modified_date");
-
-            builder.HasOne(ci => ci.ChandaType)
-                .HasForeignKey(ci => ci.ChandaTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
 
        }
         
