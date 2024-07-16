@@ -22,6 +22,8 @@ namespace Infrastructure.Persistence.Repositories
         public DbSet<Jamaat> Jamaats => Set<Jamaat>();
         public DbSet<JamaatLedger> JamaatLedgers => Set<JamaatLedger>();
         public DbSet<MemberLedger> MemberLedgers => Set<MemberLedger>();
+        public DbSet<ChandaItem> ChandaItems => Set<ChandaItem>();
+        public DbSet<Circuit> Circuits => Set<Circuit>();
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
