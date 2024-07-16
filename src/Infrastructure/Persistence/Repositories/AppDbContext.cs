@@ -14,6 +14,10 @@ namespace Infrastructure.Persistence.Repositories
         public DbSet<Role> Roles => Set<Role>();
         public DbSet<MemberRole> MemberRoles => Set<MemberRole>();
         
+        public DbSet<Jamaat> Jamaats => Set<Jamaat>();
+        public DbSet<JamaatLedger> JamaatLedgers => Set<JamaatLedger>();
+        public DbSet<MemberLedger> MemberLedgers => Set<MemberLedger>();
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
