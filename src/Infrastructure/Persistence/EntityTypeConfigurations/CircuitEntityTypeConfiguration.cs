@@ -1,3 +1,7 @@
+using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace Infrastructure.Persistence.EntityTypeConfigurations
 {
     public class CircuitEntityTypeConfiguration : IEntityTypeConfiguration<Circuit>
@@ -11,8 +15,10 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
             builder.Property(c => c.Name)
                 .HasColumnName("name")
                 .HasColumnType("varchar(120)")
-                .IsUnique
                 .IsRequired();
+
+            builder.HasIndex(ct => ct.Name)
+                   .IsUnique();
 
             builder.Property(c => c.CreatedBy)
                .HasColumnName("created_by")
@@ -29,8 +35,8 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
             builder.Property(c => c.ModifiedOn)
                 .HasColumnName("modified_date");
 
-            builder.HasMany(c => c.Jamaat)
-                    .WithOne(ci => ci.Jamaat)
+            builder.HasMany(c => c.Jamaats)
+                    .WithOne(ci => ci.Circuit)
                     .HasForeignKey(ci => ci.CircuitId).OnDelete(DeleteBehavior.Restrict);
         
         }
