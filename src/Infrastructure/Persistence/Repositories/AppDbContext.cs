@@ -15,7 +15,6 @@ namespace Infrastructure.Persistence.Repositories
         public DbSet<MemberRole> MemberRoles => Set<MemberRole>();
         public DbSet<Payment> Payments => Set<Payment>();
         public DbSet<ChandaType> ChandaTypes => Set<ChandaType>();
-
         public DbSet<Invoice> Invoices => Set<Invoice>();
         public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
         public DbSet<Ledger> Ledgers => Set<Ledger>();
