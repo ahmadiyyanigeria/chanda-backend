@@ -20,9 +20,9 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
             builder.Property(p => p.InvoiceId)
                    .HasColumnName("invoice_id")
                    .IsRequired();
-                
-            builder.HasIndex(p => p.InvoiceId)
-                   .IsUnique();
+
+            builder.HasIndex(p => p.InvoiceId);
+                   
 
             builder.Property(p => p.Id)
                 .HasColumnName("id");

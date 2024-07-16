@@ -13,7 +13,7 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<ChandaType> builder)
         {
-            builder.ToTable("payments");
+            builder.ToTable("chanda_type");
 
             builder.HasKey(ct => ct.Id);
 
@@ -33,8 +33,8 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                    .IsUnique();
 
             builder.Property(ct => ct.Description)
-                   .HasColumnName("description")
-                   .IsRequired();
+                   .HasColumnName("description");
+                  
 
             builder.Property(ct => ct.IncomeAccountId)
                    .HasColumnName("income_account_id")
