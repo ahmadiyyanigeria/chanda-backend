@@ -1,6 +1,8 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +36,8 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
 
             builder.Property(p => p.Option)
                    .HasColumnName("option")
+                   .HasColumnType("varchar(50)")
+                   .HasConversion<EnumToStringConverter<PaymentOption>>()
                    .IsRequired();
 
             builder.Property(p => p.CreatedBy)
