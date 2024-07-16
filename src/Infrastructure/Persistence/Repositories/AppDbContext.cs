@@ -13,9 +13,17 @@ namespace Infrastructure.Persistence.Repositories
         public DbSet<Member> Members => Set<Member>();
         public DbSet<Role> Roles => Set<Role>();
         public DbSet<MemberRole> MemberRoles => Set<MemberRole>();
+        public DbSet<Payment> Payments => Set<Payment>();
+        public DbSet<ChandaType> ChandaTypes => Set<ChandaType>();
         public DbSet<Invoice> Invoices => Set<Invoice>();
         public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
         public DbSet<Ledger> Ledgers => Set<Ledger>();
+        
+        public DbSet<Jamaat> Jamaats => Set<Jamaat>();
+        public DbSet<JamaatLedger> JamaatLedgers => Set<JamaatLedger>();
+        public DbSet<MemberLedger> MemberLedgers => Set<MemberLedger>();
+        public DbSet<ChandaItem> ChandaItems => Set<ChandaItem>();
+        public DbSet<Circuit> Circuits => Set<Circuit>();
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
