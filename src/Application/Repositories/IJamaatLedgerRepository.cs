@@ -10,9 +10,9 @@ namespace Application.Repositories
 {
     public interface IJamaatLedgerRepository
     {
-        Task<int> Add(JamaatLedger JamaatLedger);
-        Task<int> Update(JamaatLedger JamaatLedger);
-        Task<int> Delete(JamaatLedger JamaatLedger);
+        Task<JamaatLedger> Add(JamaatLedger JamaatLedger);
+        Task<JamaatLedger> Update(JamaatLedger JamaatLedger);
+        Task Delete(JamaatLedger JamaatLedger);
         Task<JamaatLedger> Get(Expression<Func<JamaatLedger, bool>> expression);
         Task<IList<JamaatLedger>> GetAll(Expression<Func<JamaatLedger, bool>> expression);
     }

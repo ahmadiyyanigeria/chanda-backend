@@ -10,9 +10,9 @@ namespace Application.Repositories
 {
     public interface IMemberLedgerRepository
     {
-        Task<int> Add(MemberLedger MemberLedger);
-        Task<int> Update(MemberLedger MemberLedger);
-        Task<int> Delete(MemberLedger MemberLedger);
+        Task<MemberLedger> Add(MemberLedger MemberLedger);
+        Task<MemberLedger> Update(MemberLedger MemberLedger);
+        Task Delete(MemberLedger MemberLedger);
         Task<MemberLedger> Get(Expression<Func<MemberLedger, bool>> expression);
         Task<IList<MemberLedger>> GetAll(Expression<Func<MemberLedger, bool>> expression);
     }
