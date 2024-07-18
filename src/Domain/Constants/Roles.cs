@@ -24,5 +24,6 @@ namespace Domain.Constants
         public const string JamaatPresident = "JJamaat-President";
         public const string CircuitGenSec = "Circuit-Gen-Sec";
         public const string JamaatGenSec = "Jamaat-Gen-Sec";
+        public const string Member = "Member";
     }
 }

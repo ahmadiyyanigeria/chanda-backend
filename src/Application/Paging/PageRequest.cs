@@ -11,7 +11,8 @@ namespace Application.Paging
         public int PageSize { get; init; } = 20;
         public int Page { get; init; } = 1;
         public string? SortBy { get; init; }
+        public string? Filter { get; init; }
         public string? Keyword { get; init; }
-        public bool IsAscending { get; init; }
+        public bool IsDescending { get; init; } = false;
     }
 }
