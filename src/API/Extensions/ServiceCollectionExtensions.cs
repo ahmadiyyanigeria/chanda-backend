@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Mapster;
+using MapsterMapper;
 
 namespace API.Extensions
 {
@@ -64,6 +66,16 @@ namespace API.Extensions
            });
             });
             services.AddFluentValidationRulesToSwagger();
+        }
+
+        public static IServiceCollection AddMapster(this IServiceCollection services)
+        {
+            var config = TypeAdapterConfig.GlobalSettings;
+            
+            config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
+            services.AddSingleton(config);
+            //services.AddScoped<IMapper, ServiceMapper>();
+            return services;
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection serviceCollection)

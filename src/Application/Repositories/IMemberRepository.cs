@@ -11,6 +11,7 @@ namespace Application.Repositories
         Task<Member> UpdateAsync(Member member);
         Member UpdateMember(Member member);
         Task<PaginatedList<Member>> GetMembers(PageRequest pageRequest, Guid? jamaatId, bool usePaging = true);
+        Task<MemberLedger?> GetMemberLedger(Guid memberId);
         Task<IReadOnlyList<MemberRole>> GetMemberRoles(Guid memberId);
     }
 }

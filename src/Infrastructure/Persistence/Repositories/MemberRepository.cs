@@ -2,6 +2,7 @@
 using Application.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Security.AccessControl;
 
 namespace Infrastructure.Persistence.Repositories
 {
@@ -22,12 +23,21 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<Member?> FindByChandaNoAsync(string chandaNo)
         {
-            return await _context.Members.Include(m => m.Jamaat).ThenInclude(j => j.Circuit).Include(m => m.MemberRoles).FirstOrDefaultAsync(m => m.ChandaNo == chandaNo);
+            return await _context.Members.Include(m => m.Jamaat).ThenInclude(j => j.Circuit).Include(m => m.MemberRoles)
+                .Include(m => m.MemberLedger).ThenInclude(ml => ml.LedgerList)
+                .SingleOrDefaultAsync(m => m.ChandaNo == chandaNo);
         }
 
         public async Task<Member?> FindByIdAsync(Guid id)
         {
-            return await _context.Members.Include(m => m.Jamaat).ThenInclude(j => j.Circuit).Include(m => m.MemberRoles).FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.Members.Include(m => m.Jamaat).ThenInclude(j => j.Circuit).Include(m => m.MemberRoles)
+                .Include(m => m.MemberLedger).ThenInclude(ml => ml.LedgerList)
+                .SingleOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<MemberLedger?> GetMemberLedger(Guid memberId)
+        {
+            return await _context.MemberLedgers.Include(ml => ml.LedgerList).SingleOrDefaultAsync(ml => ml.MemberId == memberId);
         }
 
         public async Task<IReadOnlyList<MemberRole>> GetMemberRoles(Guid memberId)
