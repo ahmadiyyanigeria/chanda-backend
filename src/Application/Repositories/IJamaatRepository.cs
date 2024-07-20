@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Paging;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace Application.Repositories
         Task<Jamaat> Update(Jamaat jamaat);
         Task Delete(Jamaat jamaat);
         Task<Jamaat> Get(Expression<Func<Jamaat, bool>> expression);
-        Task<IList<Jamaat>> GetAll(Expression<Func<Jamaat, bool>> expression);
-    
+        Task<PaginatedList<Jamaat>> GetAll(PageRequest pageRequest, Expression<Func<Jamaat, bool>> expression, bool usePaging);
+
+
     }
 }
