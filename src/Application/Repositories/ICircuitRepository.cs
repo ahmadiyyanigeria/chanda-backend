@@ -9,7 +9,7 @@ namespace Application.Repositories
     {
         Task<Circuit> Add(Circuit circuit);
         Task<Circuit> Update(Circuit circuit);
-        Task<Circuit> Get(Expression<Func<Circuit, bool>> expression);
+        Task<Circuit?> Get(Expression<Func<Circuit, bool>> expression);
         Task<PaginatedList<Circuit>> GetAll(PageRequest pageRequest, Expression<Func<Circuit, bool>> expression, bool usePaging);
     }
 }

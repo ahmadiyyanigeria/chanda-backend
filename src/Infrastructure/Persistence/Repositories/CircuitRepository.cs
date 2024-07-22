@@ -15,7 +15,7 @@ namespace Infrastructure.Persistence.Repositories
             return circuit;
         }
 
-        public async Task<Circuit> Get(Expression<Func<Circuit, bool>> expression)
+        public async Task<Circuit?> Get(Expression<Func<Circuit, bool>> expression)
         {
             return await _context.Circuits.SingleOrDefaultAsync(expression);
         }
@@ -48,10 +48,10 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        public async Task<Circuit> Update(Circuit circuit)
+        public Task<Circuit> Update(Circuit circuit)
         {
-            _context.Circuits.Update(circuit);
-            return circuit;
+            _context.Entry(circuit).State = EntityState.Modified;
+            return Task.FromResult(circuit);
         }
     }
 }
