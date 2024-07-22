@@ -25,6 +25,9 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                 .HasColumnType("varchar(50)")
                 .IsRequired();
 
+            builder.HasIndex(b => b.Name)
+                   .IsUnique();
+
             builder.Property(b => b.Description)
                 .HasColumnType("varchar(255)")
                 .HasColumnName("description");
@@ -40,7 +43,7 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                     .WithOne(ur => ur.Role)
                     .HasForeignKey(ur => ur.RoleId);
 
-            var date = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc);
+            var date = new DateTime(2024, 01, 01, 3, 10, 28, 488, DateTimeKind.Utc);
 
             #region RoleSeed
             builder.HasData(
@@ -57,7 +60,8 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                  new Role("Jamaat-Fin-Sec", "Jamaat Financial Secretary.", "Admin") { CreatedOn = date },
                  new Role("Jamaat-President", "Jamaat President.", "Admin") { CreatedOn = date },
                  new Role("Circuit-Gen-Sec", "Circuit General Secretary.", "Admin") { CreatedOn = date },
-                 new Role("Jamaat-Gen-Sec", "Jamaat General Secretary.", "Admin") { CreatedOn = date }
+                 new Role("Jamaat-Gen-Sec", "Jamaat General Secretary.", "Admin") { CreatedOn = date },
+                 new Role("Member", "Jamaat Member.", "Admin") { CreatedOn = date }
                  );
             #endregion
         }
