@@ -1,31 +1,28 @@
-﻿using Application.Paging;
-using Application.Repositories;
 using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
+using Application.Paging;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using Application.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories
 {
-    public class JamaatRepository(AppDbContext _context) : IJamaatRepository
+    public class CircuitRepository(AppDbContext _context) : ICircuitRepository
     {
-        public async Task<Jamaat> Add(Jamaat jamaat)
+        public async Task<Circuit> Add(Circuit circuit)
         {
-            await _context.Jamaats.AddAsync(jamaat);
-            return jamaat;
-        }
-        public async Task<Jamaat?> Get(Expression<Func<Jamaat, bool>> expression)
-        {
-            return await _context.Jamaats.SingleOrDefaultAsync(expression);
+            await _context.Circuits.AddAsync(circuit);
+            return circuit;
         }
 
-        public async Task<PaginatedList<Jamaat>> GetAll(PageRequest pageRequest, Expression<Func<Jamaat, bool>> expression, bool usePaging)
+        public async Task<Circuit?> Get(Expression<Func<Circuit, bool>> expression)
         {
-            var query =  _context.Jamaats.Where(expression);
+            return await _context.Circuits.SingleOrDefaultAsync(expression);
+        }
+
+        public async Task<PaginatedList<Circuit>> GetAll(PageRequest pageRequest, Expression<Func<Circuit, bool>> expression, bool usePaging)
+        {
+            var query =  _context.Circuits.Where(expression);
             if (!string.IsNullOrEmpty(pageRequest.Keyword))
             {
                 query = query.Where(m => m.Name.Contains(pageRequest.Keyword, StringComparison.OrdinalIgnoreCase)).Order();
@@ -51,10 +48,10 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        public Task<Jamaat> Update(Jamaat jamaat)
+        public Task<Circuit> Update(Circuit circuit)
         {
-            _context.Entry(jamaat).State = EntityState.Modified;
-            return Task.FromResult(jamaat);
+            _context.Entry(circuit).State = EntityState.Modified;
+            return Task.FromResult(circuit);
         }
     }
 }

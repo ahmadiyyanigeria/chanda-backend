@@ -28,6 +28,10 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                .HasColumnName("role_id")
                .IsRequired();
 
+            builder.Property(b => b.RoleName)
+              .HasColumnName("role_name")
+              .HasColumnType("varchar(255)");
+
             builder.Property(b => b.CreatedBy)
               .HasColumnName("created_by")
               .HasColumnType("varchar(255)");

@@ -18,7 +18,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwagger();
 builder.Services.ConfigureMvc();
 builder.Services.AddHealthChecks();
-
+builder.Services.AddMapster();
 builder.Services.AddValidators();
 builder.Services.AddEmailService();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));

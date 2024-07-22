@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Mapster;
+using MapsterMapper;
+using Domain.Entities;
 
 namespace API.Extensions
 {
@@ -64,6 +67,22 @@ namespace API.Extensions
            });
             });
             services.AddFluentValidationRulesToSwagger();
+        }
+
+        public static IServiceCollection AddMapster(this IServiceCollection services)
+        {
+            var config = TypeAdapterConfig.GlobalSettings;
+
+            config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
+                .Map(dest => dest.Roles, src => src.MemberRoles.Select(r => r.RoleName).ToList());
+            config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
+                .Map(dest => dest.JamaatName, src => src.Jamaat.Name);
+            config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
+                .Map(dest => dest.CircuitName, src => src.Jamaat.Circuit.Name);
+            config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
+            services.AddSingleton(config);
+            services.AddScoped<IMapper, Mapper>();
+            return services;
         }
 
         public static IServiceCollection AddValidators(this IServiceCollection serviceCollection)
