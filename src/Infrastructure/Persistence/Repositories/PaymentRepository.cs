@@ -21,18 +21,6 @@ namespace Infrastructure.Persistence.Repositories
             return payment;
         }
 
-        public async Task<Payment> DeleteAsync(Guid paymentId, Payment payment)
-        {
-            var delPay= await GetByIdAsync(paymentId);
-            if (delPay != null)
-            {
-                delPay.IsDeleted = true;
-            }
-            _context.Payments.Update(delPay);
-            await _context.SaveChangesAsync();
-            return delPay;
-
-        }
 
         public async Task<PaginatedList<Payment>> GetAllAsync(PageRequest pageRequest, Expression<Func<Payment, bool>> expression, bool usePaging)
         {

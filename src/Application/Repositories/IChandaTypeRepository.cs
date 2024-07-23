@@ -13,7 +13,6 @@ namespace Application.Repositories
     {
         Task<ChandaType> AddAsync(ChandaType chandaType);
         Task<ChandaType> UpdateAsync(ChandaType chandaType);
-        Task<ChandaType> DeleteAsync(Guid chandaTypeId, ChandaType chandaType);
         Task<ChandaType> GetByIdAsync(Guid id);
         Task<ChandaType> GetAsync(Expression<Func<ChandaType, bool>> predicate);
         Task<PaginatedList<ChandaType>> GetAllAsync(PageRequest pageRequest, Expression<Func<ChandaType, bool>> predicate, bool usePaging);

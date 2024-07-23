@@ -20,19 +20,6 @@ namespace Infrastructure.Persistence.Repositories
             return chandaType;
         }
 
-        public async Task<ChandaType> DeleteAsync(Guid chandaTypeId, ChandaType chandaType)
-        {
-            var delChanda = await GetByIdAsync(chandaTypeId);
-            if (delChanda != null) 
-            {
-                delChanda.IsDeleted = true;
-            }
-            _context.ChandaTypes.Update(delChanda);
-            await _context.SaveChangesAsync();
-            return delChanda;
-
-
-        }
 
         public async Task<PaginatedList<ChandaType>> GetAllAsync(PageRequest pageRequest, Expression<Func<ChandaType, bool>> predicate, bool usePaging)
         {
