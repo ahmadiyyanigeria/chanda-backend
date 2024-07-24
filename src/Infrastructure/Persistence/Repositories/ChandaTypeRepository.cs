@@ -62,7 +62,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<ChandaType> UpdateAsync(ChandaType chandaType)
         {
-            _context.ChandaTypes.Remove(chandaType);
+            _context.ChandaTypes.Update(chandaType);
             return chandaType;
         }
     }

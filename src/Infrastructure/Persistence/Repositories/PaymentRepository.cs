@@ -60,7 +60,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<Payment> UpdateAsync(Payment payment)
         {
-            _context.Payments.Remove(payment);
+            _context.Payments.Update(payment);
             return payment;
         }
     }
