@@ -17,7 +17,7 @@ namespace Infrastructure.Persistence.Repositories
     {
         public async Task<Payment> AddAsync(Payment payment)
         {
-            await _context.Payments.AddAsync(payment);
+            await _context.Paymsdssents.AddAsync(payment);
             return payment;
         }
 
