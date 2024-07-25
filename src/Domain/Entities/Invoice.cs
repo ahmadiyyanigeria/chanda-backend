@@ -5,6 +5,7 @@ namespace Domain.Entities
     public class Invoice: BaseEntity
     {
         public Guid JamaatId { get; private set; }
+        public string Reference { get; private set; }
         public decimal Amount { get; private set; }
         public InvoiceStatus Status { get; private set; }
         public Jamaat Jamaat { get; private set; } = default!;
@@ -23,9 +24,10 @@ namespace Domain.Entities
         private readonly List<InvoiceItem> _invoiceItem = new();
         private readonly List<Payment> _payments = new();
 
-        public Invoice(Guid jamaatId, decimal amount, InvoiceStatus status, string createdBy)
+        public Invoice(Guid jamaatId, string reference, decimal amount, InvoiceStatus status, string createdBy)
         {
             JamaatId = jamaatId;
+            Reference = reference;
             Amount = amount;
             Status = status;
             CreatedBy = createdBy;

@@ -1,10 +1,13 @@
-﻿namespace Domain.Entities
+﻿using Domain.Enums;
+
+namespace Domain.Entities
 {
     public class InvoiceItem: BaseEntity
     {
         public Guid PayerId { get; private set; }
         public Guid InvoiceId { get; private set; }
-        public string MonthPaidFor {  get; private set; }
+        public MonthOfTheYear MonthPaidFor {  get; private set; }
+        public int Year {  get; private set; }
         public Member Member { get; private set; } = default!;
         public Invoice Invoice { get; private set; } = default!;
         public IReadOnlyList<ChandaItem> ChandaItems 
@@ -26,11 +29,12 @@
             }
         }
 
-        public InvoiceItem(Guid payerId, Guid invoiceId, string monthPaidFor, string createdBy)
+        public InvoiceItem(Guid payerId, Guid invoiceId, MonthOfTheYear monthPaidFor, int year, string createdBy)
         {
             PayerId = payerId;
             InvoiceId = invoiceId;
             MonthPaidFor = monthPaidFor;
+            Year = year;
             CreatedBy = createdBy;
         }
     }
