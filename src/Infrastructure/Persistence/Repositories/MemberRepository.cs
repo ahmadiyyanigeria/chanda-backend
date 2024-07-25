@@ -2,7 +2,7 @@
 using Application.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Security.AccessControl;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Persistence.Repositories
 {
@@ -21,18 +21,11 @@ namespace Infrastructure.Persistence.Repositories
             return member;
         }
 
-        public async Task<Member?> FindByChandaNoAsync(string chandaNo)
+        public async Task<Member?> GetMemberAsync(Expression<Func<Member, bool>> expression)
         {
             return await _context.Members.Include(m => m.Jamaat).ThenInclude(j => j.Circuit).Include(m => m.MemberRoles)
                 .Include(m => m.MemberLedger).ThenInclude(ml => ml.LedgerList)
-                .SingleOrDefaultAsync(m => m.ChandaNo == chandaNo);
-        }
-
-        public async Task<Member?> FindByIdAsync(Guid id)
-        {
-            return await _context.Members.Include(m => m.Jamaat).ThenInclude(j => j.Circuit).Include(m => m.MemberRoles)
-                .Include(m => m.MemberLedger).ThenInclude(ml => ml.LedgerList)
-                .SingleOrDefaultAsync(m => m.Id == id);
+                .SingleOrDefaultAsync(expression);
         }
 
         public async Task<MemberLedger?> GetMemberLedger(Guid memberId)
