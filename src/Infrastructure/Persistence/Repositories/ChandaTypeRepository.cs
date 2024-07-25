@@ -60,7 +60,7 @@ namespace Infrastructure.Persistence.Repositories
             return chandaType;
         }
 
-        public async Task<ChandaType> UpdateAsync(ChandaType chandaType)
+        public ChandaType Update(ChandaType chandaType)
         {
             _context.ChandaTypes.Update(chandaType);
             return chandaType;

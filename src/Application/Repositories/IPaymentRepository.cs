@@ -12,9 +12,9 @@ namespace Application.Repositories
     public interface IPaymentRepository
     {
         Task<Payment> AddAsync(Payment payment);
-        Task<Payment> UpdateAsync(Payment payment);
-        Task<Payment> GetByIdAsync(Guid id);
-        Task<Payment> GetAsync(Expression<Func<Payment, bool>> expression);
+        Payment Update(Payment payment);
+        Task<Payment?> GetByIdAsync(Guid id);
+        Task<Payment?> GetAsync(Expression<Func<Payment, bool>> expression);
         Task<PaginatedList<Payment>> GetAllAsync(PageRequest pageRequest, Expression<Func<Payment, bool>> expression, bool usePaging);
     }
 }

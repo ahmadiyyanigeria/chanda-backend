@@ -12,7 +12,7 @@ namespace Application.Repositories
     public interface IChandaTypeRepository
     {
         Task<ChandaType> AddAsync(ChandaType chandaType);
-        Task<ChandaType> UpdateAsync(ChandaType chandaType);
+        ChandaType Update(ChandaType chandaType);
         Task<ChandaType> GetByIdAsync(Guid id);
         Task<ChandaType> GetAsync(Expression<Func<ChandaType, bool>> predicate);
         Task<PaginatedList<ChandaType>> GetAllAsync(PageRequest pageRequest, Expression<Func<ChandaType, bool>> predicate, bool usePaging);

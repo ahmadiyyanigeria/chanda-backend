@@ -47,18 +47,18 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        public async  Task<Payment> GetAsync(Expression<Func<Payment, bool>> expression)
+        public async  Task<Payment?> GetAsync(Expression<Func<Payment, bool>> expression)
         {
             return await _context.Payments.SingleOrDefaultAsync(expression);
         }
 
-        public async Task<Payment> GetByIdAsync(Guid id)
+        public async Task<Payment?> GetByIdAsync(Guid id)
         {
             var payment = await _context.Payments.SingleOrDefaultAsync(p => p.Id == id);
             return payment;
         }
 
-        public async Task<Payment> UpdateAsync(Payment payment)
+        public Payment Update(Payment payment)
         {
             _context.Payments.Update(payment);
             return payment;
