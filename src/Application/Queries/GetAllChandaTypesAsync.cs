@@ -17,7 +17,7 @@ namespace Application.Queries
 
         public record Query : PageRequest, IRequest<IList<ChandaTypeResponse>>
         {
-            public bool UsePaging { get; init; } = true;
+            public bool UsePaging { get; init; } 
         }
 
         public class Handler : IRequestHandler<Query, IList<ChandaTypeResponse>>
