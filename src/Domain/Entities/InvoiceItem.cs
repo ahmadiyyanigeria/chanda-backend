@@ -8,6 +8,7 @@ namespace Domain.Entities
         public Guid InvoiceId { get; private set; }
         public MonthOfTheYear MonthPaidFor {  get; private set; }
         public int Year {  get; private set; }
+        public decimal Amount { get; private set; }
         public Member Member { get; private set; } = default!;
         public Invoice Invoice { get; private set; } = default!;
         public IReadOnlyList<ChandaItem> ChandaItems 
@@ -29,13 +30,19 @@ namespace Domain.Entities
             }
         }
 
-        public InvoiceItem(Guid payerId, Guid invoiceId, MonthOfTheYear monthPaidFor, int year, string createdBy)
+        public InvoiceItem(Guid payerId, Guid invoiceId, decimal amount, MonthOfTheYear monthPaidFor, int year, string createdBy)
         {
             PayerId = payerId;
             InvoiceId = invoiceId;
+            Amount = amount;
             MonthPaidFor = monthPaidFor;
             Year = year;
             CreatedBy = createdBy;
+        }
+
+        public void UpdateAmount(decimal amount)
+        {
+            Amount = amount;
         }
     }
 }

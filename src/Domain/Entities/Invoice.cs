@@ -54,5 +54,10 @@ namespace Domain.Entities
                 }
             }
         }
+
+        public void UpdateAmount(decimal amount)
+        {
+            Amount = amount;
+        }
     }
 }

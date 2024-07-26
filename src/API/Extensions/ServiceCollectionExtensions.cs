@@ -79,6 +79,8 @@ namespace API.Extensions
                 .Map(dest => dest.JamaatName, src => src.Jamaat.Name);
             config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
                 .Map(dest => dest.CircuitName, src => src.Jamaat.Circuit.Name);
+            config.NewConfig<Invoice, Application.Commands.CreateInvoice.InvoiceResponse>()
+                .Map(dest => dest.JamaatName, src => src.Jamaat.Name);
             config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
             services.AddSingleton(config);
             services.AddScoped<IMapper, Mapper>();

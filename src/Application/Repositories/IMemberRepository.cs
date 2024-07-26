@@ -8,6 +8,7 @@ namespace Application.Repositories
     {
         Task<Member> Create(Member member);
         Task<Member?> GetMemberAsync(Expression<Func<Member, bool>> expression);
+        bool ExistsByChandaNo(string chandaNo);
         Task<Member> UpdateAsync(Member member);
         Member UpdateMember(Member member);
         Task<PaginatedList<Member>> GetMembers(PageRequest pageRequest, Guid? jamaatId, bool usePaging = true);
