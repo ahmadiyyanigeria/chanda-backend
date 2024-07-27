@@ -16,6 +16,7 @@ namespace Domain.Exceptions
         RoleNotFound,
         UserAlreadyExists,
         NoRoleSelected,
-        InvalidCredentials
+        InvalidCredentials,
+        JamaatNotFound
     }
 }

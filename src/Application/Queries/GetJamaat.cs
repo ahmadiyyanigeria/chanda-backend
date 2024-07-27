@@ -1,4 +1,6 @@
 ﻿using Application.Repositories;
+using Domain.Entities;
+using Domain.Exceptions;
 using Mapster;
 using MediatR;
 using System;
@@ -24,6 +26,14 @@ namespace Application.Queries
             public async Task<JamaatResponse> Handle(Query request, CancellationToken cancellationToken)
             {
                 var jamaat = await _jamaatRepository.Get(j => j.Id == request.Id);
+                if (jamaat == null)
+                {
+                    throw new DomainException(
+                       message: "Jama'at not found",
+                       errorCode: ExceptionCodes.JamaatNotFound.ToString(),
+                       statusCode: 404
+                   );
+                }
                 return jamaat.Adapt<JamaatResponse>();
             }
              
