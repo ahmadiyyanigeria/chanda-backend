@@ -19,7 +19,5 @@ namespace Domain.Exceptions
         InvalidCredentials,
         JamaatNotFound,
         CircuitNotFound
-        InvalidCredentials,
-        JamaatNotFound
     }
 }
