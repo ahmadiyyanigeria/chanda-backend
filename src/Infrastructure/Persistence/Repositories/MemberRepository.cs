@@ -74,6 +74,11 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
+        public List<Member> GetMembers(Expression<Func<Member, bool>> expression)
+        {
+            return _context.Members.Where(expression).ToList();
+        }
+
         public Task<Member> UpdateAsync(Member member)
         {
             _context.Entry(member).State = EntityState.Modified;

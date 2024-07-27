@@ -14,5 +14,6 @@ namespace Application.Repositories
         Task<PaginatedList<Member>> GetMembers(PageRequest pageRequest, Guid? jamaatId, bool usePaging = true);
         Task<MemberLedger?> GetMemberLedger(Guid memberId);
         Task<IReadOnlyList<MemberRole>> GetMemberRoles(Guid memberId);
+        List<Member> GetMembers(Expression<Func<Member, bool>> expression);
     }
 }

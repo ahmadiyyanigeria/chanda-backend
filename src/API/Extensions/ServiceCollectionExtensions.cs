@@ -81,6 +81,10 @@ namespace API.Extensions
                 .Map(dest => dest.CircuitName, src => src.Jamaat.Circuit.Name);
             config.NewConfig<Invoice, Application.Commands.CreateInvoice.InvoiceResponse>()
                 .Map(dest => dest.JamaatName, src => src.Jamaat.Name);
+            config.NewConfig<InvoiceItem, Application.Commands.CreateInvoice.InvoiceItemResponse>()
+                .Map(dest => dest.PayerName, src => src.Member.Name);
+            config.NewConfig<ChandaItem, Application.Commands.CreateInvoice.ChandaItemResponse>()
+                .Map(dest => dest.ChandaTypeName, src => src.ChandaType.Name);
             config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
             services.AddSingleton(config);
             services.AddScoped<IMapper, Mapper>();

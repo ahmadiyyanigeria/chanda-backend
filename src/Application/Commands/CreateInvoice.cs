@@ -19,7 +19,7 @@ namespace Application.Commands
         public record Command: IRequest<InvoiceResponse>
         {
             public Guid JamaatId { get; init; }
-            public string InitiatorChandaNo { get; init; } = default!;
+            public string InitiatorChandaNo { get; set; } = default!;
             public IReadOnlyList<InvoiceItemCommand> InvoiceItems { get; init; } = new List<InvoiceItemCommand>();
         }
 
@@ -71,25 +71,42 @@ namespace Application.Commands
                     throw new DomainException("No valid ChandaType selected", ExceptionCodes.NoValidChandaTypeSelected.ToString(), 400);
                 }
 
+                var payerIds = request.InvoiceItems.Select(ii => ii.PayerId).ToList();
+                var payers = _memberRepository.GetMembers(m => payerIds.Contains(m.Id))
+                    .Select(m => new { Id = m.Id, Name = m.Name }).ToList();
+
+                var invoiceItemResponses = new List<InvoiceItemResponse>();
                 foreach (var item in request.InvoiceItems)
                 {
-                    var subTotalAmount = 0.0m;
-                    var invoiceItem = new InvoiceItem(item.PayerId, invoice.Id, subTotalAmount, item.MonthPaidFor, item.Year, request.InitiatorChandaNo);
-                    foreach (var chanda in item.ChandaItems)
+                    if(payers.Any(p => p.Id == item.PayerId))
                     {
-                        if (validChandaTypesIds.Contains(chanda.ChandaTypeId))
+                        var subTotalAmount = 0.0m;
+                        var invoiceItem = new InvoiceItem(item.PayerId, invoice.Id, subTotalAmount, item.MonthPaidFor, item.Year, request.InitiatorChandaNo);
+                        var chandaItemResponses = new List<ChandaItemResponse>();
+                        foreach (var chanda in item.ChandaItems)
                         {
-                            var chandaItem = new ChandaItem(invoiceItem.Id, chanda.ChandaTypeId, chanda.Amount, request.InitiatorChandaNo);
-                            invoiceItem.AddChandaItems(chandaItem);
-                            subTotalAmount += chanda.Amount;
+                            if (validChandaTypesIds.Contains(chanda.ChandaTypeId))
+                            {
+                                var chandaItem = new ChandaItem(invoiceItem.Id, chanda.ChandaTypeId, chanda.Amount, request.InitiatorChandaNo);
+                                invoiceItem.AddChandaItems(chandaItem);
+                                subTotalAmount += chanda.Amount;
+
+                                chandaItemResponses.Add(chandaItem.Adapt<ChandaItemResponse>());
+                            }
                         }
-                    }
-                    
-                    if (invoiceItem.ChandaItems.Any())
-                    {
-                        invoiceItem.UpdateAmount(subTotalAmount);
-                        invoiceAmount += invoiceItem.Amount;
-                        invoice.AddInvoiceItems(invoiceItem);
+
+                        if (invoiceItem.ChandaItems.Any())
+                        {
+                            invoiceItem.UpdateAmount(subTotalAmount);
+                            invoiceAmount += invoiceItem.Amount;
+                            invoice.AddInvoiceItems(invoiceItem);
+
+                            invoiceItemResponses.Add(
+                                invoiceItem.Adapt<InvoiceItemResponse>() with
+                                {
+                                    ChandaItems = chandaItemResponses
+                                });
+                        }
                     }
                 }
                 if (invoice.InvoiceItems.Any())
@@ -104,7 +121,10 @@ namespace Application.Commands
                 invoice = await _invoiceRepository.AddAsync(invoice);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return invoice.Adapt<InvoiceResponse>();
+                return invoice.Adapt<InvoiceResponse>() with
+                {
+                    InvoiceItems = invoiceItemResponses
+                };
             }
         }
 
