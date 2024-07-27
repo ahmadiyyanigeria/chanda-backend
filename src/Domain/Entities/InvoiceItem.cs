@@ -19,7 +19,7 @@ namespace Domain.Entities
 
         private readonly List<ChandaItem> _chandaItems = new();
 
-        public void AddChandaItems(params ChandaItem[] chandaItems)
+        public void AddChandaItems(List<ChandaItem> chandaItems)
         {
             foreach (var chandaItem in chandaItems)
             {
@@ -30,8 +30,9 @@ namespace Domain.Entities
             }
         }
 
-        public InvoiceItem(Guid payerId, Guid invoiceId, decimal amount, MonthOfTheYear monthPaidFor, int year, Member member, string createdBy)
+        public InvoiceItem(Guid id, Guid payerId, Guid invoiceId, decimal amount, MonthOfTheYear monthPaidFor, int year, Member member, string createdBy)
         {
+            Id = id;
             PayerId = payerId;
             InvoiceId = invoiceId;
             Amount = amount;
@@ -39,11 +40,6 @@ namespace Domain.Entities
             Year = year;
             Member = member;
             CreatedBy = createdBy;
-        }
-
-        public void UpdateAmount(decimal amount)
-        {
-            Amount = amount;
         }
     }
 }

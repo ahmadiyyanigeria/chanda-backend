@@ -24,8 +24,9 @@ namespace Domain.Entities
         private readonly List<InvoiceItem> _invoiceItem = new();
         private readonly List<Payment> _payments = new();
 
-        public Invoice(Guid jamaatId, string reference, decimal amount, InvoiceStatus status, Jamaat jamaat, string createdBy)
+        public Invoice(Guid id, Guid jamaatId, string reference, decimal amount, InvoiceStatus status, Jamaat jamaat, string createdBy)
         {
+            Id = id;
             JamaatId = jamaatId;
             Reference = reference;
             Amount = amount;

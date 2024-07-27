@@ -5,6 +5,7 @@ using Moq;
 using static Application.Commands.CreateInvoice;
 using System.Linq.Expressions;
 using Domain.Enums;
+using Application.Exceptions;
 
 namespace UniteTest.CreateHandlerTests
 {
@@ -66,7 +67,7 @@ namespace UniteTest.CreateHandlerTests
                 .ReturnsAsync((Jamaat?)null);
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<DomainException>(() => _handler.Handle(command, CancellationToken.None));
+            var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(command, CancellationToken.None));
             Assert.Equal(ExceptionCodes.InvalidJamaat.ToString(), exception.ErrorCode.ToString());
         }
 
@@ -105,7 +106,7 @@ namespace UniteTest.CreateHandlerTests
                 .Returns(false);
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<DomainException>(() => _handler.Handle(command, CancellationToken.None));
+            var exception = await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(command, CancellationToken.None));
             Assert.Equal(ExceptionCodes.MemberNotFound.ToString(), exception.ErrorCode.ToString());
         }
 
@@ -150,7 +151,7 @@ namespace UniteTest.CreateHandlerTests
                 .Returns(new List<Member> { member });
 
             _invoiceRepositoryMock.Setup(i => i.AddAsync(It.IsAny<Invoice>()))
-                .ReturnsAsync(new Invoice(jamaat.Id, "INV-AE23GHS", 100m, InvoiceStatus.Pending, jamaat, member.ChandaNo));
+                .ReturnsAsync(new Invoice(new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), jamaat.Id, "INV-AE23GHS", 100m, InvoiceStatus.Pending, jamaat, member.ChandaNo));
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);

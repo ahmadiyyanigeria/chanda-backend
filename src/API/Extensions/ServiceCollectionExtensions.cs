@@ -11,6 +11,7 @@ using System.Text.Json;
 using Mapster;
 using MapsterMapper;
 using Domain.Entities;
+using Application.Commands;
 
 namespace API.Extensions
 {
@@ -98,6 +99,7 @@ namespace API.Extensions
             ValidatorOptions.Global.PropertyNameResolver = (_, member, _) => member.Name.ToCamelCase();
 
             return serviceCollection
+                .AddValidatorsFromAssemblyContaining<CreateInvoice.CommandValidator>()
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         }
     }
