@@ -30,13 +30,14 @@ namespace Domain.Entities
             }
         }
 
-        public InvoiceItem(Guid payerId, Guid invoiceId, decimal amount, MonthOfTheYear monthPaidFor, int year, string createdBy)
+        public InvoiceItem(Guid payerId, Guid invoiceId, decimal amount, MonthOfTheYear monthPaidFor, int year, Member member, string createdBy)
         {
             PayerId = payerId;
             InvoiceId = invoiceId;
             Amount = amount;
             MonthPaidFor = monthPaidFor;
             Year = year;
+            Member = member;
             CreatedBy = createdBy;
         }
 

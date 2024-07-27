@@ -6,11 +6,6 @@ using Domain.Exceptions;
 using FluentValidation;
 using Mapster;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Commands
 {
@@ -61,33 +56,34 @@ namespace Application.Commands
                     throw new DomainException("Initiator not recorgnised", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
-                Invoice invoice = new Invoice(request.JamaatId, reference, invoiceAmount, InvoiceStatus.Pending, request.InitiatorChandaNo);
+                Invoice invoice = new Invoice(request.JamaatId, reference, invoiceAmount, InvoiceStatus.Pending, jamaat, request.InitiatorChandaNo);
 
                 var chandaTypeIds = request.InvoiceItems.SelectMany(ii => ii.ChandaItems.Select(ci => ci.ChandaTypeId)).ToList();
-                var validChandaTypesIds = _chandaTypeRepository.GetChandaTypes(chandaTypeIds).Select(ct => ct.Id).ToList();
+                var validChandaTypes = _chandaTypeRepository.GetChandaTypes(chandaTypeIds);
 
-                if(validChandaTypesIds is null || !validChandaTypesIds.Any())
+                if(validChandaTypes is null || !validChandaTypes.Any())
                 {
                     throw new DomainException("No valid ChandaType selected", ExceptionCodes.NoValidChandaTypeSelected.ToString(), 400);
                 }
 
                 var payerIds = request.InvoiceItems.Select(ii => ii.PayerId).ToList();
-                var payers = _memberRepository.GetMembers(m => payerIds.Contains(m.Id))
-                    .Select(m => new { Id = m.Id, Name = m.Name }).ToList();
+                var payers = _memberRepository.GetMembers(m => payerIds.Contains(m.Id)).ToList();
 
                 var invoiceItemResponses = new List<InvoiceItemResponse>();
                 foreach (var item in request.InvoiceItems)
                 {
-                    if(payers.Any(p => p.Id == item.PayerId))
+                    var payer = payers.Where(p => p.Id == item.PayerId).FirstOrDefault();
+                    if (payer is not null)
                     {
                         var subTotalAmount = 0.0m;
-                        var invoiceItem = new InvoiceItem(item.PayerId, invoice.Id, subTotalAmount, item.MonthPaidFor, item.Year, request.InitiatorChandaNo);
+                        var invoiceItem = new InvoiceItem(item.PayerId, invoice.Id, subTotalAmount, item.MonthPaidFor, item.Year, payer, request.InitiatorChandaNo);
                         var chandaItemResponses = new List<ChandaItemResponse>();
                         foreach (var chanda in item.ChandaItems)
                         {
-                            if (validChandaTypesIds.Contains(chanda.ChandaTypeId))
+                            var chandaType = validChandaTypes.Where(ct => ct.Id == chanda.ChandaTypeId).FirstOrDefault();
+                            if (chandaType is not null)
                             {
-                                var chandaItem = new ChandaItem(invoiceItem.Id, chanda.ChandaTypeId, chanda.Amount, request.InitiatorChandaNo);
+                                var chandaItem = new ChandaItem(invoiceItem.Id, chanda.ChandaTypeId, chanda.Amount, chandaType, request.InitiatorChandaNo);
                                 invoiceItem.AddChandaItems(chandaItem);
                                 subTotalAmount += chanda.Amount;
 
