@@ -1,4 +1,5 @@
 ﻿using Application.Repositories;
+using Domain.Exceptions;
 using Mapster;
 using MediatR;
 using System;
@@ -18,6 +19,7 @@ namespace Application.Queries
         public class Handler : IRequestHandler<Query, CircuitResponse>
         {
             private readonly ICircuitRepository _circuitRepository;
+            
             public Handler(ICircuitRepository circuitRepository) 
             {
                 _circuitRepository = circuitRepository;
@@ -28,14 +30,15 @@ namespace Application.Queries
                 var circuit = await _circuitRepository.Get(c => c.Id == request.Id);
                 if(circuit == null)
                 {
-                    throw new NotFoundException("Circuit not found");
+                    throw new DomainException(
+                       message: "Circuit not found",
+                       errorCode: ExceptionCodes.CircuitNotFound.ToString(),
+                       statusCode: 404
+                   );
                 }
                 return circuit.Adapt<CircuitResponse>();
             }
         }
     }
-    public class NotFoundException : Exception
-    {
-        public NotFoundException(string message) : base(message) { }
-    }
+    
 }
