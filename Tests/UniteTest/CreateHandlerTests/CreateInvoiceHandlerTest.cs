@@ -1,7 +1,6 @@
 ﻿using Application.Repositories;
 using Domain.Entities;
 using Domain.Exceptions;
-using FluentValidation;
 using Moq;
 using static Application.Commands.CreateInvoice;
 using System.Linq.Expressions;
@@ -11,7 +10,6 @@ namespace UniteTest.CreateHandlerTests
 {
     public class CreateInvoiceHandlerTest
     {
-        private readonly Mock<IValidator<Command>> _validatorMock = new Mock<IValidator<Command>>();
         private readonly Mock<IJamaatRepository> _jamaatRepositoryMock;
         private readonly Mock<IMemberRepository> _memberRepositoryMock;
         private readonly Mock<IChandaTypeRepository> _chandaTypeRepositoryMock;
@@ -40,7 +38,29 @@ namespace UniteTest.CreateHandlerTests
         public async Task Handle_InvalidJamaatId_ShouldThrowDomainException()
         {
             // Arrange
-            var command = new Command { JamaatId = new Guid("3597218b-8de1-4bbc-b85b-c192a8085859"), InitiatorChandaNo = "12345" };
+            var jamaat = new Jamaat("Lafiaji", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+
+
+            var command = new Command
+            {
+                JamaatId = jamaat.Id,
+                InitiatorChandaNo = member.ChandaNo,
+                InvoiceItems = new List<InvoiceItemCommand>
+                {
+                    new InvoiceItemCommand
+                    {
+                        PayerId = member.Id,
+                        MonthPaidFor = MonthOfTheYear.January,
+                        Year = 2024,
+                        ChandaItems = new List<ChandaItemCommand>
+                        {
+                            new ChandaItemCommand( chandaType.Id, 100m )
+                        }
+                    }
+                }
+            };
 
             _jamaatRepositoryMock.Setup(j => j.Get(It.IsAny<Expression<Func<Jamaat, bool>>>()))
                 .ReturnsAsync((Jamaat?)null);
@@ -48,6 +68,45 @@ namespace UniteTest.CreateHandlerTests
             // Act & Assert
             var exception = await Assert.ThrowsAsync<DomainException>(() => _handler.Handle(command, CancellationToken.None));
             Assert.Equal(ExceptionCodes.InvalidJamaat.ToString(), exception.ErrorCode.ToString());
+        }
+
+        [Fact]
+        public async Task Handle_UnrecognizedInitiator_ShouldThrowDomainException()
+        {
+            // Arrange
+            var jamaat = new Jamaat("Lafiaji", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+
+
+            var command = new Command
+            {
+                JamaatId = jamaat.Id,
+                InitiatorChandaNo = member.ChandaNo,
+                InvoiceItems = new List<InvoiceItemCommand>
+                {
+                    new InvoiceItemCommand
+                    {
+                        PayerId = member.Id,
+                        MonthPaidFor = MonthOfTheYear.January,
+                        Year = 2024,
+                        ChandaItems = new List<ChandaItemCommand>
+                        {
+                            new ChandaItemCommand( chandaType.Id, 100m )
+                        }
+                    }
+                }
+            };
+
+            _jamaatRepositoryMock.Setup(j => j.Get(It.IsAny<Expression<Func<Jamaat, bool>>>()))
+                .ReturnsAsync(jamaat);
+
+            _memberRepositoryMock.Setup(m => m.ExistsByChandaNo(command.InitiatorChandaNo))
+                .Returns(false);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DomainException>(() => _handler.Handle(command, CancellationToken.None));
+            Assert.Equal(ExceptionCodes.MemberNotFound.ToString(), exception.ErrorCode.ToString());
         }
 
         [Fact]
