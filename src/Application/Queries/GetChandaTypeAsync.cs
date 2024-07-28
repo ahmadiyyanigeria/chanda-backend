@@ -13,22 +13,14 @@ namespace Application.Queries
     public class GetChandaTypeAsync
     {
         
-        public class Query : IRequest<ChandaTypeResponse>
-        {
-            public Guid Id { get; set; }
-
-            public Query(Guid id)
-            {
-                Id = id;
-            }
-        }
-
+        public record Query(Guid Id) : IRequest<ChandaTypeResponse>;
         
-        public class GetQueryHandler : IRequestHandler<Query, ChandaTypeResponse>
+        
+        public class Handler : IRequestHandler<Query, ChandaTypeResponse>
         {
             private readonly IChandaTypeRepository _chandaTypeRepository;
 
-            public GetQueryHandler(IChandaTypeRepository chandaTypeRepository)
+            public Handler(IChandaTypeRepository chandaTypeRepository)
             {
                 _chandaTypeRepository = chandaTypeRepository;
             }
