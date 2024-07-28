@@ -30,7 +30,7 @@ namespace Domain.Entities
             }
         }
 
-        public InvoiceItem(Guid id, Guid payerId, Guid invoiceId, decimal amount, MonthOfTheYear monthPaidFor, int year, Member member, string createdBy)
+        public InvoiceItem(Guid id, Guid payerId, Guid invoiceId, decimal amount, MonthOfTheYear monthPaidFor, int year, string createdBy)
         {
             Id = id;
             PayerId = payerId;
@@ -38,7 +38,6 @@ namespace Domain.Entities
             Amount = amount;
             MonthPaidFor = monthPaidFor;
             Year = year;
-            Member = member;
             CreatedBy = createdBy;
         }
     }

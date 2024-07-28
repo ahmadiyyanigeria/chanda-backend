@@ -27,7 +27,7 @@ namespace Application.Queries
 
             public async Task<CircuitResponse> Handle(Query request, CancellationToken cancellationToken)
             {
-                var circuit = await _circuitRepository.Get(c => c.Id == request.Id);
+                var circuit = await _circuitRepository.GetAsync(c => c.Id == request.Id);
                 if(circuit == null)
                 {
                     throw new DomainException(

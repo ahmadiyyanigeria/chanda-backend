@@ -82,17 +82,17 @@ namespace Application.Commands
                             var chandaType = validChandaTypes.Where(ct => ct.Id == chanda.ChandaTypeId).FirstOrDefault();
                             if (chandaType is not null)
                             {
-                                var chandaItem = new ChandaItem(invoiceItemId, chanda.ChandaTypeId, chanda.Amount, chandaType, request.InitiatorChandaNo);
+                                var chandaItem = new ChandaItem(invoiceItemId, chanda.ChandaTypeId, chanda.Amount, request.InitiatorChandaNo);
                                 chandaItems.Add(chandaItem);
                                 invoiceItemAmount += chanda.Amount;
 
-                                chandaItemResponses.Add(chandaItem.Adapt<ChandaItemResponse>());
+                                chandaItemResponses.Add(new ChandaItemResponse(chandaType.Name, chanda.Amount));
                             }
                         }
 
                         if (chandaItems.Any())
                         {
-                            var invoiceItem = new InvoiceItem(invoiceItemId, item.PayerId, invoiceId, invoiceItemAmount, item.MonthPaidFor, item.Year, payer, request.InitiatorChandaNo);
+                            var invoiceItem = new InvoiceItem(invoiceItemId, item.PayerId, invoiceId, invoiceItemAmount, item.MonthPaidFor, item.Year, request.InitiatorChandaNo);
                             
                             invoiceAmount += invoiceItemAmount;
                             invoiceItems.Add(invoiceItem);
@@ -110,7 +110,7 @@ namespace Application.Commands
                     throw new NotFoundException("No Valid Item selected", ExceptionCodes.NoInvoiceItemSelected.ToString(), 400);
                 }
 
-                var invoice = new Invoice(invoiceId, request.JamaatId, reference, invoiceAmount, InvoiceStatus.Pending, jamaat, request.InitiatorChandaNo);
+                var invoice = new Invoice(invoiceId, request.JamaatId, reference, invoiceAmount, InvoiceStatus.Pending, request.InitiatorChandaNo);
                 
                 invoice = await _invoiceRepository.AddAsync(invoice);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
