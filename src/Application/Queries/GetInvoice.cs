@@ -15,7 +15,7 @@ namespace Application.Queries
         public record InvoiceItemResponse(string MonthPayedFor, string PayerName, int Year, decimal Amount, IReadOnlyList<ChandaItemResponse> ChandaItems);
         public record ChandaItemResponse(string ChandaType, decimal Amount);
 
-        public class Handle(IInvoiceRepository _invoiceRepository) : IRequestHandler<Query, InvoiceResponse>
+        public class Handler(IInvoiceRepository _invoiceRepository) : IRequestHandler<Query, InvoiceResponse>
         {
             public async Task<InvoiceResponse> Handle(Query request, CancellationToken cancellationToken)
             {
