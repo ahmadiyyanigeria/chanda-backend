@@ -10,6 +10,7 @@ namespace Domain.Exceptions
     {
         MemberAlreadyExist = 1,
         MemberNotFound,
+        InvoiceNotFound,
         UserNotLoggedIn,
         Unauthorized,
         InvalidRole,
