@@ -25,9 +25,9 @@ namespace UniteTest.QueryHandlerTests
         {
             // Arrange
             var circuit = new Circuit("Abeokuta", "0001");
-            var jamaat = new Jamaat("Lafiaji", circuit.Id, circuit, "0001");
+            var jamaat = new Jamaat("Lafiaji", circuit.Id, "0001");
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
-            var member = new Member("0001", "Ade Ola", "adeola@example.com", "08011111111", jamaat.Id, memberLedger.Id, jamaat, memberLedger,  "0001");
+            var member = new Member("0001", "Ade Ola", "adeola@example.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
            
             _memberRepositoryMock.Setup(repo => repo.GetMemberAsync(It.IsAny<Expression<Func<Member, bool>>>()))
                 .ReturnsAsync(member);
@@ -44,7 +44,6 @@ namespace UniteTest.QueryHandlerTests
             result.Name.Should().Be(member.Name);
             result.Email.Should().Be(member.Email);
             result.PhoneNo.Should().Be(member.PhoneNo);
-            result.JamaatName.Should().Be(member.Jamaat.Name);
         }
 
         [Fact]

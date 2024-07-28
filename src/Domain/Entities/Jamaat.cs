@@ -19,11 +19,10 @@ namespace Domain.Entities
 
         private readonly List<Member> _members = new();
 
-        public Jamaat(string name, Guid circuitId, Circuit circuit, string createdBy)
+        public Jamaat(string name, Guid circuitId, string createdBy)
         {
             Name = name;
             CircuitId = circuitId;
-            Circuit = circuit;
             CreatedBy = createdBy;
         }
 

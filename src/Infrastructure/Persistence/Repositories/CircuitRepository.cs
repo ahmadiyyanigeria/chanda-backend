@@ -9,18 +9,18 @@ namespace Infrastructure.Persistence.Repositories
 {
     public class CircuitRepository(AppDbContext _context) : ICircuitRepository
     {
-        public async Task<Circuit> Add(Circuit circuit)
+        public async Task<Circuit> AddAsync(Circuit circuit)
         {
             await _context.Circuits.AddAsync(circuit);
             return circuit;
         }
 
-        public async Task<Circuit?> Get(Expression<Func<Circuit, bool>> expression)
+        public async Task<Circuit?> GetAsync(Expression<Func<Circuit, bool>> expression)
         {
             return await _context.Circuits.SingleOrDefaultAsync(expression);
         }
 
-        public async Task<PaginatedList<Circuit>> GetAll(PageRequest pageRequest, Expression<Func<Circuit, bool>> expression, bool usePaging)
+        public async Task<PaginatedList<Circuit>> GetAllAsync(PageRequest pageRequest, Expression<Func<Circuit, bool>> expression, bool usePaging)
         {
             var query =  _context.Circuits.Where(expression);
             if (!string.IsNullOrEmpty(pageRequest.Keyword))
@@ -48,7 +48,7 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        public Task<Circuit> Update(Circuit circuit)
+        public Task<Circuit> UpdateAsync(Circuit circuit)
         {
             _context.Entry(circuit).State = EntityState.Modified;
             return Task.FromResult(circuit);
