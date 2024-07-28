@@ -74,11 +74,11 @@ namespace API.Extensions
         {
             var config = TypeAdapterConfig.GlobalSettings;
 
-            config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
+            config.NewConfig<Member, Application.Queries.GetMember.MemberResponse>()
                 .Map(dest => dest.Roles, src => src.MemberRoles.Select(r => r.RoleName).ToList());
-            config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
+            config.NewConfig<Member, Application.Queries.GetMember.MemberResponse>()
                 .Map(dest => dest.JamaatName, src => src.Jamaat.Name);
-            config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
+            config.NewConfig<Member, Application.Queries.GetMember.MemberResponse>()
                 .Map(dest => dest.CircuitName, src => src.Jamaat.Circuit.Name);
             config.NewConfig<Invoice, Application.Commands.CreateInvoice.InvoiceResponse>()
                 .Map(dest => dest.JamaatName, src => src.Jamaat.Name);
