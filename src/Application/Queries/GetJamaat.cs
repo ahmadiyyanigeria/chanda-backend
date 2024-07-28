@@ -28,7 +28,7 @@ namespace Application.Queries
                 var jamaat = await _jamaatRepository.Get(j => j.Id == request.Id);
                 if (jamaat == null)
                 {
-                    throw new DomainException(
+                    throw new NotFoundException(
                        message: "Jama'at not found",
                        errorCode: ExceptionCodes.JamaatNotFound.ToString(),
                        statusCode: 404

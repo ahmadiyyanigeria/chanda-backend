@@ -53,7 +53,7 @@ namespace API.Middleware
                     ).ExecuteAsync(context);
 
             }
-            catch (DomainException exception)
+            catch (NotFoundException exception)
             {
                 _logger.LogWarning(message: "A domain exception has occurred while executing the request.\n{ErrorMessage}", exception.Message);
                 var error = _errors[exception.HttpStatusCode];
