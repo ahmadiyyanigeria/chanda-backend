@@ -40,9 +40,9 @@ namespace UniteTest.CreateHandlerTests
         {
             // Arrange
             var circuit = new Circuit("Abeokuta", "0001");
-            var jamaat = new Jamaat("Lafiaji", circuit.Id, circuit, "0001");
+            var jamaat = new Jamaat("Lafiaji", circuit.Id, "0001");
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, jamaat, memberLedger, "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
@@ -78,9 +78,9 @@ namespace UniteTest.CreateHandlerTests
         {
             // Arrange
             var circuit = new Circuit("Abeokuta", "0001");
-            var jamaat = new Jamaat("Lafiaji", circuit.Id, circuit, "0001");
+            var jamaat = new Jamaat("Lafiaji", circuit.Id, "0001");
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, jamaat, memberLedger, "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
@@ -119,9 +119,9 @@ namespace UniteTest.CreateHandlerTests
         {
             // Arrange
             var circuit = new Circuit("Abeokuta", "0001");
-            var jamaat = new Jamaat("Lafiaji", circuit.Id, circuit, "0001");
+            var jamaat = new Jamaat("Lafiaji", circuit.Id, "0001");
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, jamaat, memberLedger, "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
@@ -157,14 +157,13 @@ namespace UniteTest.CreateHandlerTests
                 .Returns(new List<Member> { member });
 
             _invoiceRepositoryMock.Setup(i => i.AddAsync(It.IsAny<Invoice>()))
-                .ReturnsAsync(new Invoice(new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), jamaat.Id, "INV-AE23GHS", 100m, InvoiceStatus.Pending, jamaat, member.ChandaNo));
+                .ReturnsAsync(new Invoice(new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), jamaat.Id, "INV-AE23GHS", 100m, InvoiceStatus.Pending, member.ChandaNo));
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(jamaat.Name, result.JamaatName);
             Assert.Equal(command.InvoiceItems.Count, result.InvoiceItems.Count);
             Assert.All(result.InvoiceItems, item =>
                 Assert.All(item.ChandaItems, chanda =>

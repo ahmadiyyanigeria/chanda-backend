@@ -24,7 +24,7 @@ namespace Domain.Entities
 
         private readonly List<MemberRole> _memberRoles = new();
 
-        public Member(string chandaNo, string name, string email, string phoneNo, Guid jamaatId, Guid memberLedgerId, Jamaat jamaat, MemberLedger memberLedger, string createdBy)
+        public Member(string chandaNo, string name, string email, string phoneNo, Guid jamaatId, Guid memberLedgerId, string createdBy)
         {
             ChandaNo = chandaNo;
             Name = name;
@@ -32,8 +32,6 @@ namespace Domain.Entities
             PhoneNo = phoneNo;
             JamaatId = jamaatId;
             MemberLedgerId = memberLedgerId;
-            Jamaat = jamaat;
-            MemberLedger = memberLedger;
             CreatedBy = createdBy;
         }
 

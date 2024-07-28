@@ -22,8 +22,10 @@ namespace Infrastructure.Extensions
                 .AddScoped<IInvoiceRepository, InvoiceRepository>()
                 .AddScoped<IJamaatRepository, JamaatRepository>()
                 .AddScoped<IChandaTypeRepository, ChandaTypeRepository>()
-                .AddScoped<IUnitOfWork, UnitOfWork>();
-
+                .AddScoped<ICircuitRepository, CircuitRepository>()
+                .AddScoped<ILedgerRepository, LedgerRepository>()
+                .AddScoped<IPaymentRepository, PaymentRepository>()
+                .AddScoped<IUnitOfWork, UnitOfWork>();            
         }
 
         public static IServiceCollection AddEmailService(this IServiceCollection services)
