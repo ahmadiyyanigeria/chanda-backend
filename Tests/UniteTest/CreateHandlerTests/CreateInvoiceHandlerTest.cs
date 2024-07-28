@@ -39,8 +39,10 @@ namespace UniteTest.CreateHandlerTests
         public async Task Handle_InvalidJamaatId_ShouldThrowDomainException()
         {
             // Arrange
-            var jamaat = new Jamaat("Lafiaji", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var circuit = new Circuit("Abeokuta", "0001");
+            var jamaat = new Jamaat("Lafiaji", circuit.Id, circuit, "0001");
+            var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, jamaat, memberLedger, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
@@ -75,8 +77,10 @@ namespace UniteTest.CreateHandlerTests
         public async Task Handle_UnrecognizedInitiator_ShouldThrowDomainException()
         {
             // Arrange
-            var jamaat = new Jamaat("Lafiaji", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var circuit = new Circuit("Abeokuta", "0001");
+            var jamaat = new Jamaat("Lafiaji", circuit.Id, circuit, "0001");
+            var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, jamaat, memberLedger, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
@@ -114,8 +118,10 @@ namespace UniteTest.CreateHandlerTests
         public async Task Handle_ValidCommand_ShouldReturnInvoiceResponse()
         {
             // Arrange
-            var jamaat = new Jamaat("Lafiaji", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var circuit = new Circuit("Abeokuta", "0001");
+            var jamaat = new Jamaat("Lafiaji", circuit.Id, circuit, "0001");
+            var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, jamaat, memberLedger, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
