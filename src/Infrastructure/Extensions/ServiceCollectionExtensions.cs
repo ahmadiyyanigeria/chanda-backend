@@ -18,6 +18,10 @@ namespace Infrastructure.Extensions
                 .AddDbContext<AppDbContext>(options =>
                     options.UseNpgsql(connectionString, action => action.MigrationsAssembly("Infrastructure")))
                 .AddScoped<IMemberRepository, MemberRepository>()
+                .AddScoped<IRoleRepository, RoleRepository>()
+                .AddScoped<IInvoiceRepository, InvoiceRepository>()
+                .AddScoped<IJamaatRepository, JamaatRepository>()
+                .AddScoped<IChandaTypeRepository, ChandaTypeRepository>()
                 .AddScoped<IUnitOfWork, UnitOfWork>();
 
         }

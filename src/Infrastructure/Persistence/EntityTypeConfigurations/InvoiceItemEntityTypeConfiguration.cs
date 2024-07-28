@@ -1,6 +1,8 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,10 +32,19 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                 .HasColumnName("id");
 
             builder.Property(ii => ii.MonthPaidFor)
-            .HasColumnName("month_paid_for")
-            .HasColumnType("varchar(50)")
-            .IsRequired();
-            
+                .HasColumnName("month_paid_for")
+                .HasColumnType("varchar(50)")
+                .HasConversion<EnumToStringConverter<MonthOfTheYear>>()
+                .IsRequired();
+
+            builder.Property(ii => ii.Year)
+                .HasColumnName("year")
+                .IsRequired();
+
+            builder.Property(ii => ii.Amount)
+                .HasColumnName("amount")
+                .HasColumnType("decimal(18,2)")
+                .IsRequired();
 
             builder.Property(ii => ii.CreatedBy)
                .HasColumnName("created_by")

@@ -21,6 +21,11 @@ namespace Infrastructure.Persistence.Repositories
             return member;
         }
 
+        public bool ExistsByChandaNo(string chandaNo)
+        {
+            return _context.Members.Any(m => m.ChandaNo == chandaNo);
+        }
+
         public async Task<Member?> GetMemberAsync(Expression<Func<Member, bool>> expression)
         {
             return await _context.Members.Include(m => m.Jamaat).ThenInclude(j => j.Circuit).Include(m => m.MemberRoles)
@@ -67,6 +72,11 @@ namespace Infrastructure.Persistence.Repositories
                 var result = await query.ToListAsync();
                 return result.ToPaginatedList(totalCount, 1, totalCount);
             }
+        }
+
+        public List<Member> GetMembers(Expression<Func<Member, bool>> expression)
+        {
+            return _context.Members.Where(expression).ToList();
         }
 
         public Task<Member> UpdateAsync(Member member)

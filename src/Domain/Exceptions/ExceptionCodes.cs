@@ -18,6 +18,9 @@ namespace Domain.Exceptions
         NoRoleSelected,
         InvalidCredentials,
         JamaatNotFound,
-        CircuitNotFound
+        CircuitNotFound,
+        NoInvoiceItemSelected,
+        InvalidJamaat,
+        NoValidChandaTypeSelected
     }
 }
