@@ -30,7 +30,7 @@ namespace Application.Queries
                 var circuit = await _circuitRepository.Get(c => c.Id == request.Id);
                 if(circuit == null)
                 {
-                    throw new DomainException(
+                    throw new NotFoundException(
                        message: "Circuit not found",
                        errorCode: ExceptionCodes.CircuitNotFound.ToString(),
                        statusCode: 404
