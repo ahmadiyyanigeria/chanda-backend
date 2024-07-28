@@ -21,6 +21,7 @@ namespace Domain.Exceptions
         CircuitNotFound,
         NoInvoiceItemSelected,
         InvalidJamaat,
-        NoValidChandaTypeSelected
+        NoValidChandaTypeSelected,
+        ChandaTypeNotFound
     }
 }

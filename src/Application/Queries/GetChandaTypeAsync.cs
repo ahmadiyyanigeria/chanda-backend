@@ -1,5 +1,7 @@
-﻿using Application.Repositories;
+﻿using Application.Exceptions;
+using Application.Repositories;
 using Domain.Entities;
+using Domain.Exceptions;
 using Mapster;
 using MediatR;
 using System;
@@ -27,8 +29,12 @@ namespace Application.Queries
 
             public  async Task<ChandaTypeResponse> Handle(Query request, CancellationToken cancellationToken)
             {
-                var chanda =  await _chandaTypeRepository.GetByIdAsync(request.Id);
-                return chanda.Adapt<ChandaTypeResponse>();
+                var chandaType =  await _chandaTypeRepository.GetByIdAsync(request.Id);
+                if(chandaType is null)
+                {
+                    throw new NotFoundException("Chanda Type Not Found", ExceptionCodes.ChandaTypeNotFound.ToString(), 404);
+                }
+                return chandaType.Adapt<ChandaTypeResponse>();
             }
         }
 
