@@ -15,6 +15,7 @@ namespace Application.Repositories
         Task<Jamaat> Update(Jamaat jamaat);
         Task<Jamaat?> Get(Expression<Func<Jamaat, bool>> expression);
         Task<PaginatedList<Jamaat>> GetAll(PageRequest pageRequest, Expression<Func<Jamaat, bool>> expression, bool usePaging);
+       
 
 
     }

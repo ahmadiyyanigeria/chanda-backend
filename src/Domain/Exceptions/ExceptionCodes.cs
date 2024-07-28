@@ -17,6 +17,10 @@ namespace Domain.Exceptions
         UserAlreadyExists,
         NoRoleSelected,
         InvalidCredentials,
-        JamaatNotFound
+        JamaatNotFound,
+        CircuitNotFound,
+        NoInvoiceItemSelected,
+        InvalidJamaat,
+        NoValidChandaTypeSelected
     }
 }
