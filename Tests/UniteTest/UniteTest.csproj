@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="QueryHandlerTests\" />
     <Folder Include="RepositoryTests\" />
   </ItemGroup>
 
