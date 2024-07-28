@@ -19,6 +19,7 @@ builder.Services.AddSwagger();
 builder.Services.ConfigureMvc();
 builder.Services.AddHealthChecks();
 builder.Services.AddMapster();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetRoles).Assembly));
 builder.Services.AddValidators();
 builder.Services.AddEmailService();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));

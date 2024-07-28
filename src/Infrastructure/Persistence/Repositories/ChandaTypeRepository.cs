@@ -49,15 +49,20 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        public async Task<ChandaType> GetAsync(Expression<Func<ChandaType, bool>> predicate)
+        public async Task<ChandaType?> GetAsync(Expression<Func<ChandaType, bool>> predicate)
         {
             return await _context.ChandaTypes.SingleOrDefaultAsync(predicate);
         }
 
-        public async Task<ChandaType> GetByIdAsync(Guid id)
+        public async Task<ChandaType?> GetByIdAsync(Guid id)
         {
             var chandaType = await _context.ChandaTypes.SingleOrDefaultAsync(ct => ct.Id == id);
             return chandaType;
+        }
+
+        public List<ChandaType> GetChandaTypes(List<Guid> ids)
+        {
+            return _context.ChandaTypes.Where(ct => ids.Contains(ct.Id)).ToList();
         }
 
         public ChandaType Update(ChandaType chandaType)

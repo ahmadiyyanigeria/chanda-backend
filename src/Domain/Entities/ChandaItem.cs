@@ -8,11 +8,12 @@
         public InvoiceItem InvoiceItem { get; private set; } = default!;
         public ChandaType ChandaType { get; private set;} = default!;
 
-        public ChandaItem(Guid invoiceItemId, Guid chandaTypeId, decimal amount, string createdBy)
+        public ChandaItem(Guid invoiceItemId, Guid chandaTypeId, decimal amount, ChandaType chandaType, string createdBy)
         {
             InvoiceItemId = invoiceItemId;
             ChandaTypeId = chandaTypeId;
             Amount = amount;
+            ChandaType = chandaType;
             CreatedBy = createdBy;
         }
     }
