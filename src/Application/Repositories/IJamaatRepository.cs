@@ -11,10 +11,10 @@ namespace Application.Repositories
 {
     public interface IJamaatRepository
     {
-        Task<Jamaat> Add(Jamaat jamaat);
+        Task<Jamaat> AddAsync(Jamaat jamaat);
         Task<Jamaat> Update(Jamaat jamaat);
         Task<Jamaat?> Get(Expression<Func<Jamaat, bool>> expression);
-        Task<PaginatedList<Jamaat>> GetAll(PageRequest pageRequest, Expression<Func<Jamaat, bool>> expression, bool usePaging);
+        Task<PaginatedList<Jamaat>> GetAllAsync(PageRequest pageRequest, Expression<Func<Jamaat, bool>> expression, bool usePaging);
        
 
 

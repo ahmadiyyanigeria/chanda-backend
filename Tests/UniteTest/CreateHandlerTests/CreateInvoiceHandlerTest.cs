@@ -39,25 +39,27 @@ namespace UniteTest.CreateHandlerTests
         public async Task Handle_InvalidJamaatId_ShouldThrowDomainException()
         {
             // Arrange
-            var jamaat = new Jamaat("Lafiaji", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var circuit = new Circuit("Abeokuta", "ABK", "0001");
+            var jamaat = new Jamaat("Lafiaji","ABK-L",circuit.Id, "0001");
+            var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
             var command = new Command
             {
-                JamaatId = jamaat.Id,
+                JamaatCode = jamaat.Code,
                 InitiatorChandaNo = member.ChandaNo,
                 InvoiceItems = new List<InvoiceItemCommand>
                 {
                     new InvoiceItemCommand
                     {
-                        PayerId = member.Id,
+                        PayerNo = member.ChandaNo,
                         MonthPaidFor = MonthOfTheYear.January,
                         Year = 2024,
                         ChandaItems = new List<ChandaItemCommand>
                         {
-                            new ChandaItemCommand( chandaType.Id, 100m )
+                            new ChandaItemCommand( chandaType.Code, 100m )
                         }
                     }
                 }
@@ -75,25 +77,27 @@ namespace UniteTest.CreateHandlerTests
         public async Task Handle_UnrecognizedInitiator_ShouldThrowDomainException()
         {
             // Arrange
-            var jamaat = new Jamaat("Lafiaji", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var circuit = new Circuit("Abeokuta", "ABK", "0001");
+            var jamaat = new Jamaat("Lafiaji", "ABK-L", circuit.Id, "0001");
+            var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
             var command = new Command
             {
-                JamaatId = jamaat.Id,
+                JamaatCode = jamaat.Code,
                 InitiatorChandaNo = member.ChandaNo,
                 InvoiceItems = new List<InvoiceItemCommand>
                 {
                     new InvoiceItemCommand
                     {
-                        PayerId = member.Id,
+                        PayerNo = member.ChandaNo,
                         MonthPaidFor = MonthOfTheYear.January,
                         Year = 2024,
                         ChandaItems = new List<ChandaItemCommand>
                         {
-                            new ChandaItemCommand( chandaType.Id, 100m )
+                            new ChandaItemCommand( chandaType.Code, 100m )
                         }
                     }
                 }
@@ -114,25 +118,27 @@ namespace UniteTest.CreateHandlerTests
         public async Task Handle_ValidCommand_ShouldReturnInvoiceResponse()
         {
             // Arrange
-            var jamaat = new Jamaat("Lafiaji", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var circuit = new Circuit("Abeokuta", "ABK", "0001");
+            var jamaat = new Jamaat("Lafiaji", "ABK-L", circuit.Id, "0001");
+            var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
             var command = new Command
             {
-                JamaatId = jamaat.Id,
+                JamaatCode = jamaat.Code,
                 InitiatorChandaNo = member.ChandaNo,
                 InvoiceItems = new List<InvoiceItemCommand>
                 {
                     new InvoiceItemCommand
                     {
-                        PayerId = member.Id,
+                        PayerNo = member.ChandaNo,
                         MonthPaidFor = MonthOfTheYear.January,
                         Year = 2024,
                         ChandaItems = new List<ChandaItemCommand>
                         {
-                            new ChandaItemCommand( chandaType.Id, 100m )
+                            new ChandaItemCommand( chandaType.Code, 100m )
                         }
                     }
                 }
@@ -144,21 +150,20 @@ namespace UniteTest.CreateHandlerTests
             _memberRepositoryMock.Setup(m => m.ExistsByChandaNo(command.InitiatorChandaNo))
                 .Returns(true);
 
-            _chandaTypeRepositoryMock.Setup(c => c.GetChandaTypes(It.IsAny<List<Guid>>()))
+            _chandaTypeRepositoryMock.Setup(c => c.GetChandaTypes(It.IsAny<List<string>>()))
                 .Returns(new List<ChandaType> { chandaType });
 
             _memberRepositoryMock.Setup(m => m.GetMembers(It.IsAny<Expression<Func<Member, bool>>>()))
                 .Returns(new List<Member> { member });
 
             _invoiceRepositoryMock.Setup(i => i.AddAsync(It.IsAny<Invoice>()))
-                .ReturnsAsync(new Invoice(new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), jamaat.Id, "INV-AE23GHS", 100m, InvoiceStatus.Pending, jamaat, member.ChandaNo));
+                .ReturnsAsync(new Invoice(new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), jamaat.Id, "INV-AE23GHS", 100m, InvoiceStatus.Pending, member.ChandaNo));
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(jamaat.Name, result.JamaatName);
             Assert.Equal(command.InvoiceItems.Count, result.InvoiceItems.Count);
             Assert.All(result.InvoiceItems, item =>
                 Assert.All(item.ChandaItems, chanda =>

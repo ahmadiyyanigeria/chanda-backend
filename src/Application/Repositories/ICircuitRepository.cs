@@ -7,9 +7,9 @@ namespace Application.Repositories
 {
     public interface ICircuitRepository
     {
-        Task<Circuit> Add(Circuit circuit);
-        Task<Circuit> Update(Circuit circuit);
-        Task<Circuit?> Get(Expression<Func<Circuit, bool>> expression);
-        Task<PaginatedList<Circuit>> GetAll(PageRequest pageRequest, Expression<Func<Circuit, bool>> expression, bool usePaging);
+        Task<Circuit> AddAsync(Circuit circuit);
+        Task<Circuit> UpdateAsync(Circuit circuit);
+        Task<Circuit?> GetAsync(Expression<Func<Circuit, bool>> expression);
+        Task<PaginatedList<Circuit>> GetAllAsync(PageRequest pageRequest, Expression<Func<Circuit, bool>> expression, bool usePaging);
     }
 }

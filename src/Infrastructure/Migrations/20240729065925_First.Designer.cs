@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240716205911_second")]
-    partial class Second
+    [Migration("20240729065925_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,6 +140,11 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
+
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
@@ -214,6 +219,12 @@ namespace Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_date");
 
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("reference")
+                        .UseCollation("case_insensitive");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
@@ -222,6 +233,9 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("JamaatId");
+
+                    b.HasIndex("Reference")
+                        .IsUnique();
 
                     b.ToTable("invoices", (string)null);
                 });
@@ -232,6 +246,10 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("amount");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -263,12 +281,15 @@ namespace Infrastructure.Migrations
                     b.Property<string>("MonthPaidFor")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
-                        .HasColumnName("month_paid_for")
-                        .UseCollation("case_insensitive");
+                        .HasColumnName("month_paid_for");
 
                     b.Property<Guid>("PayerId")
                         .HasColumnType("uuid")
                         .HasColumnName("payer_id");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer")
+                        .HasColumnName("year");
 
                     b.HasKey("Id");
 
@@ -288,6 +309,11 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("CircuitId")
                         .HasColumnType("uuid")
                         .HasColumnName("circuit_id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -422,8 +448,11 @@ namespace Infrastructure.Migrations
                     b.Property<string>("MonthPaidFor")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
-                        .HasColumnName("month_paid_for")
-                        .UseCollation("case_insensitive");
+                        .HasColumnName("month_paid_for");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer")
+                        .HasColumnName("year");
 
                     b.HasKey("Id");
 
@@ -585,6 +614,12 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("role_id");
 
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("role_name")
+                        .UseCollation("case_insensitive");
+
                     b.HasKey("Id");
 
                     b.HasIndex("MemberId");
@@ -684,134 +719,146 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("roles", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2ab3146b-b006-4556-b511-489ae61fbb36"),
+                            Id = new Guid("0cbf479f-7e7c-4a01-8249-8f07385e4687"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Full administrative access across the system.",
                             IsDeleted = false,
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("c721467c-11ab-4345-8bf5-69903eababad"),
+                            Id = new Guid("ae0a429a-685e-422c-9f44-e44cadeca6c1"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Head of AMJN",
                             IsDeleted = false,
                             Name = "Amir"
                         },
                         new
                         {
-                            Id = new Guid("2ba5f679-4f0d-49d2-946e-d8b1a56f0c63"),
+                            Id = new Guid("d57967c7-611b-40f1-9252-c1a1517de26e"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Acting Head of AMJN",
                             IsDeleted = false,
                             Name = "Acting-Amir"
                         },
                         new
                         {
-                            Id = new Guid("8b010dc8-4617-4aaa-8e9c-25d15c813171"),
+                            Id = new Guid("860807c4-4baf-4f6b-bba3-aef471aba92a"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Naib Amir",
                             IsDeleted = false,
                             Name = "Naib-Amir"
                         },
                         new
                         {
-                            Id = new Guid("53167742-b6df-44f2-94b4-3c8f70b2bc0f"),
+                            Id = new Guid("205eebb0-d95e-477c-9664-3de3000ac213"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "National General Secretary.",
                             IsDeleted = false,
                             Name = "Nationa-Gen-Sec"
                         },
                         new
                         {
-                            Id = new Guid("c0e1e9ef-9cd0-429b-a8fb-ecf4261165b6"),
+                            Id = new Guid("91189008-95dc-49da-8c5b-3e309d70e03d"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "National Financial Secretary",
                             IsDeleted = false,
                             Name = "National-Fin-Sec"
                         },
                         new
                         {
-                            Id = new Guid("e951f38e-9a94-4fa6-bb65-99aa40d4917e"),
+                            Id = new Guid("088f16f8-aca5-4a2a-9dd5-5631221faf76"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "National Tajneed Secretary",
                             IsDeleted = false,
                             Name = "National-Tajneed"
                         },
                         new
                         {
-                            Id = new Guid("ba2754fe-32be-4b8d-8965-75eae25d6c5d"),
+                            Id = new Guid("20deee83-1eb7-4bd3-a262-986b3d5b95d2"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Circuit President.",
                             IsDeleted = false,
                             Name = "CP"
                         },
                         new
                         {
-                            Id = new Guid("39edd755-1045-42ec-9bff-4eab330761f6"),
+                            Id = new Guid("b62041e0-d853-46dc-821f-98121a99dfdf"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Vice Circuit President.",
                             IsDeleted = false,
                             Name = "VCP"
                         },
                         new
                         {
-                            Id = new Guid("ca90b66b-893a-49e7-a87f-ec67b13c8ab7"),
+                            Id = new Guid("e3b0da53-2bcb-4745-aa0a-d95234dc2bcf"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Circuit Financial Secretary.",
                             IsDeleted = false,
                             Name = "Circuit-Fin-Sec"
                         },
                         new
                         {
-                            Id = new Guid("70c7596e-eed4-4fe0-9d56-12e5e4a8c1d2"),
+                            Id = new Guid("2153623f-81e5-4bca-8eb9-655f4dc89ae4"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Jamaat Financial Secretary.",
                             IsDeleted = false,
                             Name = "Jamaat-Fin-Sec"
                         },
                         new
                         {
-                            Id = new Guid("148e1dae-fd66-4175-9d5e-4586820452e1"),
+                            Id = new Guid("a125c4ef-da57-4a63-a3e2-6e5c35ab0419"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Jamaat President.",
                             IsDeleted = false,
                             Name = "Jamaat-President"
                         },
                         new
                         {
-                            Id = new Guid("2b0ee60c-aa73-40c9-b876-0fbdab84755c"),
+                            Id = new Guid("c0f9c93c-f225-4ce4-ae28-8db5859faedb"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Circuit General Secretary.",
                             IsDeleted = false,
                             Name = "Circuit-Gen-Sec"
                         },
                         new
                         {
-                            Id = new Guid("09db637a-07ea-4488-a78b-a2f52ec0d1cd"),
+                            Id = new Guid("d9b67088-0566-44f8-a7bf-a50c5af2fe39"),
                             CreatedBy = "Admin",
-                            CreatedOn = new DateTime(2023, 10, 30, 2, 10, 28, 488, DateTimeKind.Utc),
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Jamaat General Secretary.",
                             IsDeleted = false,
                             Name = "Jamaat-Gen-Sec"
+                        },
+                        new
+                        {
+                            Id = new Guid("8c0f0ae9-bee1-416c-9148-3269bc49398e"),
+                            CreatedBy = "Admin",
+                            CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
+                            Description = "Jamaat Member.",
+                            IsDeleted = false,
+                            Name = "Member"
                         });
                 });
 

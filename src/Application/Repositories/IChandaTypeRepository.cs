@@ -16,6 +16,6 @@ namespace Application.Repositories
         Task<ChandaType?> GetByIdAsync(Guid id);
         Task<ChandaType?> GetAsync(Expression<Func<ChandaType, bool>> predicate);
         Task<PaginatedList<ChandaType>> GetAllAsync(PageRequest pageRequest, Expression<Func<ChandaType, bool>> predicate, bool usePaging);
-        List<ChandaType> GetChandaTypes(List<Guid> ids);
+        List<ChandaType> GetChandaTypes(List<string> codes);
     }
 }

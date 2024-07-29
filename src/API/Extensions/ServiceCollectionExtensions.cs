@@ -12,6 +12,9 @@ using Mapster;
 using MapsterMapper;
 using Domain.Entities;
 using Application.Commands;
+using Application.Paging;
+using static Application.Queries.GetChandaTypes;
+using static Application.Queries.GetJamaats;
 
 namespace API.Extensions
 {
@@ -74,18 +77,26 @@ namespace API.Extensions
         {
             var config = TypeAdapterConfig.GlobalSettings;
 
-            config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
+            TypeAdapterConfig<PaginatedList<ChandaType>, IReadOnlyList<ChandaTypeResponse>>.NewConfig()
+                .MapWith(src => src.Items.Adapt<List<ChandaTypeResponse>>());
+
+            TypeAdapterConfig<PaginatedList<Jamaat>, IReadOnlyList<JamaatResponse>>.NewConfig()
+                .MapWith(src => src.Items.Adapt<List<JamaatResponse>>());
+
+            config.NewConfig<Member, Application.Queries.GetMember.MemberResponse>()
                 .Map(dest => dest.Roles, src => src.MemberRoles.Select(r => r.RoleName).ToList());
-            config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
+            config.NewConfig<Member, Application.Queries.GetMember.MemberResponse>()
                 .Map(dest => dest.JamaatName, src => src.Jamaat.Name);
-            config.NewConfig<Member, Application.Queries.GetMembers.MemberResponse>()
+            config.NewConfig<Member, Application.Queries.GetMember.MemberResponse>()
                 .Map(dest => dest.CircuitName, src => src.Jamaat.Circuit.Name);
-            config.NewConfig<Invoice, Application.Commands.CreateInvoice.InvoiceResponse>()
+            config.NewConfig<Invoice, Application.Queries.GetInvoice.InvoiceResponse>()
                 .Map(dest => dest.JamaatName, src => src.Jamaat.Name);
-            config.NewConfig<InvoiceItem, Application.Commands.CreateInvoice.InvoiceItemResponse>()
+            config.NewConfig<InvoiceItem, Application.Queries.GetInvoice.InvoiceItemResponse>()
                 .Map(dest => dest.PayerName, src => src.Member.Name);
-            config.NewConfig<ChandaItem, Application.Commands.CreateInvoice.ChandaItemResponse>()
+            config.NewConfig<ChandaItem, Application.Queries.GetInvoice.ChandaItemResponse>()
                 .Map(dest => dest.ChandaTypeName, src => src.ChandaType.Name);
+            config.NewConfig<Jamaat, JamaatResponse>()
+                .Map(dest => dest.CircuitName, src => src.Circuit.Name);
             config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
             services.AddSingleton(config);
             services.AddScoped<IMapper, Mapper>();

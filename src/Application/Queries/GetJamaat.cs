@@ -8,12 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Application.Queries.GetJamaats;
 
 namespace Application.Queries
 {
     public class GetJamaat
     {
-        public record JamaatResponse(string Name, Guid CircuitId, string CreatedBy, string? ModifiedBy, DateTime CreatedOn, DateTime? ModifiedOn);
         public record Query(Guid Id) : IRequest<JamaatResponse>;
        
         public class Handler : IRequestHandler<Query, JamaatResponse>
