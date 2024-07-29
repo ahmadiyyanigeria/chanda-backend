@@ -12,7 +12,7 @@ namespace Application.Queries
 {
     public class GetCircuit
     {
-        public record CircuitResponse(string Name, string CreatedBy, string? ModifiedBy, DateTime CreatedOn, DateTime? ModifiedOn);
+        public record CircuitResponse(Guid Id, string Name, string CreatedBy, string? ModifiedBy, DateTime CreatedOn, DateTime? ModifiedOn);
 
         public record Query(Guid Id) : IRequest<CircuitResponse>;
 

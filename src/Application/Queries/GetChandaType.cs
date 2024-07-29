@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Queries
 {
-    public class GetChandaTypeAsync
+    public class GetChandaType
     {
         
         public record Query(Guid Id) : IRequest<ChandaTypeResponse>;
@@ -38,7 +38,7 @@ namespace Application.Queries
             }
         }
 
-        public record ChandaTypeResponse(string Name,string Code,Guid IncomeAccountId, string Description, DateTime CreatedDate, DateTime? ModifiedDate);
+        public record ChandaTypeResponse(Guid Id, string Name,string Code,Guid IncomeAccountId, string Description, DateTime CreatedOn, DateTime? ModifiedOn);
 
     }
 }

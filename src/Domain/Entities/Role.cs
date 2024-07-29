@@ -10,7 +10,7 @@ namespace Domain.Entities
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        private readonly List<MemberRole> _memberRoles = new();
+        private readonly List<MemberRole> _memberRoles = [];
 
         public Role(string name, string description, string createdBy)
         {

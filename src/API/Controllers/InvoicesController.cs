@@ -26,7 +26,7 @@ namespace API.Controllers
             return Ok(invoice);
         }
 
-        [HttpGet("{id}: guid")]
+        [HttpGet("{id}: Guid")]
         public async Task<IActionResult> GetInvoice(Guid id)
         {
             var query = new GetInvoice.Query(id);

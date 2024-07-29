@@ -23,6 +23,7 @@ namespace Domain.Exceptions
         NoInvoiceItemSelected,
         InvalidJamaat,
         NoValidChandaTypeSelected,
-        ChandaTypeNotFound
+        ChandaTypeNotFound,
+        InvoiceNotFound
     }
 }

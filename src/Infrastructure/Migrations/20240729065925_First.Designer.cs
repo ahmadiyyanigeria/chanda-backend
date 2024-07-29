@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240728135425_NewMigration")]
-    partial class NewMigration
+    [Migration("20240729065925_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,6 +140,11 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
+
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
@@ -217,6 +222,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Reference")
                         .IsRequired()
                         .HasColumnType("text")
+                        .HasColumnName("reference")
                         .UseCollation("case_insensitive");
 
                     b.Property<string>("Status")
@@ -227,6 +233,9 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("JamaatId");
+
+                    b.HasIndex("Reference")
+                        .IsUnique();
 
                     b.ToTable("invoices", (string)null);
                 });
@@ -300,6 +309,11 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("CircuitId")
                         .HasColumnType("uuid")
                         .HasColumnName("circuit_id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -713,7 +727,7 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a1356736-ab3e-404e-a6f4-f70b9a373a8b"),
+                            Id = new Guid("0cbf479f-7e7c-4a01-8249-8f07385e4687"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Full administrative access across the system.",
@@ -722,7 +736,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c319d9bc-8cf9-4547-a09a-9504536d76df"),
+                            Id = new Guid("ae0a429a-685e-422c-9f44-e44cadeca6c1"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Head of AMJN",
@@ -731,7 +745,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0ed45e55-3338-4a1c-92a4-74b57260b98e"),
+                            Id = new Guid("d57967c7-611b-40f1-9252-c1a1517de26e"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Acting Head of AMJN",
@@ -740,7 +754,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("65cc2d31-3277-436d-a89c-92cc94fa33ec"),
+                            Id = new Guid("860807c4-4baf-4f6b-bba3-aef471aba92a"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Naib Amir",
@@ -749,7 +763,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("df154b51-12db-4e07-a7ba-a57a739cdb41"),
+                            Id = new Guid("205eebb0-d95e-477c-9664-3de3000ac213"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "National General Secretary.",
@@ -758,7 +772,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("406c8c92-dc1f-42b2-b378-16daa81b6b55"),
+                            Id = new Guid("91189008-95dc-49da-8c5b-3e309d70e03d"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "National Financial Secretary",
@@ -767,7 +781,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8e1d7c5d-194a-4004-ba4d-53215c822d3f"),
+                            Id = new Guid("088f16f8-aca5-4a2a-9dd5-5631221faf76"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "National Tajneed Secretary",
@@ -776,7 +790,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b827504d-6726-4a1d-a477-934e486b6b85"),
+                            Id = new Guid("20deee83-1eb7-4bd3-a262-986b3d5b95d2"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Circuit President.",
@@ -785,7 +799,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("09a484a5-0d30-4ae7-884a-dd941a778d34"),
+                            Id = new Guid("b62041e0-d853-46dc-821f-98121a99dfdf"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Vice Circuit President.",
@@ -794,7 +808,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("18ff89ea-9c44-4033-a404-a5f9aa71078c"),
+                            Id = new Guid("e3b0da53-2bcb-4745-aa0a-d95234dc2bcf"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Circuit Financial Secretary.",
@@ -803,7 +817,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("054120db-9030-4b54-92cd-c885635a8882"),
+                            Id = new Guid("2153623f-81e5-4bca-8eb9-655f4dc89ae4"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Jamaat Financial Secretary.",
@@ -812,7 +826,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("996f140c-7569-4f85-afd4-d490658267b3"),
+                            Id = new Guid("a125c4ef-da57-4a63-a3e2-6e5c35ab0419"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Jamaat President.",
@@ -821,7 +835,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("aef29cbe-a325-4257-a15d-1287918a0014"),
+                            Id = new Guid("c0f9c93c-f225-4ce4-ae28-8db5859faedb"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Circuit General Secretary.",
@@ -830,7 +844,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c7068905-27c5-4651-9980-2c7ca1dba7be"),
+                            Id = new Guid("d9b67088-0566-44f8-a7bf-a50c5af2fe39"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Jamaat General Secretary.",
@@ -839,7 +853,7 @@ namespace Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("754f5bf8-8a1c-4d91-8309-4311922d6773"),
+                            Id = new Guid("8c0f0ae9-bee1-416c-9148-3269bc49398e"),
                             CreatedBy = "Admin",
                             CreatedOn = new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc),
                             Description = "Jamaat Member.",
