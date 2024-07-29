@@ -15,7 +15,13 @@ namespace Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<Member> Create(Member member)
+        public async Task<MemberLedger?> AddMemberLedgerAsync(MemberLedger memberLedger)
+        {
+            await _context.MemberLedgers.AddAsync(memberLedger);
+            return memberLedger;
+        }
+
+        public async Task<Member> CreateAsync(Member member)
         {
             await _context.Members.AddAsync(member);
             return member;

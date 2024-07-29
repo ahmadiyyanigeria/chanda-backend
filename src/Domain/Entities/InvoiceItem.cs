@@ -11,13 +11,13 @@ namespace Domain.Entities
         public decimal Amount { get; private set; }
         public Member Member { get; private set; } = default!;
         public Invoice Invoice { get; private set; } = default!;
-        public IReadOnlyList<ChandaItem> ChandaItems 
+        public IList<ChandaItem> ChandaItems 
         { 
-            get => _chandaItems.AsReadOnly(); 
+            get => _chandaItems.ToList(); 
             private set => _chandaItems.AddRange(value);
         }
 
-        private readonly List<ChandaItem> _chandaItems = new();
+        private readonly List<ChandaItem> _chandaItems = [];
 
         public void AddChandaItems(List<ChandaItem> chandaItems)
         {

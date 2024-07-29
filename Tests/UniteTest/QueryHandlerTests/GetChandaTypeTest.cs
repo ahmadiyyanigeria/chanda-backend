@@ -9,12 +9,12 @@ namespace UniteTest.QueryHandlerTests
     public class GetChandaTypeTest
     {
         private readonly Mock<IChandaTypeRepository> _mockChandaTypeRepository;
-        private readonly GetChandaTypeAsync.Handler _handler;
+        private readonly GetChandaType.Handler _handler;
 
         public GetChandaTypeTest()
         {
             _mockChandaTypeRepository = new Mock<IChandaTypeRepository>();
-            _handler = new GetChandaTypeAsync.Handler(_mockChandaTypeRepository.Object);
+            _handler = new GetChandaType.Handler(_mockChandaTypeRepository.Object);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace UniteTest.QueryHandlerTests
                 .Setup(repo => repo.GetByIdAsync(chandaType.Id))
                 .ReturnsAsync(chandaType);
 
-            var query = new GetChandaTypeAsync.Query(chandaType.Id);
+            var query = new GetChandaType.Query(chandaType.Id);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,7 +52,7 @@ namespace UniteTest.QueryHandlerTests
                 .Setup(repo => repo.GetByIdAsync(chandaTypeId))
                 .ReturnsAsync((ChandaType?)null);
 
-            var query = new GetChandaTypeAsync.Query(chandaTypeId);
+            var query = new GetChandaType.Query(chandaTypeId);
 
             // Act & Assert
             await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(query, CancellationToken.None));

@@ -24,12 +24,18 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                 .HasColumnType("decimal(18,2)")
                 .IsRequired();
 
+            builder.Property(ct => ct.Reference)
+                   .HasColumnName("reference")
+                   .IsRequired();
+
+            builder.HasIndex(m => m.Reference)
+                 .IsUnique();
+
             builder.Property(i => i.Status)
                 .HasColumnName("status")
                 .HasColumnType("varchar(50)")
                 .HasConversion<EnumToStringConverter<InvoiceStatus>>()
                 .IsRequired();
-
            
             builder.Property(i => i.Id)
                 .HasColumnName("id");

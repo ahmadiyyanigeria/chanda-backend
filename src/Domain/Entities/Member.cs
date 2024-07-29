@@ -22,7 +22,7 @@ namespace Domain.Entities
             private set => _memberRoles.AddRange(value);
         }
 
-        private readonly List<MemberRole> _memberRoles = new();
+        private readonly List<MemberRole> _memberRoles = [];
 
         public Member(string chandaNo, string name, string email, string phoneNo, Guid jamaatId, Guid memberLedgerId, string createdBy)
         {

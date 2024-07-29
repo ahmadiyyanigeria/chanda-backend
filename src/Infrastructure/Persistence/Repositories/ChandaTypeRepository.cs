@@ -60,9 +60,9 @@ namespace Infrastructure.Persistence.Repositories
             return chandaType;
         }
 
-        public List<ChandaType> GetChandaTypes(List<Guid> ids)
+        public List<ChandaType> GetChandaTypes(List<string> codes)
         {
-            return _context.ChandaTypes.Where(ct => ids.Contains(ct.Id)).ToList();
+            return _context.ChandaTypes.Where(ct => codes.Contains(ct.Code)).ToList();
         }
 
         public ChandaType Update(ChandaType chandaType)

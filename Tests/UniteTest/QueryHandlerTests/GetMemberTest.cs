@@ -24,8 +24,8 @@ namespace UniteTest.QueryHandlerTests
         public async Task Handle_MemberExists_ReturnsMemberResponse()
         {
             // Arrange
-            var circuit = new Circuit("Abeokuta", "0001");
-            var jamaat = new Jamaat("Lafiaji", circuit.Id, "0001");
+            var circuit = new Circuit("Abeokuta", "ABK", "0001");
+            var jamaat = new Jamaat("Lafiaji", "ABK-L", circuit.Id, "0001");
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
             var member = new Member("0001", "Ade Ola", "adeola@example.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
            

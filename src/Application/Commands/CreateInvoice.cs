@@ -5,7 +5,6 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
 using FluentValidation;
-using Mapster;
 using MediatR;
 
 namespace Application.Commands
@@ -14,7 +13,7 @@ namespace Application.Commands
     {
         public record Command: IRequest<InvoiceResponse>
         {
-            public Guid JamaatId { get; init; }
+            public string JamaatCode { get; init; } = default!;
             public string InitiatorChandaNo { get; set; } = default!;
             public IReadOnlyList<InvoiceItemCommand> InvoiceItems { get; init; } = new List<InvoiceItemCommand>();
         }
@@ -42,12 +41,12 @@ namespace Application.Commands
             {
                 var invoiceAmount = 0.0m;
                 var invoiceId = Guid.NewGuid();
-                var reference = Utility.GenerateReference("INV");
+                var reference = Utility.GenerateReference("MEM");
 
-                var jamaat = await _jamaatRepository.Get(j => j.Id == request.JamaatId);
+                var jamaat = await _jamaatRepository.Get(j => j.Code == request.JamaatCode);
                 if(jamaat is null)
                 {
-                    throw new NotFoundException($"Invalid Jamaat Id selected", ExceptionCodes.InvalidJamaat.ToString(), 400);
+                    throw new NotFoundException($"Invalid Jamaat selected", ExceptionCodes.InvalidJamaat.ToString(), 400);
                 }
 
                 if (!_memberRepository.ExistsByChandaNo(request.InitiatorChandaNo))
@@ -55,22 +54,22 @@ namespace Application.Commands
                     throw new NotFoundException("Initiator not recorgnised", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
-                var chandaTypeIds = request.InvoiceItems.SelectMany(ii => ii.ChandaItems.Select(ci => ci.ChandaTypeId)).ToList();
-                var validChandaTypes = _chandaTypeRepository.GetChandaTypes(chandaTypeIds);
+                var chandaTypeCodes = request.InvoiceItems.SelectMany(ii => ii.ChandaItems.Select(ci => ci.ChandaTypeCode)).ToList();
+                var validChandaTypes = _chandaTypeRepository.GetChandaTypes(chandaTypeCodes);
 
                 if(validChandaTypes is null || !validChandaTypes.Any())
                 {
                     throw new NotFoundException("No valid ChandaType selected", ExceptionCodes.NoValidChandaTypeSelected.ToString(), 400);
                 }
 
-                var payerIds = request.InvoiceItems.Select(ii => ii.PayerId).ToList();
-                var payers = _memberRepository.GetMembers(m => payerIds.Contains(m.Id)).ToList();
+                var payerNos = request.InvoiceItems.Select(ii => ii.PayerNo).ToList();
+                var payers = _memberRepository.GetMembers(m => payerNos.Contains(m.ChandaNo)).ToList();
 
                 var invoiceItems = new List<InvoiceItem>();
                 var invoiceItemResponses = new List<InvoiceItemResponse>();
                 foreach (var item in request.InvoiceItems)
                 {
-                    var payer = payers.Where(p => p.Id == item.PayerId).FirstOrDefault();
+                    var payer = payers.Where(p => p.ChandaNo == item.PayerNo).FirstOrDefault();
                     if (payer is not null)
                     {
                         var invoiceItemAmount = 0.0m;
@@ -79,10 +78,10 @@ namespace Application.Commands
                         var chandaItemResponses = new List<ChandaItemResponse>();
                         foreach (var chanda in item.ChandaItems)
                         {
-                            var chandaType = validChandaTypes.Where(ct => ct.Id == chanda.ChandaTypeId).FirstOrDefault();
+                            var chandaType = validChandaTypes.Where(ct => ct.Code == chanda.ChandaTypeCode).FirstOrDefault();
                             if (chandaType is not null)
                             {
-                                var chandaItem = new ChandaItem(invoiceItemId, chanda.ChandaTypeId, chanda.Amount, request.InitiatorChandaNo);
+                                var chandaItem = new ChandaItem(invoiceItemId, chandaType.Id, chanda.Amount, request.InitiatorChandaNo);
                                 chandaItems.Add(chandaItem);
                                 invoiceItemAmount += chanda.Amount;
 
@@ -92,16 +91,12 @@ namespace Application.Commands
 
                         if (chandaItems.Any())
                         {
-                            var invoiceItem = new InvoiceItem(invoiceItemId, item.PayerId, invoiceId, invoiceItemAmount, item.MonthPaidFor, item.Year, request.InitiatorChandaNo);
-                            
+                            var invoiceItem = new InvoiceItem(invoiceItemId, payer.Id, invoiceId, invoiceItemAmount, item.MonthPaidFor, item.Year, request.InitiatorChandaNo);
+                            invoiceItem.AddChandaItems(chandaItems);
                             invoiceAmount += invoiceItemAmount;
                             invoiceItems.Add(invoiceItem);
 
-                            invoiceItemResponses.Add(
-                                invoiceItem.Adapt<InvoiceItemResponse>() with
-                                {
-                                    ChandaItems = chandaItemResponses
-                                });
+                            invoiceItemResponses.Add( new InvoiceItemResponse(payer.Name, item.MonthPaidFor.ToString(), item.Year, invoiceItemAmount, chandaItemResponses));
                         }
                     }
                 }
@@ -110,15 +105,13 @@ namespace Application.Commands
                     throw new NotFoundException("No Valid Item selected", ExceptionCodes.NoInvoiceItemSelected.ToString(), 400);
                 }
 
-                var invoice = new Invoice(invoiceId, request.JamaatId, reference, invoiceAmount, InvoiceStatus.Pending, request.InitiatorChandaNo);
+                var invoice = new Invoice(invoiceId, jamaat.Id, reference, invoiceAmount, InvoiceStatus.Pending, request.InitiatorChandaNo);
+                invoice.AddInvoiceItems(invoiceItems);
                 
                 invoice = await _invoiceRepository.AddAsync(invoice);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                return invoice.Adapt<InvoiceResponse>() with
-                {
-                    InvoiceItems = invoiceItemResponses
-                };
+                
+                return new InvoiceResponse(invoiceId, reference, jamaat.Name, invoiceAmount, invoice.Status.ToString(), invoice.CreatedOn, invoiceItemResponses);
             }
         }
 
@@ -128,19 +121,19 @@ namespace Application.Commands
 
         public record InvoiceItemCommand
         {
-            public Guid PayerId { get; init; }
+            public string PayerNo { get; init; } = default!;
             public MonthOfTheYear MonthPaidFor {  get; init; }
             public int Year { get; init; }
             public IReadOnlyList<ChandaItemCommand> ChandaItems { get; init; } = new List<ChandaItemCommand>();
         }
 
-        public record ChandaItemCommand(Guid ChandaTypeId, decimal Amount);
+        public record ChandaItemCommand(string ChandaTypeCode, decimal Amount);
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(command => command.JamaatId)
+                RuleFor(command => command.JamaatCode)
                     .NotEmpty().WithMessage("Jamaat Id is required.");
 
                 RuleFor(command => command.InitiatorChandaNo)

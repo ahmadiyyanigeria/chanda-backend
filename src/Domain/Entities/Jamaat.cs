@@ -9,6 +9,7 @@ namespace Domain.Entities
     public class Jamaat: BaseEntity
     {
         public string Name { get; private set; }
+        public string Code { get; private set; }
         public Guid CircuitId { get; private set; }
         public Circuit Circuit { get; private set; } = default!;
         public IReadOnlyList<Member> Members 
@@ -17,11 +18,12 @@ namespace Domain.Entities
             private set => _members.AddRange(value); 
         }
 
-        private readonly List<Member> _members = new();
+        private readonly List<Member> _members = [];
 
-        public Jamaat(string name, Guid circuitId, string createdBy)
+        public Jamaat(string name, string code, Guid circuitId, string createdBy)
         {
             Name = name;
+            Code = code;
             CircuitId = circuitId;
             CreatedBy = createdBy;
         }
