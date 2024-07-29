@@ -9,14 +9,14 @@ namespace Domain.Dtos
 {
     public class CreateInvoiceRequest
     {
-        public Guid JamaatId { get; set; }
+        public string JamaatCode { get; set; } = default!;
         public string InitiatorChandaNo { get; set; } = default!;
         public List<InvoiceItemRequest> InvoiceItems { get; set; } = new();
     }
 
     public class InvoiceItemRequest
     {
-        public Guid PayerId { get; set; }
+        public string PayerNo { get; set; } = default!;
         public MonthOfTheYear MonthPaidFor { get; set; }
         public int Year { get; set; }
         public List<ChandaItemRequest> ChandaItems { get; set; } = new();
@@ -24,7 +24,7 @@ namespace Domain.Dtos
 
     public class ChandaItemRequest
     {
-        public Guid ChandaTypeId { get; set; }
+        public string ChandaTypeCode { get; set; } = default!;
         public decimal Amount { get; set; }
     }
 }

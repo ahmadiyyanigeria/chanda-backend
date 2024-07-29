@@ -16,7 +16,7 @@ namespace Domain.Entities
             private set => _ledgers.AddRange(value);
         }
 
-        private readonly List<Ledger> _ledgers = new();
+        private readonly List<Ledger> _ledgers = [];
 
         public MemberLedger(Guid memberId, string createdBy)
         {

@@ -13,7 +13,7 @@ namespace Infrastructure.Persistence.Repositories
 {
     public class JamaatRepository(AppDbContext _context) : IJamaatRepository
     {
-        public async Task<Jamaat> Add(Jamaat jamaat)
+        public async Task<Jamaat> AddAsync(Jamaat jamaat)
         {
             await _context.Jamaats.AddAsync(jamaat);
             return jamaat;
@@ -23,9 +23,9 @@ namespace Infrastructure.Persistence.Repositories
             return await _context.Jamaats.SingleOrDefaultAsync(expression);
         }
 
-        public async Task<PaginatedList<Jamaat>> GetAll(PageRequest pageRequest, Expression<Func<Jamaat, bool>> expression, bool usePaging)
+        public async Task<PaginatedList<Jamaat>> GetAllAsync(PageRequest pageRequest, Expression<Func<Jamaat, bool>> expression, bool usePaging)
         {
-            var query =  _context.Jamaats.Where(expression);
+            var query =  _context.Jamaats.Include(j => j.Circuit).Where(expression);
             if (!string.IsNullOrEmpty(pageRequest.Keyword))
             {
                 query = query.Where(m => m.Name.Contains(pageRequest.Keyword, StringComparison.OrdinalIgnoreCase)).Order();

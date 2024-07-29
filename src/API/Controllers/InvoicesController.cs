@@ -1,4 +1,5 @@
 ﻿using Application.Commands;
+using Application.Queries;
 using Domain.Dtos;
 using Mapster;
 using MediatR;
@@ -22,6 +23,14 @@ namespace API.Controllers
         {
             var command = request.Adapt<CreateInvoice.Command>();
             var invoice = await _mediator.Send(command);
+            return Ok(invoice);
+        }
+
+        [HttpGet("{id}: Guid")]
+        public async Task<IActionResult> GetInvoice(Guid id)
+        {
+            var query = new GetInvoice.Query(id);
+            var invoice = await _mediator.Send(query);
             return Ok(invoice);
         }
     }
