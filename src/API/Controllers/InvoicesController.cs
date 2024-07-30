@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CretateInvoice([FromBody] CreateInvoiceRequest request)
+        public async Task<IActionResult> CreateInvoice([FromBody] CreateInvoiceRequest request)
         {
             var command = request.Adapt<CreateInvoice.Command>();
             var invoice = await _mediator.Send(command);
