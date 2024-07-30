@@ -28,14 +28,14 @@ namespace UniteTest.QueryHandlerTests
             {
                 // Arrange
                 var circuitId = Guid.NewGuid();
-                var circuit = new Circuit("Abeokuta circuit", "Amir")
+                var circuit = new Circuit("Abeokuta", "001", "Amir")
                 {
                     Id = circuitId,
                     CreatedOn = DateTime.UtcNow,
                 };
 
                 _circuitRepositoryMock
-                    .Setup(repo => repo.Get(It.IsAny<Expression<Func<Circuit, bool>>>()))
+                    .Setup(repo => repo.GetAsync(It.IsAny<Expression<Func<Circuit, bool>>>()))
                     .ReturnsAsync(circuit);
 
                 var query = new Query(circuitId);
@@ -58,7 +58,7 @@ namespace UniteTest.QueryHandlerTests
                 var circuitId = Guid.NewGuid();
 
                  _circuitRepositoryMock
-                .Setup(repo => repo.Get(It.IsAny<Expression<Func<Circuit, bool>>>()))
+                .Setup(repo => repo.GetAsync(It.IsAny<Expression<Func<Circuit, bool>>>()))
                     .ReturnsAsync((Circuit?)null);
 
                 var query = new Query(circuitId);
