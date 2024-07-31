@@ -1,24 +1,18 @@
 ﻿using Application.Exceptions;
 using Application.Repositories;
-using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
 using Mapster;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Queries
 {
     public class GetInvoice
     {
         public record Query(Guid id) : IRequest<InvoiceResponse>;
-        public record InvoiceResponse(string JamaatName, string Reference, decimal Amount, InvoiceStatus Status, IReadOnlyList<InvoiceItemResponse> InvoiceItems);
-        public record InvoiceItemResponse(string MonthPayedFor, string PayerName, int Year, decimal Amount, IReadOnlyList<ChandaItemResponse> ChandaItems);
-        public record ChandaItemResponse(string ChandaTypeName, decimal Amount);
+        public record InvoiceResponse(Guid Id, string JamaatName, string Reference, decimal Amount, InvoiceStatus Status, IReadOnlyList<InvoiceItemResponse> InvoiceItems);
+        public record InvoiceItemResponse(Guid Id, string MonthPayedFor, string PayerName, int Year, decimal Amount, IReadOnlyList<ChandaItemResponse> ChandaItems);
+        public record ChandaItemResponse(Guid Id, string ChandaTypeName, decimal Amount);
 
         public class Handler(IInvoiceRepository _invoiceRepository) : IRequestHandler<Query, InvoiceResponse>
         {

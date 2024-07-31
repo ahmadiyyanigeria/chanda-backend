@@ -6,6 +6,7 @@ namespace Domain.Entities
     {
         public Guid PayerId { get; private set; }
         public Guid InvoiceId { get; private set; }
+        public string ReceiptNo { get; private set; }
         public MonthOfTheYear MonthPaidFor {  get; private set; }
         public int Year {  get; private set; }
         public decimal Amount { get; private set; }
@@ -30,11 +31,12 @@ namespace Domain.Entities
             }
         }
 
-        public InvoiceItem(Guid id, Guid payerId, Guid invoiceId, decimal amount, MonthOfTheYear monthPaidFor, int year, string createdBy)
+        public InvoiceItem(Guid id, Guid payerId, Guid invoiceId, string receiptNo, decimal amount, MonthOfTheYear monthPaidFor, int year, string createdBy)
         {
             Id = id;
             PayerId = payerId;
             InvoiceId = invoiceId;
+            ReceiptNo = receiptNo;
             Amount = amount;
             MonthPaidFor = monthPaidFor;
             Year = year;

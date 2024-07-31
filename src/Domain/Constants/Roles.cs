@@ -21,7 +21,7 @@ namespace Domain.Constants
         public const string VCP = "VCP";
         public const string CircuitFinSec = "Circuit-Fin-Sec";
         public const string JamaatFinSec = "Jamaat-Fin-Sec";
-        public const string JamaatPresident = "JJamaat-President";
+        public const string JamaatPresident = "Jamaat-President";
         public const string CircuitGenSec = "Circuit-Gen-Sec";
         public const string JamaatGenSec = "Jamaat-Gen-Sec";
         public const string Member = "Member";

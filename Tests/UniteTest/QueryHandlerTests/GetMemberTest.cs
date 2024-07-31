@@ -32,7 +32,7 @@ namespace UniteTest.QueryHandlerTests
             _memberRepositoryMock.Setup(repo => repo.GetMemberAsync(It.IsAny<Expression<Func<Member, bool>>>()))
                 .ReturnsAsync(member);
 
-            var query = new GetMember.Query(member.Id);
+            var query = new GetMember.Query(member.ChandaNo);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -50,7 +50,7 @@ namespace UniteTest.QueryHandlerTests
         public async Task Handle_MemberDoesNotExist_ThrowsNotFoundException()
         {
             // Arrange
-            var memberId = Guid.NewGuid();
+            var memberId = "0000";
 
             _memberRepositoryMock.Setup(repo => repo.GetMemberAsync(It.IsAny<Expression<Func<Member, bool>>>()))
                 .ReturnsAsync((Member?)null);

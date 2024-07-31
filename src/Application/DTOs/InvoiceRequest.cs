@@ -5,24 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Dtos
+namespace Application.DTOs
 {
-    public class CreateInvoiceRequest
+    public record InvoiceRequest
     {
-        public string JamaatCode { get; set; } = default!;
-        public string InitiatorChandaNo { get; set; } = default!;
         public List<InvoiceItemRequest> InvoiceItems { get; set; } = new();
     }
 
-    public class InvoiceItemRequest
+    public record InvoiceItemRequest
     {
-        public string PayerNo { get; set; } = default!;
+        public string ReceiptNo { get; init; } = default!;
         public MonthOfTheYear MonthPaidFor { get; set; }
         public int Year { get; set; }
         public List<ChandaItemRequest> ChandaItems { get; set; } = new();
     }
 
-    public class ChandaItemRequest
+    public record ChandaItemRequest
     {
         public string ChandaTypeCode { get; set; } = default!;
         public decimal Amount { get; set; }
