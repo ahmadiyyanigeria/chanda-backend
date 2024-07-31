@@ -18,19 +18,8 @@ namespace Application.Queries
         public record JamaatResponse(Guid Id, string Name, string Code, Guid CircuitId, string CircuitName, DateTime CreatedDate, DateTime? ModifiedDate);
 
         
-        public record Query : PageRequest, IRequest<IReadOnlyList<JamaatResponse>>
-        {
-            public Guid? CircuitId { get; set; }
-            public bool UsePaging { get; init; } = true;
-
-            public Query(Guid? circuitId, bool usePaging)
-            {
-                CircuitId = circuitId;
-                UsePaging = usePaging;
-            }
-        }
-
-        
+        public record Query(Guid? CircuitId, bool UsePaging) : PageRequest, IRequest<IReadOnlyList<JamaatResponse>>;
+      
         public class GetJammatsByCircuitIdQueryHandler : IRequestHandler<Query, IReadOnlyList<JamaatResponse>>
         {
             private readonly IJamaatRepository _jamaatRepository;

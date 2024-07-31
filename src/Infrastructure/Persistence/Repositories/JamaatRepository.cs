@@ -28,7 +28,7 @@ namespace Infrastructure.Persistence.Repositories
             var query =  _context.Jamaats.Include(j => j.Circuit).Where(expression);
             if (!string.IsNullOrEmpty(pageRequest.Keyword))
             {
-                query = query.Where(m => m.Name.Contains(pageRequest.Keyword, StringComparison.OrdinalIgnoreCase)).Order();
+                query = query.Where(m => m.Name.Contains(pageRequest.Keyword)).OrderBy(j => j.Circuit.Name).OrderBy(j => j.Name);
             }
 
             if (pageRequest.IsDescending)
