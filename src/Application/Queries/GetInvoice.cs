@@ -1,5 +1,6 @@
 ﻿using Application.Exceptions;
 using Application.Repositories;
+using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
 using Mapster;
