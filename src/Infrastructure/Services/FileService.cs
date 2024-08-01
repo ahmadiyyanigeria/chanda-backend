@@ -78,9 +78,7 @@ namespace Infrastructure.Services
                 }
             }catch(Exception ex)
             {
-                //Todo
-                //log exception message.
-                throw new BadRequestException("File is not valid.", ExceptionCodes.InvalidFile.ToString(), 400);
+                throw new BadRequestException(ex.Message, ExceptionCodes.InvalidFile.ToString(), 400);
             }
 
             return invoiceItems;
