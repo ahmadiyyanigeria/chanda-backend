@@ -31,11 +31,11 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
             builder.Property(ii => ii.Id)
                 .HasColumnName("id");
 
-            builder.Property(ct => ct.ReceiptNo)
+            builder.Property(ii => ii.ReceiptNo)
                    .HasColumnName("receipt_no")
                    .IsRequired();
 
-            builder.HasIndex(m => m.ReceiptNo)
+            builder.HasIndex(ii => ii.ReceiptNo)
                  .IsUnique();
 
             builder.Property(ii => ii.MonthPaidFor)

@@ -57,7 +57,7 @@ namespace UniteTest.CreateHandlerTests
                 {
                     new InvoiceItemCommand
                     {
-                        PayerNo = "0001",
+                        ChandaNo = "0001",
                         ReceiptNo = "REC-123",
                         MonthPaidFor = MonthOfTheYear.January,
                         Year = 2024,
@@ -94,7 +94,7 @@ namespace UniteTest.CreateHandlerTests
                 {
                     new InvoiceItemCommand
                     {
-                        PayerNo = "0001",
+                        ChandaNo = "0001",
                         ReceiptNo = "REC-123",
                         MonthPaidFor = MonthOfTheYear.January,
                         Year = 2024,

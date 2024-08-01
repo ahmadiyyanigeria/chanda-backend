@@ -21,12 +21,15 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                    .HasColumnName("name")
                    .IsRequired();
 
+            builder.HasIndex(ct => ct.Name)
+                 .IsUnique();
+
             builder.Property(ct => ct.Id)
                    .HasColumnName("id");
 
             builder.Property(ct => ct.Code)
                    .HasColumnName("code")
-                   .HasColumnType("varchar(255)")
+                   .HasColumnType("varchar(50)")
                    .IsRequired();
 
             builder.HasIndex(ct => ct.Code)

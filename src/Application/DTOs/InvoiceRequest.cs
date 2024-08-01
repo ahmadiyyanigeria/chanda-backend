@@ -1,9 +1,4 @@
 ﻿using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.DTOs
 {
@@ -22,7 +17,7 @@ namespace Application.DTOs
 
     public record ChandaItemRequest
     {
-        public string ChandaTypeCode { get; set; } = default!;
+        public string ChandaTypeName { get; set; } = default!;
         public decimal Amount { get; set; }
     }
 }
