@@ -34,11 +34,6 @@ namespace API.Controllers
             return Ok(invoice);
         }
 
-        [HttpPost("SeedData")]
-        public async Task<IActionResult> SeedData([FromBody] SeedDatas.Command commad)
-        {
-            var res = await _mediator.Send(commad);
-            return Ok(res);
-        }
+       
     }
 }
