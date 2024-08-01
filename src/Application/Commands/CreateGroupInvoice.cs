@@ -56,7 +56,7 @@ namespace Application.Commands
                 
                 if (initiator is null || string.IsNullOrEmpty(initiator.ChandaNo))
                 {
-                    throw new NotFoundException($"Please login to create an invoice.", ExceptionCodes.InvalidJamaat.ToString(), 403);
+                    throw new NotFoundException($"Please login to create an invoice.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
                 var chandaTypeCodes = request.InvoiceItems.SelectMany(ii => ii.ChandaItems.Select(ci => ci.ChandaTypeCode)).ToList();

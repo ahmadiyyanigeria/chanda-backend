@@ -22,14 +22,16 @@ namespace Application.Commands
         public class Handler: IRequestHandler<Command, InvoiceResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
+            private readonly ICurrentUser _currentUser;
             private readonly IJamaatRepository _jamaatRepository;
             private readonly IMemberRepository _memberRepository;
             private readonly IInvoiceRepository _invoiceRepository;
             private readonly IChandaTypeRepository _chandaTypeRepository;
 
-            public Handler(IUnitOfWork unitOfWork, IInvoiceRepository invoiceRepository, IJamaatRepository jamaatRepository, IMemberRepository memberRepository, IChandaTypeRepository chandaTypeRepository)
+            public Handler(IUnitOfWork unitOfWork, ICurrentUser currentUser, IInvoiceRepository invoiceRepository, IJamaatRepository jamaatRepository, IMemberRepository memberRepository, IChandaTypeRepository chandaTypeRepository)
             {
                 _unitOfWork = unitOfWork;
+                _currentUser = currentUser;
                 _jamaatRepository = jamaatRepository;                
                 _memberRepository = memberRepository;
                 _invoiceRepository = invoiceRepository;
@@ -46,7 +48,7 @@ namespace Application.Commands
 
                 if (initiator is null || string.IsNullOrEmpty(initiator.ChandaNo))
                 {
-                    throw new NotFoundException($"Please login to create an invoice.", ExceptionCodes.InvalidJamaat.ToString(), 403);
+                    throw new NotFoundException($"Please login to create an invoice.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
                 var chandaTypeCodes = request.InvoiceItems.SelectMany(ii => ii.ChandaItems.Select(ci => ci.ChandaTypeCode)).ToList();

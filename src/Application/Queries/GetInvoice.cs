@@ -11,7 +11,7 @@ namespace Application.Queries
     {
         public record Query(Guid id) : IRequest<InvoiceResponse>;
         public record InvoiceResponse(Guid Id, string JamaatName, string Reference, decimal Amount, InvoiceStatus Status, IReadOnlyList<InvoiceItemResponse> InvoiceItems);
-        public record InvoiceItemResponse(Guid Id, string MonthPayedFor, string PayerName, int Year, decimal Amount, IReadOnlyList<ChandaItemResponse> ChandaItems);
+        public record InvoiceItemResponse(Guid Id, string MonthPayedFor, string PayerName, string ReceiptNo, int Year, decimal Amount, IReadOnlyList<ChandaItemResponse> ChandaItems);
         public record ChandaItemResponse(Guid Id, string ChandaTypeName, decimal Amount);
 
         public class Handler(IInvoiceRepository _invoiceRepository) : IRequestHandler<Query, InvoiceResponse>
