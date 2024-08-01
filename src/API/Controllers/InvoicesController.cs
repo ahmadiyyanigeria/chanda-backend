@@ -41,5 +41,7 @@ namespace API.Controllers
             var invoice = await _mediator.Send(query);
             return Ok(invoice);
         }
+
+       
     }
 }
