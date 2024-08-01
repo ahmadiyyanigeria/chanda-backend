@@ -59,7 +59,7 @@ namespace UniteTest.CreateHandlerTests
                         Year = 2024,
                         ChandaItems = new List<ChandaItemCommand>
                         {
-                            new ChandaItemCommand( chandaType.Code, 100m )
+                            new ChandaItemCommand( chandaType.Name, 100m )
                         }
                     }
                 }
@@ -95,7 +95,7 @@ namespace UniteTest.CreateHandlerTests
                         ReceiptNo = "REC-0001",
                         ChandaItems = new List<ChandaItemCommand>
                         {
-                            new ChandaItemCommand( chandaType.Code, 100m )
+                            new ChandaItemCommand( chandaType.Name, 100m )
                         }
                     }
                 }
