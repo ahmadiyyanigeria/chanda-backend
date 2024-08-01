@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using FluentValidation;
+using Application.Exceptions;
 
 namespace API.Middleware
 {

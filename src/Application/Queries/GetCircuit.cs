@@ -1,4 +1,5 @@
-﻿using Application.Repositories;
+﻿using Application.Exceptions;
+using Application.Repositories;
 using Domain.Exceptions;
 using Mapster;
 using MediatR;
