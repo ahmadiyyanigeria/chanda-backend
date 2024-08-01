@@ -54,7 +54,7 @@ namespace API.Middleware
                     ).ExecuteAsync(context);
 
             }
-            catch (NotFoundException exception)
+            catch (DomainException exception)
             {
                 _logger.LogWarning(message: "A domain exception has occurred while executing the request.\n{ErrorMessage}", exception.Message);
                 var error = _errors[exception.HttpStatusCode];
@@ -73,7 +73,7 @@ namespace API.Middleware
             }
             catch (NotFoundException exception)
             {
-                _logger.LogWarning(message: "A application exception has occurred while executing the request.\n{ErrorMessage}", exception.Message);
+                _logger.LogWarning(message: "An application exception has occurred while executing the request.\n{ErrorMessage}", exception.Message);
                 var error = _errors[exception.HttpStatusCode];
                 var problemDetail = new ProblemDetails
                 {
