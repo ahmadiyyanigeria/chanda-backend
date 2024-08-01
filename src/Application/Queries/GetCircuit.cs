@@ -1,4 +1,5 @@
-﻿using Application.Repositories;
+﻿using Application.Exceptions;
+using Application.Repositories;
 using Domain.Exceptions;
 using Mapster;
 using MediatR;
@@ -30,7 +31,7 @@ namespace Application.Queries
                 var circuit = await _circuitRepository.GetAsync(c => c.Id == request.Id);
                 if(circuit == null)
                 {
-                    throw new DomainException(
+                    throw new NotFoundException(
                        message: "Circuit not found",
                        errorCode: ExceptionCodes.CircuitNotFound.ToString(),
                        statusCode: 404
