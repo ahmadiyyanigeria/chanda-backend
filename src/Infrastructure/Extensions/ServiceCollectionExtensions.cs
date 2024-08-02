@@ -25,6 +25,7 @@ namespace Infrastructure.Extensions
                 .AddScoped<ICircuitRepository, CircuitRepository>()
                 .AddScoped<ILedgerRepository, LedgerRepository>()
                 .AddScoped<IPaymentRepository, PaymentRepository>()
+                .AddScoped<ICurrentUser, CurrentUser>()
                 .AddScoped<IUnitOfWork, UnitOfWork>();            
         }
 

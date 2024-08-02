@@ -16,10 +16,10 @@ namespace API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{id}: Guid")]
-        public async Task<IActionResult> Get(Guid id) 
+        [HttpGet("{chandaNo}")]
+        public async Task<IActionResult> Get(string chandaNo) 
         {
-            var query = new GetMember.Query(id);
+            var query = new GetMember.Query(chandaNo);
             var member = await _mediator.Send(query);
             return Ok(member);
         }

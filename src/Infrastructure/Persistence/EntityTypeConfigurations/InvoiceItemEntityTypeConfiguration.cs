@@ -31,6 +31,13 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
             builder.Property(ii => ii.Id)
                 .HasColumnName("id");
 
+            builder.Property(ct => ct.ReceiptNo)
+                   .HasColumnName("receipt_no")
+                   .IsRequired();
+
+            builder.HasIndex(m => m.ReceiptNo)
+                 .IsUnique();
+
             builder.Property(ii => ii.MonthPaidFor)
                 .HasColumnName("month_paid_for")
                 .HasColumnType("varchar(50)")

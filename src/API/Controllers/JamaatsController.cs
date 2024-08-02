@@ -16,14 +16,13 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByCircuit(Guid? circuitId, bool usePaging)
+        public async Task<IActionResult> GetByCircuit([FromQuery]GetJamaats.Query query)
         {
-            var query = new GetJamaats.Query(circuitId, usePaging);
             var jamaats = await _mediator.Send(query);
             return Ok(jamaats);
         }
 
-        [HttpGet("{id}: Guid")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetJamaat(Guid id)
         {
             var query = new GetJamaat.Query(id);
