@@ -51,8 +51,8 @@ namespace Application.Commands
                     throw new NotFoundException($"Please login to create an invoice.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
-                var chandaTypeCodes = request.InvoiceItems.SelectMany(ii => ii.ChandaItems.Select(ci => ci.ChandaTypeCode)).ToList();
-                var validChandaTypes = _chandaTypeRepository.GetChandaTypes(chandaTypeCodes);
+                var chandaTypeNames = request.InvoiceItems.SelectMany(ii => ii.ChandaItems.Select(ci => ci.ChandaTypeName)).ToList();
+                var validChandaTypes = _chandaTypeRepository.GetChandaTypes(chandaTypeNames);
 
                 if(validChandaTypes is null || !validChandaTypes.Any())
                 {
@@ -73,7 +73,7 @@ namespace Application.Commands
                     var chandaItems = new List<ChandaItem>();
                     foreach (var chanda in item.ChandaItems)
                     {
-                        var chandaType = validChandaTypes.Where(ct => ct.Code.Equals(chanda.ChandaTypeCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        var chandaType = validChandaTypes.Where(ct => ct.Name.Equals(chanda.ChandaTypeName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                         if (chandaType is not null)
                         {
                             var chandaItem = new ChandaItem(invoiceItemId, chandaType.Id, chanda.Amount, initiator.ChandaNo);
@@ -113,7 +113,7 @@ namespace Application.Commands
             public IReadOnlyList<ChandaItemCommand> ChandaItems { get; init; } = new List<ChandaItemCommand>();
         }
 
-        public record ChandaItemCommand(string ChandaTypeCode, decimal Amount);
+        public record ChandaItemCommand(string ChandaTypeName, decimal Amount);
 
         public class CommandValidator : AbstractValidator<Command>
         {
@@ -136,12 +136,12 @@ namespace Application.Commands
                             .NotNull().WithMessage("Chanda items cannot be null.")
                             .NotEmpty().WithMessage("Chanda Items cannot be empty.")
                             .Must(chandaItems =>
-                                chandaItems != null && chandaItems.GroupBy(ci => ci.ChandaTypeCode).All(g => g.Count() == 1))
+                                chandaItems != null && chandaItems.GroupBy(ci => ci.ChandaTypeName).All(g => g.Count() == 1))
                             .WithMessage("Chanda items cannot have duplicate ChandaTypeCode.");
 
                         invoiceItem.RuleForEach(i => i.ChandaItems).ChildRules(chandaItem =>
                         {
-                            chandaItem.RuleFor(ci => ci.ChandaTypeCode)
+                            chandaItem.RuleFor(ci => ci.ChandaTypeName)
                                 .NotEmpty().WithMessage("ChandaTypeCode is required.");
 
                             chandaItem.RuleFor(ci => ci.Amount)

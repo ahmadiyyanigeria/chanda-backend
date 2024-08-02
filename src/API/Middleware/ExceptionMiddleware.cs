@@ -88,6 +88,23 @@ namespace API.Middleware
                     options: _jsonSerializerOptions
                 ).ExecuteAsync(context);
             }
+            catch (BadRequestException exception)
+            {
+                _logger.LogWarning(message: "A bad request exception has occurred while executing the request.\n{ErrorMessage}", exception.Message);
+                var error = _errors[exception.HttpStatusCode];
+                var problemDetail = new ProblemDetails
+                {
+                    Title = error.Title,
+                    Detail = exception.Message,
+                    Status = exception.HttpStatusCode,
+                    Instance = context.Request.Path,
+                    Type = error.Type
+                };
+                await Results.Json(problemDetail,
+                    statusCode: exception.HttpStatusCode,
+                    options: _jsonSerializerOptions
+                ).ExecuteAsync(context);
+            }
             catch (Exception exception)
             {
                 _logger.LogError(exception: exception, "An unhandled exception has occurred while executing the request.");

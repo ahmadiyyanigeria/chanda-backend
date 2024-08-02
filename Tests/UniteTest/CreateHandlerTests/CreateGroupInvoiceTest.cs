@@ -57,13 +57,13 @@ namespace UniteTest.CreateHandlerTests
                 {
                     new InvoiceItemCommand
                     {
-                        PayerNo = "0001",
+                        ChandaNo = "0001",
                         ReceiptNo = "REC-123",
                         MonthPaidFor = MonthOfTheYear.January,
                         Year = 2024,
                         ChandaItems = new List<ChandaItemCommand>
                         {
-                            new ChandaItemCommand( chandaType.Code, 100m )
+                            new ChandaItemCommand( chandaType.Name, 100m )
                         }
                     }
                 }
@@ -94,13 +94,13 @@ namespace UniteTest.CreateHandlerTests
                 {
                     new InvoiceItemCommand
                     {
-                        PayerNo = "0001",
+                        ChandaNo = "0001",
                         ReceiptNo = "REC-123",
                         MonthPaidFor = MonthOfTheYear.January,
                         Year = 2024,
                         ChandaItems = new List<ChandaItemCommand>
                         {
-                            new ChandaItemCommand( chandaType.Code, 100m )
+                            new ChandaItemCommand( chandaType.Name, 100m )
                         }
                     }
                 }

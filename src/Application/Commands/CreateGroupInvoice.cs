@@ -21,13 +21,13 @@ namespace Application.Commands
         }
         public record InvoiceItemCommand
         {
-            public string PayerNo { get; init; } = default!;
+            public string ChandaNo { get; init; } = default!;
             public string ReceiptNo { get; init; } = default!;
             public MonthOfTheYear MonthPaidFor { get; init; }
             public int Year { get; init; }
             public IReadOnlyList<ChandaItemCommand> ChandaItems { get; init; } = new List<ChandaItemCommand>();
         }
-        public record ChandaItemCommand(string ChandaTypeCode, decimal Amount);
+        public record ChandaItemCommand(string ChandaTypeName, decimal Amount);
 
         public class Handler : IRequestHandler<Command, InvoiceResponse>
         {
@@ -59,21 +59,21 @@ namespace Application.Commands
                     throw new NotFoundException($"Please login to create an invoice.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
-                var chandaTypeCodes = request.InvoiceItems.SelectMany(ii => ii.ChandaItems.Select(ci => ci.ChandaTypeCode)).ToList();
-                var validChandaTypes = _chandaTypeRepository.GetChandaTypes(chandaTypeCodes);
+                var chandaTypeNames = request.InvoiceItems.SelectMany(ii => ii.ChandaItems.Select(ci => ci.ChandaTypeName)).ToList();
+                var validChandaTypes = _chandaTypeRepository.GetChandaTypes(chandaTypeNames);
 
                 if (validChandaTypes is null || !validChandaTypes.Any())
                 {
                     throw new NotFoundException("No valid ChandaType selected", ExceptionCodes.NoValidChandaTypeSelected.ToString(), 400);
                 }
 
-                var payerNos = request.InvoiceItems.Select(ii => ii.PayerNo).ToList();
+                var payerNos = request.InvoiceItems.Select(ii => ii.ChandaNo).ToList();
                 var payers = _memberRepository.GetMembers(m => payerNos.Contains(m.ChandaNo)).ToList();
 
                 var invoiceItems = new List<InvoiceItem>();
                 foreach (var item in request.InvoiceItems)
                 {
-                    var payer = payers.Where(p => p.ChandaNo == item.PayerNo).FirstOrDefault();
+                    var payer = payers.Where(p => p.ChandaNo == item.ChandaNo).FirstOrDefault();
                     if (payer is not null)
                     {
                         var invoiceItemAmount = 0.0m;
@@ -81,7 +81,7 @@ namespace Application.Commands
                         var chandaItems = new List<ChandaItem>();
                         foreach (var chanda in item.ChandaItems)
                         {
-                            var chandaType = validChandaTypes.Where(ct => ct.Code.Equals(chanda.ChandaTypeCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            var chandaType = validChandaTypes.Where(ct => ct.Name.Equals(chanda.ChandaTypeName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             if (chandaType is not null)
                             {
                                 var chandaItem = new ChandaItem(invoiceItemId, chandaType.Id, chanda.Amount, initiator.ChandaNo);
@@ -124,7 +124,7 @@ namespace Application.Commands
 
                     RuleForEach(command => command.InvoiceItems).ChildRules(invoiceItem =>
                     {
-                        invoiceItem.RuleFor(i => i.PayerNo)
+                        invoiceItem.RuleFor(i => i.ChandaNo)
                             .NotEmpty().WithMessage("PayerNo is required.");
 
                         invoiceItem.RuleFor(i => i.MonthPaidFor)
@@ -138,12 +138,12 @@ namespace Application.Commands
                             .NotNull().WithMessage("Chanda items cannot be null.")
                             .NotEmpty().WithMessage("Chanda Items cannot be empty.")
                             .Must(chandaItems =>
-                                chandaItems != null && chandaItems.GroupBy(ci => ci.ChandaTypeCode).All(g => g.Count() == 1))
-                            .WithMessage("Chanda items cannot have duplicate ChandaTypeCode.");
+                                chandaItems != null && chandaItems.GroupBy(ci => ci.ChandaTypeName).All(g => g.Count() == 1))
+                            .WithMessage("Chanda items cannot have duplicate ChandaTypeName.");
 
                         invoiceItem.RuleForEach(i => i.ChandaItems).ChildRules(chandaItem =>
                         {
-                            chandaItem.RuleFor(ci => ci.ChandaTypeCode)
+                            chandaItem.RuleFor(ci => ci.ChandaTypeName)
                                 .NotEmpty().WithMessage("ChandaTypeCode is required.");
 
                             chandaItem.RuleFor(ci => ci.Amount)
@@ -159,7 +159,7 @@ namespace Application.Commands
 
                 RuleFor(command => command.InvoiceItems)
                     .Must(invoiceItems =>
-                        invoiceItems != null && invoiceItems.GroupBy(i => new { i.PayerNo, i.MonthPaidFor })
+                        invoiceItems != null && invoiceItems.GroupBy(i => new { i.ChandaNo, i.MonthPaidFor })
                             .All(g => g.Count() == 1))
                     .WithMessage("Two InvoiceItems should not have the same PayerNo and MonthPaidFor together.");
             }

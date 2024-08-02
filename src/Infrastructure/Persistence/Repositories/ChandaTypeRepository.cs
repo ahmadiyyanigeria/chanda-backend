@@ -49,6 +49,11 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
+        public Task<List<string>> GetAllNamesAsync()
+        {
+            return _context.ChandaTypes.Select(ct => ct.Name).ToListAsync();
+        }
+
         public async Task<ChandaType?> GetAsync(Expression<Func<ChandaType, bool>> predicate)
         {
             return await _context.ChandaTypes.SingleOrDefaultAsync(predicate);
@@ -60,9 +65,9 @@ namespace Infrastructure.Persistence.Repositories
             return chandaType;
         }
 
-        public List<ChandaType> GetChandaTypes(List<string> codes)
+        public List<ChandaType> GetChandaTypes(List<string> names)
         {
-            return _context.ChandaTypes.Where(ct => codes.Contains(ct.Code)).ToList();
+            return _context.ChandaTypes.Where(ct => names.Contains(ct.Name)).ToList();
         }
 
         public ChandaType Update(ChandaType chandaType)
