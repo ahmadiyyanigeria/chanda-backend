@@ -8,7 +8,7 @@ namespace Application.Queries
 {
     public class GetMember
     {
-        public record Query(Guid Id) : IRequest<MemberResponse>;
+        public record Query(string CahandaNo) : IRequest<MemberResponse>;
         public record MemberResponse(Guid Id, string ChandaNo, string Name, string Email, string PhoneNo, string JamaatName, string CircuitName, IReadOnlyList<string> Roles);
 
         public class Handler : IRequestHandler<Query, MemberResponse>
@@ -22,7 +22,7 @@ namespace Application.Queries
 
             public async Task<MemberResponse> Handle(Query request, CancellationToken cancellationToken)
             {
-                var member = await _memberRepository.GetMemberAsync(m => m.Id == request.Id);
+                var member = await _memberRepository.GetMemberAsync(m => m.ChandaNo == request.CahandaNo);
                 if(member == null)
                 {
                     throw new NotFoundException("Member not found", ExceptionCodes.MemberNotFound.ToString(), 404);

@@ -1,7 +1,9 @@
-﻿using Application.Mailing;
+﻿using Application.Contracts;
+using Application.Mailing;
 using Application.Repositories;
 using Infrastructure.Mailing;
 using Infrastructure.Persistence.Repositories;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +27,9 @@ namespace Infrastructure.Extensions
                 .AddScoped<ICircuitRepository, CircuitRepository>()
                 .AddScoped<ILedgerRepository, LedgerRepository>()
                 .AddScoped<IPaymentRepository, PaymentRepository>()
-                .AddScoped<IUnitOfWork, UnitOfWork>();            
+                .AddScoped<ICurrentUser, CurrentUser>()
+                .AddScoped<IUnitOfWork, UnitOfWork>()
+                .AddScoped<IFileService, FileService>();
         }
 
         public static IServiceCollection AddEmailService(this IServiceCollection services)

@@ -1,17 +1,21 @@
-﻿using Application.Repositories;
+﻿using Application.Exceptions;
+using Application.Repositories;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Exceptions;
 using Moq;
-using static Application.Commands.CreateInvoice;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
-using Domain.Enums;
-using Application.Exceptions;
+using System.Text;
+using System.Threading.Tasks;
+using static Application.Commands.CreateGroupInvoice;
 
 namespace UniteTest.CreateHandlerTests
 {
-    public class CreateInvoiceHandlerTest
+    public class CreateGroupInvoiceTest
     {
-        private readonly Mock<IJamaatRepository> _jamaatRepositoryMock;
         private readonly Mock<IMemberRepository> _memberRepositoryMock;
         private readonly Mock<IChandaTypeRepository> _chandaTypeRepositoryMock;
         private readonly Mock<IInvoiceRepository> _invoiceRepositoryMock;
@@ -19,9 +23,8 @@ namespace UniteTest.CreateHandlerTests
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Handler _handler;
 
-        public CreateInvoiceHandlerTest()
+        public CreateGroupInvoiceTest()
         {
-            _jamaatRepositoryMock = new Mock<IJamaatRepository>();
             _memberRepositoryMock = new Mock<IMemberRepository>();
             _chandaTypeRepositoryMock = new Mock<IChandaTypeRepository>();
             _invoiceRepositoryMock = new Mock<IInvoiceRepository>();
@@ -31,9 +34,8 @@ namespace UniteTest.CreateHandlerTests
             _handler = new Handler(
                 _unitOfWorkMock.Object,
                 _currentUserMock.Object,
-                _invoiceRepositoryMock.Object,
-                _jamaatRepositoryMock.Object,
                 _memberRepositoryMock.Object,
+                _invoiceRepositoryMock.Object,                
                 _chandaTypeRepositoryMock.Object
             );
         }
@@ -43,7 +45,7 @@ namespace UniteTest.CreateHandlerTests
         {
             // Arrange
             var circuit = new Circuit("Abeokuta", "ABK", "0001");
-            var jamaat = new Jamaat("Lafiaji","ABK-L",circuit.Id, "0001");
+            var jamaat = new Jamaat("Lafiaji", "ABK-L", circuit.Id, "0001");
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
             var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
@@ -55,6 +57,8 @@ namespace UniteTest.CreateHandlerTests
                 {
                     new InvoiceItemCommand
                     {
+                        ChandaNo = "0001",
+                        ReceiptNo = "REC-123",
                         MonthPaidFor = MonthOfTheYear.January,
                         Year = 2024,
                         ChandaItems = new List<ChandaItemCommand>
@@ -90,9 +94,10 @@ namespace UniteTest.CreateHandlerTests
                 {
                     new InvoiceItemCommand
                     {
+                        ChandaNo = "0001",
+                        ReceiptNo = "REC-123",
                         MonthPaidFor = MonthOfTheYear.January,
                         Year = 2024,
-                        ReceiptNo = "REC-0001",
                         ChandaItems = new List<ChandaItemCommand>
                         {
                             new ChandaItemCommand( chandaType.Name, 100m )
@@ -101,19 +106,14 @@ namespace UniteTest.CreateHandlerTests
                 }
             };
 
-            var invoice = new Invoice(new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), jamaat.Id, "INV-AE23GHS", 100m, InvoiceStatus.Pending, member.ChandaNo);
-
-            _jamaatRepositoryMock.Setup(j => j.Get(It.IsAny<Expression<Func<Jamaat, bool>>>()))
-                .ReturnsAsync(jamaat);
-
             _chandaTypeRepositoryMock.Setup(c => c.GetChandaTypes(It.IsAny<List<string>>()))
                 .Returns(new List<ChandaType> { chandaType });
 
-            _memberRepositoryMock.Setup(m => m.GetMemberAsync(It.IsAny<Expression<Func<Member, bool>>>()))
-                .ReturnsAsync(member);
+            _memberRepositoryMock.Setup(m => m.GetMembers(It.IsAny<Expression<Func<Member, bool>>>()))
+                .Returns(new List<Member> { member });
 
             _invoiceRepositoryMock.Setup(i => i.AddAsync(It.IsAny<Invoice>()))
-                .ReturnsAsync(invoice);
+                .ReturnsAsync(new Invoice(new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), jamaat.Id, "INV-AE23GHS", 100m, InvoiceStatus.Pending, member.ChandaNo));
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -122,7 +122,7 @@ namespace UniteTest.CreateHandlerTests
             Assert.NotNull(result);
             Assert.Equal(result.Amount, command.InvoiceItems
                 .SelectMany(item => item.ChandaItems).Sum(chanda => chanda.Amount));
-            Assert.Equal(result.Status.ToString(), InvoiceStatus.Pending.ToString());
+            Assert.Equal(result.Status.ToString(), InvoiceStatus.Pending.ToString());            
         }
     }
 }
