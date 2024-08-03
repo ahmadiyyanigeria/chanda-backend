@@ -49,7 +49,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async  Task<Payment?> GetAsync(Expression<Func<Payment, bool>> expression)
         {
-            return await _context.Payments.SingleOrDefaultAsync(expression);
+            return await _context.Payments.Include(x => x.Invoice).SingleOrDefaultAsync(expression);
         }
 
         public async Task<Payment?> GetByIdAsync(Guid id)

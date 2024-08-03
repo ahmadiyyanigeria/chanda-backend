@@ -105,6 +105,12 @@ namespace API.Extensions
             config.NewConfig<InvoiceItem, Application.Queries.GetInvoice.InvoiceItemResponse>()
                 .Map(dest => dest.PayerName, src => src.Member.Name);
 
+            config.NewConfig<Payment, Application.Queries.GetPaymentByReference.PaymentResponse>()
+               .Map(dest => dest.InvoiceReference, src => src.Invoice.Reference);
+            config.NewConfig<Payment, Application.Queries.GetPaymentByReference.PaymentResponse>()
+               .Map(dest => dest.PaymentOption, src => src.Option.ToString());
+
+
             config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
             services.AddSingleton(config);
             services.AddScoped<IMapper, Mapper>();
