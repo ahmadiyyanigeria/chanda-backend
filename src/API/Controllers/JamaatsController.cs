@@ -16,7 +16,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByCircuit([FromQuery]GetJamaats.Query query)
+        public async Task<IActionResult> GetJamaats([FromQuery]GetJamaats.Query query)
         {
             var jamaats = await _mediator.Send(query);
             return Ok(jamaats);

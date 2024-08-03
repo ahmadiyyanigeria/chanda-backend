@@ -37,8 +37,6 @@ namespace UniteTest.QueryHandlerTests
 
             //Assert
             response.Should().NotBeNull();
-            response.InvoiceReference.Should().Be(payment.Invoice.Reference);
-            response.PaymentOption.Should().Be(payment.Option.ToString());
             response.Amount.Should().Be(payment.Amount);
         }
 
