@@ -1,0 +1,18 @@
+﻿using Application.Contracts;
+using Application.DTOs;
+
+namespace Infrastructure.Services.PaymentServices
+{
+    public class VirtualPaymentService : IPaymentService
+    {
+        public Task<InitiateResponse?> InitiatePayment(PaymentRequest model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<VerificationResponse?> VerifyPayment(string reference)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

@@ -10,6 +10,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddDatabase(configuration);
+builder.Services.AddPaymentService(configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
