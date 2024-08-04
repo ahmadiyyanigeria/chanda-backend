@@ -9,13 +9,13 @@ namespace Domain.Entities
         public decimal Amount { get; private set; }
         public InvoiceStatus Status { get; private set; }
         public Jamaat Jamaat { get; private set; } = default!;
-        public IReadOnlyList<InvoiceItem> InvoiceItems
+        public virtual IReadOnlyList<InvoiceItem> InvoiceItems
         {
             get => _invoiceItems.AsReadOnly();
             private set => _invoiceItems.AddRange(value);
         }
         
-        public IReadOnlyList<Payment> Payments 
+        public virtual IReadOnlyList<Payment> Payments 
         {
             get => _payments.AsReadOnly();
             private set => _payments.AddRange(value);
