@@ -11,7 +11,9 @@ namespace Domain.Entities
         public string Name { get; private set; }
         public string Code { get; private set; }
         public Guid CircuitId { get; private set; }
+        public Guid JamaatLedgerId { get; private set; }
         public Circuit Circuit { get; private set; } = default!;
+        public JamaatLedger JamaatLedger { get; private set; } = default!;
         public IReadOnlyList<Member> Members 
         {   
             get => _members.AsReadOnly();
@@ -20,11 +22,12 @@ namespace Domain.Entities
 
         private readonly List<Member> _members = [];
 
-        public Jamaat(string name, string code, Guid circuitId, string createdBy)
+        public Jamaat(string name, string code, Guid circuitId, Guid jamaatLedgerId, string createdBy)
         {
             Name = name;
             Code = code;
             CircuitId = circuitId;
+            JamaatLedgerId = jamaatLedgerId;
             CreatedBy = createdBy;
         }
 

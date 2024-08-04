@@ -19,7 +19,7 @@ namespace Application.DTOs
         public string? Domain { get; set; }
         public string? Status { get; set; }
         public string? Reference { get; set; }
-        public decimal? Amount { get; set; }
+        public decimal Amount { get; set; }
         public string? Message { get; set; }
         public string? Gateway_Response { get; set; }
         public string? Paid_At { get; set; }

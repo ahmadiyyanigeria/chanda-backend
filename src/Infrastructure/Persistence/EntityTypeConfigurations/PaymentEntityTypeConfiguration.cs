@@ -34,6 +34,13 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                 .HasColumnType("decimal(18, 2)")
                 .IsRequired();
 
+            builder.Property(p => p.Reference)
+                   .HasColumnName("reference")
+                   .IsRequired();
+
+            builder.HasIndex(p => p.Reference)
+                 .IsUnique();
+
             builder.Property(p => p.Option)
                    .HasColumnName("option")
                    .HasColumnType("varchar(50)")

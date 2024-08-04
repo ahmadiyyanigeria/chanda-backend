@@ -5,12 +5,12 @@ namespace Infrastructure.Services.PaymentServices
 {
     public class VirtualPaymentService : IPaymentService
     {
-        public Task<InitiateResponse?> InitiatePayment(PaymentRequest model)
+        public Task<InitiateResponse> InitiatePaymentAsync(PaymentRequest model)
         {
             throw new NotImplementedException();
         }
 
-        public Task<VerificationResponse?> VerifyPayment(string reference)
+        public Task<VerificationResponse> VerifyPaymentAsync(string reference)
         {
             throw new NotImplementedException();
         }

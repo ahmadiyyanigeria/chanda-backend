@@ -20,7 +20,7 @@ namespace Infrastructure.Services.PaymentServices
                 = new AuthenticationHeaderValue("Bearer", _config["Payment:PaystackKey"]);
         }
 
-        public async Task<InitiateResponse?> InitiatePayment(PaymentRequest model)
+        public async Task<InitiateResponse> InitiatePaymentAsync(PaymentRequest model)
         {
             var result = new InitiateResponse();
             var jsonContent = JsonConvert.SerializeObject(model);
@@ -34,11 +34,11 @@ namespace Infrastructure.Services.PaymentServices
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            result = JsonConvert.DeserializeObject<InitiateResponse>(responseContent);
+            result = JsonConvert.DeserializeObject<InitiateResponse>(responseContent)!;
             return result;
         }
 
-        public async Task<VerificationResponse?> VerifyPayment(string reference)
+        public async Task<VerificationResponse> VerifyPaymentAsync(string reference)
         {
             var result = new VerificationResponse();
             var response = await _client.GetAsync($"/transaction/verify/{reference}");
@@ -50,7 +50,7 @@ namespace Infrastructure.Services.PaymentServices
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            result = JsonConvert.DeserializeObject<VerificationResponse>(responseContent);
+            result = JsonConvert.DeserializeObject<VerificationResponse>(responseContent)!;
 
             return result;
         }

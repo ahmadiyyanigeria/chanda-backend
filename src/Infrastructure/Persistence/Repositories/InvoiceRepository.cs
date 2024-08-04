@@ -54,9 +54,18 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<Invoice?> GetAsync(Expression<Func<Invoice, bool>> expression)
         {
-            var invoice = await _context.Invoices.Where(expression).Include(i => i.Jamaat).Include(i => i.InvoiceItems).ThenInclude(ii => ii.ChandaItems).ThenInclude(ci => ci.ChandaType)
+            var invoice = await _context.Invoices.Where(expression).Include(i => i.Jamaat)
+                .Include(i => i.InvoiceItems).ThenInclude(ii => ii.Member).ThenInclude(m => m.Jamaat).ThenInclude(j => j.JamaatLedger)
+                .Include(i => i.InvoiceItems).ThenInclude(ii => ii.Member).ThenInclude(m => m.MemberLedger)
+                .Include(i => i.InvoiceItems).ThenInclude(ii => ii.ChandaItems).ThenInclude(ci => ci.ChandaType)
                 .Include(i => i.Payments).SingleOrDefaultAsync();
 
+            return invoice;
+        }
+
+        public Invoice? Get(Expression<Func<Invoice, bool>> expression)
+        {
+            var invoice = _context.Invoices.Where(expression).SingleOrDefault();
             return invoice;
         }
 

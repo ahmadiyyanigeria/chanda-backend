@@ -10,6 +10,7 @@ namespace Application.Repositories
         Task<Invoice> UpdateAsync(Invoice invoice);
         Invoice Update(Invoice invoice);
         Task<Invoice?> GetAsync(Expression<Func<Invoice, bool>> expression);
+        Invoice? Get(Expression<Func<Invoice, bool>> expression);
         Task<PaginatedList<Invoice>> GetAllAsync(PageRequest request, Guid? jamaatId, bool usePaging);
     }
 }
