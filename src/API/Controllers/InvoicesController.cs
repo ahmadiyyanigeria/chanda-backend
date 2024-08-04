@@ -57,6 +57,13 @@ namespace API.Controllers
             var invoice = await _mediator.Send(query);
             return Ok(invoice);
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetInvoices([FromQuery] GetInvoices.Query query)
+        {
+            var invoice = await _mediator.Send(query);
+            return Ok(invoice);
+        }
 
        
     }

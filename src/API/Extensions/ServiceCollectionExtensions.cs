@@ -110,6 +110,8 @@ namespace API.Extensions
             config.NewConfig<Payment, Application.Queries.GetPaymentByReference.PaymentResponse>()
                .Map(dest => dest.PaymentOption, src => src.Option.ToString());
 
+            config.NewConfig<Invoice, Application.Queries.GetInvoices.InvoiceResponse>()
+              .Map(dest => dest.JamaatName, src => src.Jamaat.Name);
 
             config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
             services.AddSingleton(config);
