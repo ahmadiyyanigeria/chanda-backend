@@ -1,4 +1,5 @@
 ﻿using Application.Commands;
+using Application.DTOs;
 using Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MakePayment([FromBody] string reference)
+        public async Task<IActionResult> MakePayment([FromBody] InitiatePaymentRequest model)
         {
-            var command = new InitatePayment.Command { Reference = reference };
+            var command = new InitatePayment.Command { Reference = model.Reference, Option = model.Option };
             var response = await _mediator.Send(command);
             return Ok(response);
         }

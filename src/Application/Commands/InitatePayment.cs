@@ -29,23 +29,24 @@ namespace Application.Commands
         {
             private readonly IConfiguration _config;
             private readonly IUnitOfWork _unitOfWork;
-            private readonly ICurrentUser _currentUser;
-            private readonly IPaymentService _paymentService;
+            private readonly ICurrentUser _currentUser;            
             private readonly IPaymentRepository _paymentRepository;
             private readonly IInvoiceRepository _invoiceRepository;
+            private readonly IPaymentGatewayFactory _paymentServiceFactory;
 
-            public Handler(IConfiguration config, IUnitOfWork unitOfWork, ICurrentUser currentUser, IPaymentService paymentService, IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository)
+            public Handler(IConfiguration config, IUnitOfWork unitOfWork, ICurrentUser currentUser, IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository, IPaymentGatewayFactory paymentServiceFactory)
             {
                 _config = config;
                 _unitOfWork = unitOfWork;
                 _currentUser = currentUser;
-                _paymentService = paymentService;
                 _paymentRepository = paymentRepository;
                 _invoiceRepository = invoiceRepository;
+                _paymentServiceFactory = paymentServiceFactory;
             }
 
             public async Task<InitiateResponse> Handle(Command request, CancellationToken cancellationToken)
             {
+                var _paymentService = _paymentServiceFactory.GetPaymentService(request.Option);
                 var member = new MemberDetials { Name = "Ade Ola", ChandaNo = "0001", Email = "adeola@example.com", JamaatId = new Guid("5f9013da-5c0a-4af0-ae51-738f6bc0009d"), Role = "Jamaat-President" };//_currentUser.GetMemberDetails();
                 if (member is null || string.IsNullOrEmpty(member.ChandaNo))
                 {

@@ -24,31 +24,32 @@ namespace Application.Queries
         public class Handler : IRequestHandler<Query, CallbackResponse>
         {
             private readonly IUnitOfWork _unitOfWork;
-            private readonly IPaymentService _paymentService;
             private readonly ILedgerRepository _ledgerRepository;
             private readonly IPaymentRepository _paymentRepository;
             private readonly IInvoiceRepository _invoiceRepository;
+            private readonly IPaymentGatewayFactory _paymentServiceFactory;
 
-            public Handler(IUnitOfWork unitOfWork, IPaymentService paymentService, ILedgerRepository ledgerRepository, IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository)
+            public Handler(IUnitOfWork unitOfWork, ILedgerRepository ledgerRepository, IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository, IPaymentGatewayFactory paymentServiceFactory)
             {
                 _unitOfWork = unitOfWork;
-                _paymentService = paymentService;
                 _ledgerRepository = ledgerRepository;
                 _paymentRepository = paymentRepository;
                 _invoiceRepository = invoiceRepository;
+                _paymentServiceFactory = paymentServiceFactory;
             }
 
             public async Task<CallbackResponse> Handle(Query request, CancellationToken cancellationToken)
             {
+                var payment = await _paymentRepository.GetAsync(p => p.Reference == request.Reference);
+                if (payment is null)
+                {
+                    throw new NotFoundException("Payment not found.", ExceptionCodes.PaymentNotFound.ToString(), 404);
+                }
+
+                var _paymentService = _paymentServiceFactory.GetPaymentService(payment.Option);
                 var response = await _paymentService.VerifyPaymentAsync(request.Reference);
                 if (response is not null && response.Status) 
-                {
-                    var payment = await _paymentRepository.GetAsync(p => p.Reference == request.Reference);
-                    if (payment is null)
-                    {
-                        throw new NotFoundException("Payment not found.", ExceptionCodes.PaymentNotFound.ToString(), 404);
-                    }
-
+                {                    
                     var invoice = await _invoiceRepository.GetAsync(i => i.Id == payment.InvoiceId);
                     if (invoice is null) 
                     {
@@ -72,6 +73,8 @@ namespace Application.Queries
                             legders.Add(ledger);
                         }
                     }
+
+                    invoice.UpdateStatus(InvoiceStatus.Paid);
                     payment.UpdateStatus(PaymentStatus.Confirmed);
                     payment = _paymentRepository.Update(payment);
                     legders = await _ledgerRepository.AddRangeAsync(legders);
