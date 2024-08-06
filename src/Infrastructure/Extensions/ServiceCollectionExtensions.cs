@@ -36,7 +36,12 @@ namespace Infrastructure.Extensions
 
         public static IServiceCollection AddPaymentService(this IServiceCollection services, IConfiguration config)
         {
-            var paymentOption = config["Payment:Option"];
+            services.AddScoped<IPaymentGatewayFactory, PaymentGatewayFactory>();
+            services.AddScoped<PaystackService>();
+            services.AddScoped<VirtualPaymentService>();
+            services.AddScoped<WalletPaymentService>();
+
+            /*var paymentOption = config["Payment:Option"];
             switch (paymentOption)
             {
                 case Constants.Paystack:
@@ -47,7 +52,7 @@ namespace Infrastructure.Extensions
                     break;
                 default:
                     throw new ArgumentException("Invalid Payment Configuration.", nameof(paymentOption));
-            }
+            }*/
 
             return services;
         }

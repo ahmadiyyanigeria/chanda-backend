@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum PaymentOption
+    public enum PaymentStatus
     {
-        Card = 1,
-        Cash,
-        Wallet,
-        Paystack,
-        VirtualAccount
+        PendingVerification=1,
+        Confirmed,
+        Failed
     }
 }

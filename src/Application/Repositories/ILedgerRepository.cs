@@ -13,6 +13,7 @@ namespace Application.Repositories
     {
         Task<Ledger> AddAsync(Ledger ledger);
         Task<Ledger?> GetAsync(Guid id);
+        Task<List<Ledger>> AddRangeAsync(List<Ledger> ledgers);
         Task<PaginatedList<Ledger>> GetAllAsync(PageRequest request, Expression<Func<Ledger, bool>> expression, bool usePaging);
     }
 }

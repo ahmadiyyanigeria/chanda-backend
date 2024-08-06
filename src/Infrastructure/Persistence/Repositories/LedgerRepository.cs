@@ -26,6 +26,12 @@ namespace Infrastructure.Persistence.Repositories
             return ledger;
         }
 
+        public async Task<List<Ledger>> AddRangeAsync(List<Ledger> ledgers)
+        {
+            await _context.Ledgers.AddRangeAsync(ledgers);
+            return ledgers;
+        }
+
         public async Task<PaginatedList<Ledger>> GetAllAsync(PageRequest request, Expression<Func<Ledger, bool>> expression, bool usePaging)
         {
             var query = _context.Ledgers.Include(l => l.ChandaType).Where(expression).OrderBy(l => l.CreatedOn);

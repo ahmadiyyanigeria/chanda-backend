@@ -12,7 +12,7 @@ namespace Domain.Entities
         public Member Member { get; private set; } = default!;
         public IReadOnlyList<Ledger> LedgerList 
         { 
-            get => _ledgers.AsReadOnly(); 
+            get => _ledgers.ToList(); 
             private set => _ledgers.AddRange(value);
         }
 
