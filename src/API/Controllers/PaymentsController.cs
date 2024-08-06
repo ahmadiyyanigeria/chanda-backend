@@ -14,8 +14,8 @@ namespace API.Controllers
         public async Task<IActionResult> GetPayment(string reference)
         {
             var query = new GetPaymentByReference.Query(reference);
-            var invoice = await _mediator.Send(query);
-            return Ok(invoice);
+            var resopnse = await _mediator.Send(query);
+            return Ok(resopnse);
         }
 
         [HttpPost]
