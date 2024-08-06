@@ -14,7 +14,7 @@ namespace Application.Queries
     public class GetPaymentByReference
     {
         public record Query(string Reference) : IRequest<PaymentResponse>;
-            public record PaymentResponse(string InvoiceReference, decimal Amount, string PaymentOption);
+            public record PaymentResponse(string InvoiceReference, string PaymentReference, decimal Amount, string Option);
         public class Handler(IPaymentRepository _paymentRepository) : IRequestHandler<Query, PaymentResponse>
         {
             public async Task<PaymentResponse> Handle(Query request, CancellationToken cancellationToken)

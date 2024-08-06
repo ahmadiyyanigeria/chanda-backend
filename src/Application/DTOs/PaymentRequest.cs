@@ -8,11 +8,11 @@ namespace Application.DTOs
 {
     public record PaymentRequest
     {
-        public string Email { get; set; } = default!;
-        public decimal Amount { get; set; }        
-        public string Reference { get; set; } = default!;
-        public string Currency { get; set; } = default!;
-        public string Callback_url { get; set; } = default!;
+        public string email { get; set; } = default!;
+        public decimal amount { get; set; }        
+        public string reference { get; set; } = default!;
+        public string currency { get; set; } = default!;
+        public string callback_url { get; set; } = default!;
     }
 
     public record InitiateResponse
@@ -24,8 +24,8 @@ namespace Application.DTOs
 
     public record UrlDetails
     {
-        public string AuthorizationUrl { get; set; } = default!;
-        public string AccessCode { get; set; } = default!;
+        public string Authorization_url { get; set; } = default!;
+        public string Access_code { get; set; } = default!;
         public string Reference { get; set; } = default!;
     }
 }

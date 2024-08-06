@@ -26,6 +26,10 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
             .HasColumnName("circuit_id")
             .IsRequired();
 
+            builder.Property(j => j.JamaatLedgerId)
+            .HasColumnName("jamaat_ledger_id")
+            .IsRequired();
+
             builder.Property(m => m.CreatedBy)
                .HasColumnName("created_by")
                .HasColumnType("varchar(255)");
@@ -44,6 +48,11 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
             builder.HasMany(m => m.Members)
                    .WithOne(mr => mr.Jamaat)
                    .HasForeignKey(mr => mr.JamaatId).OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(j => j.JamaatLedger)
+                    .WithOne(jl => jl.Jamaat)
+                    .HasForeignKey<JamaatLedger>(ml => ml.JamaatId)
+                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

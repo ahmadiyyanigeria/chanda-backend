@@ -56,9 +56,9 @@ namespace Domain.Entities
             }
         }
 
-        public void UpdateAmount(decimal amount)
+        public void UpdateStatus(InvoiceStatus status)
         {
-            Amount = amount;
+            Status = status;
         }
     }
 }

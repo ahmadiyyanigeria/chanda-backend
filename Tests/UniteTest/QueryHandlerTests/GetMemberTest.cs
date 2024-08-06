@@ -25,7 +25,8 @@ namespace UniteTest.QueryHandlerTests
         {
             // Arrange
             var circuit = new Circuit("Abeokuta", "ABK", "0001");
-            var jamaat = new Jamaat("Lafiaji", "ABK-L", circuit.Id, "0001");
+            var jamaatLedger = new JamaatLedger(Guid.NewGuid(), "0001");
+            var jamaat = new Jamaat("Lafiaji", "ABK-L", circuit.Id, jamaatLedger.Id, "0001");
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
             var member = new Member("0001", "Ade Ola", "adeola@example.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
            
