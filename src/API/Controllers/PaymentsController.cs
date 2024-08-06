@@ -25,10 +25,10 @@ namespace API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("callback/{invoiceRef}")]
-        public async Task<IActionResult> Callback(string trxref, string invoiceRef)
+        [HttpGet("callback")]
+        public async Task<IActionResult> Callback(string reference)
         {
-            var query = new PaymentCallback.Query(trxref, invoiceRef);
+            var query = new PaymentCallback.Query(reference);
             var response = await _mediator.Send(query);
             return Ok(response);
         }

@@ -47,6 +47,12 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                    .HasConversion<EnumToStringConverter<PaymentOption>>()
                    .IsRequired();
 
+            builder.Property(p => p.Status)
+                   .HasColumnName("status")
+                   .HasColumnType("varchar(50)")
+                   .HasConversion<EnumToStringConverter<PaymentStatus>>()
+                   .IsRequired();
+
             builder.Property(p => p.CreatedBy)
                    .HasColumnName("created_by")
                    .HasColumnType("varchar(255)");

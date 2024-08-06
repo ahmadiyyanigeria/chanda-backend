@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using FluentAssertions;
 using Application.Exceptions;
 using Domain.Exceptions;
+using Domain.Enums;
 
 namespace UniteTest.QueryHandlerTests
 {
@@ -25,8 +26,8 @@ namespace UniteTest.QueryHandlerTests
         {
             //Arrange
             var Invoice = new Invoice(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid().ToString(), 2000, Domain.Enums.InvoiceStatus.Paid, "0001");
-
-            var payment = new Payment(Invoice.Id, Guid.NewGuid().ToString(), 12000.50M, Domain.Enums.PaymentOption.Card, "0001");
+                
+            var payment = new Payment(Invoice.Id, Guid.NewGuid().ToString(), 12000.50M, PaymentOption.Card, PaymentStatus.Confirmed, "0001");
 
             _paymentRepository.Setup(repo => repo.GetAsync(It.IsAny<Expression<Func<Payment, bool>>>())).ReturnsAsync(payment);
 

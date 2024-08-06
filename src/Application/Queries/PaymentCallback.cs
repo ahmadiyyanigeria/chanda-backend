@@ -2,6 +2,7 @@
 using Application.Exceptions;
 using Application.Repositories;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Exceptions;
 using Mapster;
 using MediatR;
@@ -11,7 +12,7 @@ namespace Application.Queries
 {
     public class PaymentCallback
     {
-        public record Query(string Reference, string InvoiceRef): IRequest<CallbackResponse>;
+        public record Query(string Reference): IRequest<CallbackResponse>;
 
         public record CallbackResponse
         {
@@ -42,13 +43,18 @@ namespace Application.Queries
                 var response = await _paymentService.VerifyPaymentAsync(request.Reference);
                 if (response is not null && response.Status) 
                 {
-                    var invoice = await _invoiceRepository.GetAsync(i => i.Reference == request.InvoiceRef);
+                    var payment = await _paymentRepository.GetAsync(p => p.Reference == request.Reference);
+                    if (payment is null)
+                    {
+                        throw new NotFoundException("Payment not found.", ExceptionCodes.PaymentNotFound.ToString(), 404);
+                    }
+
+                    var invoice = await _invoiceRepository.GetAsync(i => i.Id == payment.InvoiceId);
                     if (invoice is null) 
                     {
-                        throw new NotFoundException("Invoice not found.", ExceptionCodes.InvoiceNotFound.ToString(), 400);
+                        throw new NotFoundException("Invoice not found.", ExceptionCodes.InvoiceNotFound.ToString(), 404);
                     }
-                    var payment = new Payment(invoice.Id, request.Reference, response.Data!.Amount/100, Domain.Enums.PaymentOption.Card, invoice.CreatedBy);
-
+                    
                     var createdBy = invoice.CreatedBy;
                     var legders = new List<Ledger>();
                     foreach(var item in invoice.InvoiceItems)
@@ -66,8 +72,8 @@ namespace Application.Queries
                             legders.Add(ledger);
                         }
                     }
-
-                    payment = await _paymentRepository.AddAsync(payment);
+                    payment.UpdateStatus(PaymentStatus.Confirmed);
+                    payment = _paymentRepository.Update(payment);
                     legders = await _ledgerRepository.AddRangeAsync(legders);
                     await _invoiceRepository.UpdateAsync(invoice);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);

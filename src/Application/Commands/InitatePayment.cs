@@ -3,6 +3,8 @@ using Application.DTOs;
 using Application.Exceptions;
 using Application.Helpers;
 using Application.Repositories;
+using Domain.Entities;
+using Domain.Enums;
 using Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -19,21 +21,26 @@ namespace Application.Commands
     {
         public record Command : IRequest<InitiateResponse>
         {
-            public string Reference { get; init; } = default!;            
+            public string Reference { get; init; } = default!;
+            public PaymentOption Option { get; init; }
         }
 
         public class Handler : IRequestHandler<Command, InitiateResponse>
         {
             private readonly IConfiguration _config;
+            private readonly IUnitOfWork _unitOfWork;
             private readonly ICurrentUser _currentUser;
             private readonly IPaymentService _paymentService;
+            private readonly IPaymentRepository _paymentRepository;
             private readonly IInvoiceRepository _invoiceRepository;
 
-            public Handler(IConfiguration config, ICurrentUser currentUser, IPaymentService paymentService, IInvoiceRepository invoiceRepository)
+            public Handler(IConfiguration config, IUnitOfWork unitOfWork, ICurrentUser currentUser, IPaymentService paymentService, IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository)
             {
                 _config = config;
+                _unitOfWork = unitOfWork;
                 _currentUser = currentUser;
                 _paymentService = paymentService;
+                _paymentRepository = paymentRepository;
                 _invoiceRepository = invoiceRepository;
             }
 
@@ -50,16 +57,20 @@ namespace Application.Commands
                 {
                     throw new NotFoundException("Invoice cannot be found.", ExceptionCodes.InvoiceNotFound.ToString(), 404);
                 }
-                var invoiceRef = request.Reference;
+                
                 var reference = Utility.GenerateReference("PAY");
+                var payment = new Payment(invoice.Id, reference, invoice.Amount, PaymentOption.Paystack, PaymentStatus.PendingVerification, invoice.CreatedBy);
                 var paymentModel = new PaymentRequest
                 {
                     reference = reference,
                     email = !string.IsNullOrEmpty(member.Email) ? member.Email : "paymentinfo@amjn.com",
                     amount = invoice.Amount * 100,
                     currency = "NGN",
-                    callback_url = $"{_config["Payment:CallbackUrl"]!}Payments/Callback/{invoiceRef}"
+                    callback_url = $"{_config["Payment:CallbackUrl"]!}Payments/Callback"
                 };
+
+                payment = await _paymentRepository.AddAsync(payment);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 var result = await _paymentService.InitiatePaymentAsync(paymentModel);
                 return result;
