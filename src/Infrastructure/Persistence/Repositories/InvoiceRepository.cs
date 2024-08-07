@@ -1,6 +1,7 @@
 ﻿using Application.Paging;
 using Application.Repositories;
 using Domain.Entities;
+using Infrastructure.Mapping.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,25 +30,30 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<PaginatedList<Invoice>> GetAllAsync(PageRequest request, Guid? jamaatId, bool usePaging)
         {
             var query = jamaatId != null
-                ? _context.Invoices.Include(i => i.Jamaat).Where(i => i.JamaatId == jamaatId).OrderBy(i => i.CreatedOn)
-                : _context.Invoices.Include(i => i.Jamaat).OrderBy(i => i.CreatedOn);
+                ? _context.Invoices.Include(i => i.Jamaat).Where(i => i.JamaatId == jamaatId)
+                : _context.Invoices;
 
+           
             if (request.IsDescending)
             {
                 query = query.OrderByDescending(i => i.CreatedOn);
             }
 
             var totalCount = await query.CountAsync();
-
+            
             if (usePaging)
             {
                 var offset = (request.Page - 1) * request.PageSize;
-                var result = await query.Skip(offset).Take(request.PageSize).ToListAsync();
+
+                var result = await query.ToListAsync();
+                result = (string.IsNullOrWhiteSpace(request.Keyword)) ? result.Skip(offset).Take(request.PageSize).ToList() : result.SearchByKeyword(request.Keyword).Skip(offset).Take(request.PageSize).ToList();
+
                 return result.ToPaginatedList(totalCount, request.Page, request.PageSize);
             }
             else
             {
                 var result = await query.ToListAsync();
+                result = (string.IsNullOrWhiteSpace(request.Keyword)) ? result: [.. result.SearchByKeyword(request.Keyword)];
                 return result.ToPaginatedList(totalCount, 1, totalCount);
             }
         }
