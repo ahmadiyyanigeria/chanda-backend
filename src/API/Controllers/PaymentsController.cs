@@ -33,5 +33,13 @@ namespace API.Controllers
             var response = await _mediator.Send(query);
             return Ok(response);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPayments([FromQuery] GetPayments.Query query)
+        {
+            var payments = await _mediator.Send(query);
+            return Ok(payments);
+        }
+
     }
 }
