@@ -3,6 +3,7 @@ using Application.Repositories;
 using Domain.Enums;
 using Mapster;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Queries
 {
