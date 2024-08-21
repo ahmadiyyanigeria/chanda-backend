@@ -18,6 +18,7 @@ namespace Infrastructure.Persistence.Repositories
             await _context.Jamaats.AddAsync(jamaat);
             return jamaat;
         }
+
         public async Task<Jamaat?> Get(Expression<Func<Jamaat, bool>> expression)
         {
             return await _context.Jamaats.SingleOrDefaultAsync(expression);

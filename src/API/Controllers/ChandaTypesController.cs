@@ -1,4 +1,5 @@
-﻿using Application.Queries;
+﻿using Application.Commands;
+using Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,13 @@ namespace API.Controllers
             var query = new GetChandaTypes.Query(usePaging);
             var chandaType = await _mediator.Send(query);
             return Ok(chandaType);
+        }
+
+        [HttpPost("SeedData")]
+        public async Task<IActionResult> SeedData([FromBody] SeedDatas.Command commad)
+        {
+            var res = await _mediator.Send(commad);
+            return Ok(res);
         }
     }
 }

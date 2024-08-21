@@ -31,6 +31,11 @@ namespace Domain.Entities
             CreatedBy = createdBy;
         }
 
+        public void SetJamaatLedger(JamaatLedger jamaatLedger)
+        {
+            JamaatLedger = jamaatLedger;
+        }
+
         public void AddMembers(params Member[] members)
         {
             foreach (var member in members)

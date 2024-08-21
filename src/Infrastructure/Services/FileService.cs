@@ -6,6 +6,7 @@ using Domain.Enums;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
+using System.Reflection.PortableExecutable;
 using static Application.Commands.CreateGroupInvoice;
 
 namespace Infrastructure.Services
@@ -49,6 +50,7 @@ namespace Infrastructure.Services
             {
                 while (csv.Read())
                 {
+                    if (string.IsNullOrEmpty(csv.GetField("ChandaNo"))) break;
                     var chandaNo = csv.GetField<string>("ChandaNo")!;
                     var receiptNo = csv.GetField<string>("ReceiptNo")!;
                     var monthPaidFor = csv.GetField<string>("MonthPaidFor");

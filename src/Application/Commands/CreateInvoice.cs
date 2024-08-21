@@ -44,7 +44,7 @@ namespace Application.Commands
                 var invoiceId = Guid.NewGuid();
                 var reference = Utility.GenerateReference("MEM");
 
-                var initiator = new MemberDetials { Name = "Ade Ola", ChandaNo = "0001", Email = "adeola@example.com", JamaatId = new Guid("5f9013da-5c0a-4af0-ae51-738f6bc0009d"), Role = "Jamaat-President" };//_currentUser.GetMemberDetails();
+                var initiator = new MemberDetials { Name = "Ade Ola", ChandaNo = "0001", Email = "adeola@example.com", JamaatId = new Guid("5f9013da-5c0a-4af0-ae51-738f6bc0009d"), Roles = "Jamaat-President" };//_currentUser.GetMemberDetails();
 
                 if (initiator is null || string.IsNullOrEmpty(initiator.ChandaNo))
                 {

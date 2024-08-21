@@ -52,7 +52,7 @@ namespace Application.Commands
                 var invoiceId = Guid.NewGuid();
                 var reference = Utility.GenerateReference(request.Type.ToString());
 
-                var initiator = new MemberDetials { Name = "Ade Ola", ChandaNo = "0001", Email = "adeola@example.com", JamaatId = new Guid("5f9013da-5c0a-4af0-ae51-738f6bc0009d"), Role = "Jamaat-President" };//_currentUser.GetMemberDetails();
+                var initiator = new MemberDetials { Name = "Ade Ola", ChandaNo = "0001", Email = "adeola@example.com", JamaatId = new Guid("5f9013da-5c0a-4af0-ae51-738f6bc0009d"), Roles = "Jamaat-President" };//_currentUser.GetMemberDetails();
                 
                 if (initiator is null || string.IsNullOrEmpty(initiator.ChandaNo))
                 {
@@ -69,6 +69,10 @@ namespace Application.Commands
 
                 var payerNos = request.InvoiceItems.Select(ii => ii.ChandaNo).ToList();
                 var payers = _memberRepository.GetMembers(m => payerNos.Contains(m.ChandaNo)).ToList();
+                if(request.Type == InvoiceType.JAM && payers.Any(p => p.JamaatId != initiator.JamaatId))
+                {
+                    throw new BadRequestException("One or more selected member is not in your jamaat.", ExceptionCodes.NotInYourJamaat.ToString(), 400);
+                }
 
                 var invoiceItems = new List<InvoiceItem>();
                 foreach (var item in request.InvoiceItems)
