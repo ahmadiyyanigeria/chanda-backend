@@ -4,6 +4,7 @@ using Domain.Enums;
 using Domain.Exceptions;
 using Mapster;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Queries
 {
@@ -19,6 +20,7 @@ namespace Application.Queries
             public async Task<InvoiceResponse> Handle(Query request, CancellationToken cancellationToken)
             {
                 var invoice = await _invoiceRepository.GetAsync(i => i.Id == request.id);
+               
                 if (invoice == null)
                 {
                     throw new NotFoundException("Invoice not found", ExceptionCodes.InvoiceNotFound.ToString(), 404);

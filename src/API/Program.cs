@@ -2,11 +2,21 @@ using API.Extensions;
 using Application.Queries;
 using Infrastructure.Extensions;
 using Infrastructure.Mailing;
+using Serilog;
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
+
+builder.Host.UseSerilog((context, loggerConfiguration) =>
+{
+    loggerConfiguration.WriteTo.Console();
+    loggerConfiguration.ReadFrom.Configuration(context.Configuration);
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
