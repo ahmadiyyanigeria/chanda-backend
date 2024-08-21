@@ -2,11 +2,13 @@ using API.Extensions;
 using Application.Queries;
 using Infrastructure.Extensions;
 using Infrastructure.Mailing;
+using Prometheus;
 using Serilog;
+
+
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateLogger();
-using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
