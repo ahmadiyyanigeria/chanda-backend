@@ -24,6 +24,11 @@ namespace Domain.Entities
 
         private readonly List<MemberRole> _memberRoles = [];
 
+        public void SetMemberLedger(MemberLedger memberLedger)
+        {
+            MemberLedger = memberLedger;
+        }
+
         public Member(string chandaNo, string name, string email, string phoneNo, Guid jamaatId, Guid memberLedgerId, string createdBy)
         {
             ChandaNo = chandaNo;

@@ -25,6 +25,7 @@ namespace Domain.Exceptions
         ChandaTypeNotFound,
         InvoiceNotFound, 
         PaymentNotFound,
-        InvalidFile
+        InvalidFile,
+        NotInYourJamaat
     }
 }

@@ -2,10 +2,14 @@ using API.Extensions;
 using Application.Queries;
 using Infrastructure.Extensions;
 using Infrastructure.Mailing;
+using Prometheus;
 using Serilog;
+
+
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
@@ -34,6 +38,11 @@ builder.Services.AddValidators();
 builder.Services.AddEmailService();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddMockAuth();
+}
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -42,15 +51,9 @@ app.ConfigureExceptionHandler();
 app.ConfigureCors();
 app.ConfigureSwagger(configuration);
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseHttpMetrics();
 app.UseAuthentication();
 app.UseAuthorization();
 

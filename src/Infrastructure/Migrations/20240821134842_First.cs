@@ -184,6 +184,7 @@ namespace Infrastructure.Migrations
                     amount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     reference = table.Column<string>(type: "text", nullable: false, collation: "case_insensitive"),
                     option = table.Column<string>(type: "varchar(50)", nullable: false),
+                    status = table.Column<string>(type: "varchar(50)", nullable: false),
                     created_by = table.Column<string>(type: "varchar(255)", nullable: false, collation: "case_insensitive"),
                     modified_by = table.Column<string>(type: "varchar(255)", nullable: true, collation: "case_insensitive"),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -367,21 +368,21 @@ namespace Infrastructure.Migrations
                 columns: new[] { "id", "CreatedBy", "created_date", "description", "IsDeleted", "ModifiedBy", "modified_date", "name" },
                 values: new object[,]
                 {
-                    { new Guid("0136f689-849f-4076-a6bd-2d11f8cd99e6"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat President.", false, null, null, "Jamaat-President" },
-                    { new Guid("1371d4da-3c71-44d5-8b20-881a99dab19c"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit General Secretary.", false, null, null, "Circuit-Gen-Sec" },
-                    { new Guid("155c8397-b847-4389-b3d7-f9973d4b8368"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit President.", false, null, null, "CP" },
-                    { new Guid("1b9099f5-ec48-4846-9544-828d8ec36ef5"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat Financial Secretary.", false, null, null, "Jamaat-Fin-Sec" },
-                    { new Guid("32804599-c60e-44b6-9c3a-11cb7cae5d88"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat Member.", false, null, null, "Member" },
-                    { new Guid("584f43ee-f4d9-41e6-96d3-ad3bb28c98d4"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National Financial Secretary", false, null, null, "National-Fin-Sec" },
-                    { new Guid("601735dc-1e37-406e-8c35-2a07f1d61e9f"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Vice Circuit President.", false, null, null, "VCP" },
-                    { new Guid("741d6580-62e2-4a22-afc8-f6fecd13eb61"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit Financial Secretary.", false, null, null, "Circuit-Fin-Sec" },
-                    { new Guid("7d19915c-085d-404b-803a-3b2ecaf14d77"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat General Secretary.", false, null, null, "Jamaat-Gen-Sec" },
-                    { new Guid("ad40c6f5-cd71-49a1-985a-c143af3030e6"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Acting Head of AMJN", false, null, null, "Acting-Amir" },
-                    { new Guid("c6793f9b-d825-4ad7-ba23-3cc2e4e0c611"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Naib Amir", false, null, null, "Naib-Amir" },
-                    { new Guid("ca078b2f-93ed-4fdc-8853-6312379b82a1"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Head of AMJN", false, null, null, "Amir" },
-                    { new Guid("ce89da38-e988-49e4-a0fd-1597bb3a82f5"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National General Secretary.", false, null, null, "Nationa-Gen-Sec" },
-                    { new Guid("d8cdf79c-5cd4-491d-8e60-bfb17911b618"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Full administrative access across the system.", false, null, null, "Admin" },
-                    { new Guid("e1be09a8-df72-4377-b677-c2b22749ba7c"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National Tajneed Secretary", false, null, null, "National-Tajneed" }
+                    { new Guid("1ac64977-e151-42c0-b1fb-3ef6a3d53f78"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Head of AMJN", false, null, null, "Amir" },
+                    { new Guid("32af1344-b280-4f04-9b63-bc1f3660ff46"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National Financial Secretary", false, null, null, "National-Fin-Sec" },
+                    { new Guid("3768bd4d-f257-4e88-ae38-1582022f6c9c"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National General Secretary.", false, null, null, "Nationa-Gen-Sec" },
+                    { new Guid("4e79e48b-1e30-4f0e-a90a-82096bd65c6e"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit General Secretary.", false, null, null, "Circuit-Gen-Sec" },
+                    { new Guid("50b4538c-b956-46a6-821f-e3f22ff20f8d"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit Financial Secretary.", false, null, null, "Circuit-Fin-Sec" },
+                    { new Guid("69d091c2-7a34-4ffe-9c1d-21612a603117"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat Financial Secretary.", false, null, null, "Jamaat-Fin-Sec" },
+                    { new Guid("6efe8fe0-250e-4097-9d91-6d0bf2587f1e"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat Member.", false, null, null, "Member" },
+                    { new Guid("74813a65-51df-4991-abc1-4182bec34844"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat President.", false, null, null, "Jamaat-President" },
+                    { new Guid("7a91359d-f4b3-4862-9366-e29893a13278"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Naib Amir", false, null, null, "Naib-Amir" },
+                    { new Guid("7b10489e-853e-45dc-8c74-e91047c205dd"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Full administrative access across the system.", false, null, null, "Admin" },
+                    { new Guid("9ac3f519-5c6e-41cc-9b15-d40a360a44c2"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Acting Head of AMJN", false, null, null, "Acting-Amir" },
+                    { new Guid("b6862738-4320-4f70-9d5f-7ad0d2f13274"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Vice Circuit President.", false, null, null, "VCP" },
+                    { new Guid("b7ec4903-38df-437f-95b0-4611ebaae945"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat General Secretary.", false, null, null, "Jamaat-Gen-Sec" },
+                    { new Guid("bf14d7d1-206d-4d94-96c0-b0f2b3e58ba7"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National Tajneed Secretary", false, null, null, "National-Tajneed" },
+                    { new Guid("ee15665b-92da-480a-a8ab-b02b7e01fadf"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit President.", false, null, null, "CP" }
                 });
 
             migrationBuilder.CreateIndex(

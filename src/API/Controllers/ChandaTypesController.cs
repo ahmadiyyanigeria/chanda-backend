@@ -1,4 +1,5 @@
-﻿using Application.Queries;
+﻿using Application.Commands;
+using Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,5 +31,6 @@ namespace API.Controllers
             var chandaType = await _mediator.Send(query);
             return Ok(chandaType);
         }
+
     }
 }
