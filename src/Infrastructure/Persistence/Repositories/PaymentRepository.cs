@@ -22,9 +22,9 @@ namespace Infrastructure.Persistence.Repositories
         }
 
 
-        public async Task<PaginatedList<Payment>> GetAllAsync(PageRequest pageRequest, Expression<Func<Payment, bool>> expression, bool usePaging)
+        public async Task<PaginatedList<Payment>> GetAllAsync(PageRequest pageRequest, bool usePaging)
         {
-            var query = _context.Payments.Where(expression);
+            var query = _context.Payments.AsQueryable();
             
 
             if (pageRequest.IsDescending)

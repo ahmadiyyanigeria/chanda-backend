@@ -12,6 +12,7 @@ namespace Domain.Entities
         public string Name { get; private set; }
         public string Email { get; private set; }
         public string PhoneNo { get; private set; }
+        public string AuxiliaryBodyName { get; private set; }
         public Guid JamaatId { get; private set; }
         public Guid MemberLedgerId { get; private set; }
         public Jamaat Jamaat { get; private set; } = default!;
@@ -29,12 +30,13 @@ namespace Domain.Entities
             MemberLedger = memberLedger;
         }
 
-        public Member(string chandaNo, string name, string email, string phoneNo, Guid jamaatId, Guid memberLedgerId, string createdBy)
+        public Member(string chandaNo, string name, string email, string phoneNo, string auxiliaryBodyName, Guid jamaatId, Guid memberLedgerId, string createdBy)
         {
             ChandaNo = chandaNo;
             Name = name;
             Email = email;
             PhoneNo = phoneNo;
+            AuxiliaryBodyName = auxiliaryBodyName;
             JamaatId = jamaatId;
             MemberLedgerId = memberLedgerId;
             CreatedBy = createdBy;

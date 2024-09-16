@@ -46,7 +46,7 @@ namespace UniteTest.CreateHandlerTests
             var jamaatLedger = new JamaatLedger(Guid.NewGuid(), "0001");
             var jamaat = new Jamaat("Lafiaji","ABK-L",circuit.Id, jamaatLedger.Id, "0001");
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", "Khuddam", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
@@ -82,7 +82,7 @@ namespace UniteTest.CreateHandlerTests
             var jamaatLedger = new JamaatLedger(Guid.NewGuid(), "0001");
             var jamaat = new Jamaat("Lafiaji", "ABK-L", circuit.Id, jamaatLedger.Id, "0001");
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
-            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
+            var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", "Khuddam", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
 
 
