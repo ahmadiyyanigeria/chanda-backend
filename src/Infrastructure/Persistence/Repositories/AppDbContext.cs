@@ -24,6 +24,7 @@ namespace Infrastructure.Persistence.Repositories
         public DbSet<MemberLedger> MemberLedgers => Set<MemberLedger>();
         public DbSet<ChandaItem> ChandaItems => Set<ChandaItem>();
         public DbSet<Circuit> Circuits => Set<Circuit>();
+        public DbSet<Reminder> Reminders => Set<Reminder>();
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
