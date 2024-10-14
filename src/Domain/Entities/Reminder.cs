@@ -28,6 +28,11 @@
             ViaMail = viaMail;
         }
 
+        public void SetOwner(Member member)
+        {
+            Member = member;
+        }
+
         public void UpdateStatus(bool status)
         {
             IsActive = status;

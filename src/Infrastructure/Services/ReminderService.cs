@@ -1,4 +1,5 @@
 ﻿using Application.Contracts;
+using Application.DTOs;
 using Application.Mailing;
 using Domain.Entities;
 using Hangfire;
@@ -17,10 +18,10 @@ namespace Infrastructure.Services
             _logger = logger;
         }
 
-        public void ScheduleReminder(Reminder reminder)
+        public void ScheduleReminder(ReminderDto reminder)
         {
-            RecurringJob.AddOrUpdate(reminder.Id.ToString(), () => SendReminderNotification(reminder), reminder.CronExpression);
-            _logger.LogInformation($"Reminder scheduled successfully for {reminder.Member.Name}-{reminder.Member.ChandaNo}");
+            RecurringJob.AddOrUpdate(reminder.Id, () => SendReminderNotification(reminder), reminder.CronExpression);
+            _logger.LogInformation($"Reminder scheduled successfully for {reminder.Name}-{reminder.Email}");
         }
 
         public void RemoveReminder(Guid reminderId)
@@ -29,24 +30,24 @@ namespace Infrastructure.Services
             _logger.LogInformation($"Reminder removed successfully.");
         }
 
-        private async Task SendReminderNotification(Reminder reminder)
+        public async Task SendReminderNotification(ReminderDto reminder)
         {
             var topic = string.IsNullOrEmpty(reminder.Description) ? reminder.ReminderTitle : $"{reminder.ReminderTitle} ({reminder.Description})";
             var body = $"Asalam alaykum waramotulah wabarakatuhu,\n\nThis is to remind you base on your setting about {topic}.\nJazakumllah Khairan.";
             
             if (reminder.ViaMail)
             {
-                var mailRequest = new MailRequest(reminder.Member.Email, $"{reminder.ReminderTitle} Reminder", body, reminder.Member.Name);
+                var mailRequest = new MailRequest(reminder.Email, $"{reminder.ReminderTitle} Reminder", body, reminder.Name);
 
                 await _email.SendAsync(mailRequest, CancellationToken.None);
-                _logger.LogInformation($"Mail reminder sent to {reminder.Member.Email} successfully at {DateTime.Now}.");
+                _logger.LogInformation($"Mail reminder sent to {reminder.Email} successfully at {DateTime.Now}.");
             }
 
             if(reminder.ViaSMS)
             {
                 //Todo....
                 //Send SMS...
-                _logger.LogInformation($"SMS reminder sent to {reminder.Member.PhoneNo} successfully at {DateTime.Now}.");
+                _logger.LogInformation($"SMS reminder sent to {reminder.PhoneNo} successfully at {DateTime.Now}.");
             }            
         }
     }

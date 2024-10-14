@@ -48,6 +48,15 @@ namespace UniteTest.CreateHandlerTests
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
             var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var memberDetails = new Application.DTOs.MemberDetials
+            {
+                Id = member.Id,
+                Name = member.Name,
+                ChandaNo = member.ChandaNo,
+                Email = member.Email,
+                JamaatId = member.JamaatId,
+                Roles = "Admin"
+            };
 
 
             var command = new Command
@@ -65,6 +74,8 @@ namespace UniteTest.CreateHandlerTests
                     }
                 }
             };
+
+            _currentUserMock.Setup(m => m.GetMemberDetails()).Returns(memberDetails);
 
             _chandaTypeRepositoryMock.Setup(ct => ct.GetChandaTypes(It.IsAny<List<string>>()))
                 .Returns(new List<ChandaType>());
@@ -84,6 +95,15 @@ namespace UniteTest.CreateHandlerTests
             var memberLedger = new MemberLedger(Guid.NewGuid(), "0001");
             var member = new Member("0001", "Usman Tijani", "johndoe@mail.com", "08011111111", jamaat.Id, memberLedger.Id, "0001");
             var chandaType = new ChandaType("Chanda Wasiyyat", "CHA-WAS", "Chanda Wasiyyat", new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), "0001");
+            var memberDetails = new Application.DTOs.MemberDetials
+            {
+                Id = member.Id,
+                Name = member.Name,
+                ChandaNo = member.ChandaNo,
+                Email = member.Email,
+                JamaatId = member.JamaatId,
+                Roles = "Admin"
+            };
 
 
             var command = new Command
@@ -104,6 +124,8 @@ namespace UniteTest.CreateHandlerTests
             };
 
             var invoice = new Invoice(new Guid("e041f7a3-7b3e-411c-a679-428ba1b1a884"), jamaat.Id, "INV-AE23GHS", 100m, InvoiceStatus.Pending, member.ChandaNo);
+
+            _currentUserMock.Setup(m => m.GetMemberDetails()).Returns(memberDetails);
 
             _jamaatRepositoryMock.Setup(j => j.Get(It.IsAny<Expression<Func<Jamaat, bool>>>()))
                 .ReturnsAsync(jamaat);

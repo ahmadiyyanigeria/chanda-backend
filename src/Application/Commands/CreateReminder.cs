@@ -29,12 +29,14 @@ namespace Application.Commands
         {
             private readonly IUnitOfWork _unitOfWork;
             private readonly ICurrentUser _currentUser;
+            private readonly IMemberRepository _memberRepo;
             private readonly IReminderRepository _reminderRepo;
             private readonly IReminderService _reminderService;
 
-            public Handler(IUnitOfWork unitOfWork, ICurrentUser currentUser, IReminderRepository reminderRepo, IReminderService reminderService)
+            public Handler(IUnitOfWork unitOfWork, ICurrentUser currentUser, IReminderRepository reminderRepo, IReminderService reminderService, IMemberRepository memberRepo)
             {
                 _unitOfWork = unitOfWork;
+                _memberRepo = memberRepo;
                 _currentUser = currentUser;
                 _reminderRepo = reminderRepo;
                 _reminderService = reminderService;
@@ -42,18 +44,38 @@ namespace Application.Commands
 
             public async Task<ReminderResponse> Handle(Command request, CancellationToken cancellationToken)
             {
-                var initiator = new MemberDetials { Name = "Ade Ola", ChandaNo = "0001", Email = "adeola@example.com", JamaatId = new Guid("5f9013da-5c0a-4af0-ae51-738f6bc0009d"), Roles = "Jamaat-President" };//_currentUser.GetMemberDetails();
+                var initiator = _currentUser.GetMemberDetails();
 
                 if (initiator is null || string.IsNullOrEmpty(initiator.ChandaNo))
                 {
                     throw new NotFoundException($"Please login to create a reminder.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
+                var member = await _memberRepo.GetMemberAsync(m => m.ChandaNo == initiator.ChandaNo);
+
+                if (member is null)
+                {
+                    throw new NotFoundException($"Member not found.", ExceptionCodes.MemberNotFound.ToString(), 404);
+                }
+
                 var reminder = new Reminder(initiator.Id, request.Day, request.Hour, request.Minute, request.ReminderTitle, request.Description, request.ViaSMS, request.ViaMail);
+                reminder.SetOwner(member);
                 reminder = await _reminderRepo.AddAsync(reminder);
                 await _unitOfWork.SaveChangesAsync();
 
-                _reminderService.ScheduleReminder(reminder);
+                var dto = new ReminderDto
+                {
+                    Id = reminder.Id.ToString(),
+                    Name = reminder.Member.Name,
+                    Email = reminder.Member.Email,
+                    PhoneNo = reminder.Member.PhoneNo,
+                    CronExpression = reminder.CronExpression,
+                    ReminderTitle = reminder.ReminderTitle,
+                    Description = reminder.Description,
+                    ViaMail = reminder.ViaMail,
+                    ViaSMS = reminder.ViaSMS
+                };
+                _reminderService.ScheduleReminder(dto);
 
                 return reminder.Adapt<ReminderResponse>();
             }

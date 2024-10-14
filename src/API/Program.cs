@@ -32,7 +32,7 @@ builder.Services.AddPaymentService(configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSwagger();
+
 builder.Services.ConfigureMvc();
 builder.Services.AddHealthChecks();
 builder.Services.AddMapster();
@@ -43,8 +43,15 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailS
 
 if (builder.Environment.IsDevelopment())
 {
+    builder.Services.AddSwaggerForJwt();
     builder.Services.AddMockAuth();
 }
+else
+{
+    //builder.Services.AddSwaggerForKaycloak(configuration);
+    //builder.Services.AddKaycloakAuth(configuration);
+}
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

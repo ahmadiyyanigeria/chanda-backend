@@ -1,4 +1,5 @@
 ﻿using Application.Contracts;
+using Application.DTOs;
 using Application.Exceptions;
 using Application.Repositories;
 using Domain.Entities;
@@ -58,7 +59,19 @@ namespace Application.Commands
                 reminder = await _reminderRepo.UpdateAsync(reminder);
                 await _unitOfWork.SaveChangesAsync();
 
-                _reminderService.ScheduleReminder(reminder);
+                var dto = new ReminderDto
+                {
+                    Id = reminder.Id.ToString(),
+                    Name = reminder.Member.Name,
+                    Email = reminder.Member.Email,
+                    PhoneNo = reminder.Member.PhoneNo,
+                    CronExpression = reminder.CronExpression,
+                    ReminderTitle = reminder.ReminderTitle,
+                    Description = reminder.Description,
+                    ViaMail = reminder.ViaMail,
+                    ViaSMS = reminder.ViaSMS
+                };
+                _reminderService.ScheduleReminder(dto);
 
                 return reminder.Adapt<ReminderResponse>();
             }

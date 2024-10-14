@@ -75,6 +75,9 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                     .HasForeignKey<MemberLedger>(ml => ml.MemberId)
                     .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasMany(m => m.Reminders)
+                .WithOne(r => r.Member)
+                .HasForeignKey(r => r.MemberId);
         }
     }
 }

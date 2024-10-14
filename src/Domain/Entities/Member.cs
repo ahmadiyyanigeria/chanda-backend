@@ -18,6 +18,13 @@
 
         private readonly List<MemberRole> _memberRoles = [];
 
+        public IReadOnlyList<Reminder> Reminders
+        {
+            get => _reminders.AsReadOnly();
+            private set => _reminders.AddRange(value);
+        }
+        private readonly List<Reminder> _reminders = [];
+
         public void SetMemberLedger(MemberLedger memberLedger)
         {
             MemberLedger = memberLedger;

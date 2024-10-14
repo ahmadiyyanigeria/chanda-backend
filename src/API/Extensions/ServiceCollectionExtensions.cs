@@ -18,6 +18,8 @@ using static Application.Queries.GetJamaats;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Authorization;
 
 namespace API.Extensions
 {
@@ -42,7 +44,7 @@ namespace API.Extensions
                });
         }
 
-        public static void AddSwagger(this IServiceCollection services)
+        public static void AddSwaggerForJwt(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
             {
@@ -58,46 +60,41 @@ namespace API.Extensions
                         }
                     });
 
-                c.AddSecurityRequirement(new()
-               {
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
                     {
-                        new()
+                        new OpenApiSecurityScheme
                         {
-                            Reference = new()
+                            Reference = new OpenApiReference
                             {
-                                Id = "OAuth2",
-                                Type = ReferenceType.SecurityScheme
-                            },
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
                         },
-                        new List<string>()
+                        new string[] { }
                     }
-               });
+                });
 
                 // Configure Swagger to use JWT Bearer token authentication
                 c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
                 {
-                    Description = "Input your Bearer token to access this API",
+                    Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
                     BearerFormat = "JWT"
                 });
             });
+
             services.AddFluentValidationRulesToSwagger();
         }
 
         public static void AddMockAuth(this IServiceCollection services)
         {
-            services.AddAuthentication(options =>
+            services.AddAuthentication("Bearer")
+            .AddJwtBearer("Bearer", options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -111,6 +108,59 @@ namespace API.Extensions
                 };
             });
         }
+
+        /*public static void AddSwaggerForKaycloak(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "Keycloak",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.OpenIdConnect,
+                    OpenIdConnectUrl = new Uri($"{config["Keycloak:auth-server-url"]}realms/{config["Keycloak:realm"]}/.well-known/openid-configuration"),
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = "Bearer",
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, Array.Empty<string>()}
+                });
+            });
+        }*/
+
+        /*public static void AddKaycloakAuth(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddKeycloakAuthentication(new KeycloakAuthenticationOptions()
+            {
+                // Keycloak server URL
+                AuthServerUrl = config["Keycloak:auth-server-url"]!,
+                // Realm Name
+                Realm = config["Keycloak:realm"]!,
+                // ClientId
+                Resource = config["Keycloak:resource"]!,
+
+                SslRequired = config["Keycloak:ssl-required"]!,
+                VerifyTokenAudience = false,
+            });
+
+            services.AddKeycloakAuthorization(new KeycloakProtectionClientOptions()
+            {
+                AuthServerUrl = config["Keycloak:auth-server-url"]!,
+                Realm = config["Keycloak:realm"]!,
+                Resource = config["Keycloak:resource"]!,
+                SslRequired = config["Keycloak:ssl-required"]!,
+                VerifyTokenAudience = false
+            });
+        }*/
 
         public static IServiceCollection AddMapster(this IServiceCollection services)
         {
@@ -161,8 +211,8 @@ namespace API.Extensions
         public static IServiceCollection AddValidators(this IServiceCollection serviceCollection)
         {
             // Set FluentValidator Global Options
-            //ValidatorOptions.Global.DisplayNameResolver = (_, member, _) => member.Name.ToCamelCase();
-            //ValidatorOptions.Global.PropertyNameResolver = (_, member, _) => member.Name.ToCamelCase();
+            ValidatorOptions.Global.DisplayNameResolver = (_, member, _) => member?.Name?.ToCamelCase() ?? string.Empty;
+            ValidatorOptions.Global.PropertyNameResolver = (_, member, _) => member?.Name?.ToCamelCase() ?? string.Empty;
 
             return serviceCollection
                 .AddValidatorsFromAssemblyContaining<CreateInvoice.CommandValidator>()
