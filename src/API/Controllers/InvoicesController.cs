@@ -65,6 +65,5 @@ namespace API.Controllers
             return Ok(invoice);
         }
 
-       
     }
 }

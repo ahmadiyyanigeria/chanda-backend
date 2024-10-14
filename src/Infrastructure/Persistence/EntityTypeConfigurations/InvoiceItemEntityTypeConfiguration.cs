@@ -32,7 +32,10 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                 .HasColumnName("id");
 
             builder.Property(ii => ii.ReceiptNo)
-                   .HasColumnName("receipt_no")
+                   .HasColumnName("receipt_no");
+            
+            builder.Property(ii => ii.ReferenceNo)
+                   .HasColumnName("reference_no")
                    .IsRequired();
 
             builder.HasIndex(ii => ii.ReceiptNo)

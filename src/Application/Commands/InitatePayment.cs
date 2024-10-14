@@ -41,8 +41,8 @@ namespace Application.Commands
             public async Task<InitiateResponse> Handle(Command request, CancellationToken cancellationToken)
             {
                 var _paymentService = _paymentServiceFactory.GetPaymentService(request.Option);
-                var member = new MemberDetials { Name = "Ade Ola", ChandaNo = "0001", Email = "adeola@example.com", JamaatId = new Guid("5f9013da-5c0a-4af0-ae51-738f6bc0009d"), Roles = "Jamaat-President" };
-                //var member = _currentUser.GetMemberDetails();
+                
+                var member = _currentUser.GetMemberDetails();
                 if (member is null || string.IsNullOrEmpty(member.ChandaNo))
                 {
                     throw new NotFoundException($"Please login to create an invoice.", ExceptionCodes.MemberNotFound.ToString(), 403);

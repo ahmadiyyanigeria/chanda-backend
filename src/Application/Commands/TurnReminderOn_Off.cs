@@ -1,4 +1,5 @@
 ﻿using Application.Contracts;
+using Application.DTOs;
 using Application.Exceptions;
 using Application.Repositories;
 using Domain.Exceptions;
@@ -48,7 +49,19 @@ namespace Application.Commands
 
                 if(request.TurnOn)
                 {
-                    _reminderService.ScheduleReminder(reminder);
+                    var dto = new ReminderDto
+                    {
+                        Id = reminder.Id.ToString(),
+                        Name = reminder.Member.Name,
+                        Email = reminder.Member.Email,
+                        PhoneNo = reminder.Member.PhoneNo,
+                        CronExpression = reminder.CronExpression,
+                        ReminderTitle = reminder.ReminderTitle,
+                        Description = reminder.Description,
+                        ViaMail = reminder.ViaMail,
+                        ViaSMS = reminder.ViaSMS
+                    };
+                    _reminderService.ScheduleReminder(dto);
                 }
                 else
                 {

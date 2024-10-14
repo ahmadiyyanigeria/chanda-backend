@@ -19,15 +19,19 @@ namespace Infrastructure.Persistence.Repositories
 
         public MemberDetials? GetMemberDetails()
         {
-            var getId = Guid.TryParse(GetClaimValue(ClaimTypes.GroupSid), out Guid jamaatId);
+            var getJamaatId = Guid.TryParse(GetClaimValue(ClaimTypes.GroupSid), out Guid jamaatId);
+            var getId = Guid.TryParse(GetClaimValue(ClaimTypes.PrimarySid), out Guid id);
+
+            jamaatId = getJamaatId ? jamaatId : default;
+            id = getId ? id : default;
 
             return new MemberDetials
             {
-                Id = new Guid(GetClaimValue(JwtRegisteredClaimNames.Sub)),
+                Id = id,
                 Name = GetClaimValue(ClaimTypes.Name),
                 Email = GetClaimValue(ClaimTypes.Email),
                 ChandaNo = GetClaimValue(ClaimTypes.NameIdentifier),
-                JamaatId = getId ? jamaatId : default,
+                JamaatId = jamaatId,
                 Roles = GetClaimValue(ClaimTypes.Role)
             };
         }

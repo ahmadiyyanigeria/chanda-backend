@@ -22,7 +22,7 @@ namespace Application.Commands
         public record InvoiceItemCommand
         {
             public string ChandaNo { get; init; } = default!;
-            public string ReceiptNo { get; init; } = default!;
+            public string? ReceiptNo { get; init; }
             public MonthOfTheYear MonthPaidFor { get; init; }
             public int Year { get; init; }
             public IReadOnlyList<ChandaItemCommand> ChandaItems { get; init; } = new List<ChandaItemCommand>();
@@ -52,7 +52,7 @@ namespace Application.Commands
                 var invoiceId = Guid.NewGuid();
                 var reference = Utility.GenerateReference(request.Type.ToString());
 
-                var initiator = new MemberDetials { Name = "Ade Ola", ChandaNo = "0001", Email = "adeola@example.com", JamaatId = new Guid("5f9013da-5c0a-4af0-ae51-738f6bc0009d"), Roles = "Jamaat-President" };//_currentUser.GetMemberDetails();
+                var initiator = _currentUser.GetMemberDetails();
                 
                 if (initiator is null || string.IsNullOrEmpty(initiator.ChandaNo))
                 {
@@ -83,6 +83,7 @@ namespace Application.Commands
                         var invoiceItemAmount = 0.0m;
                         var invoiceItemId = Guid.NewGuid();
                         var chandaItems = new List<ChandaItem>();
+                        var itemReference = Utility.GenerateReference("RC");
                         foreach (var chanda in item.ChandaItems)
                         {
                             var chandaType = validChandaTypes.Where(ct => ct.Name.Equals(chanda.ChandaTypeName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
@@ -96,7 +97,7 @@ namespace Application.Commands
 
                         if (chandaItems.Any())
                         {
-                            var invoiceItem = new InvoiceItem(invoiceItemId, payer.Id, invoiceId, item.ReceiptNo, invoiceItemAmount, item.MonthPaidFor, item.Year, initiator.ChandaNo);
+                            var invoiceItem = new InvoiceItem(invoiceItemId, payer.Id, invoiceId, item.ReceiptNo, itemReference, invoiceItemAmount, item.MonthPaidFor, item.Year, initiator.ChandaNo);
                             invoiceItem.AddChandaItems(chandaItems);
                             invoiceAmount += invoiceItemAmount;
                             invoiceItems.Add(invoiceItem);
