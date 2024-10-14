@@ -1,8 +1,9 @@
 ﻿using Application.Commands;
+using Application.DTOs;
 using Application.Queries;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -34,16 +35,13 @@ namespace API.Controllers
             return Ok(reminders);
         }
 
-        /*[HttpPost("Update{id}")]
-        public async Task<IActionResult> UpdateReminder(Guid id, [FromBody] UpdateReminder.Command commandDto)
+        [HttpPatch]
+        public async Task<IActionResult> UpdateReminder([FromBody] UpdateReminderDto dto)
         {
-            var command = new UpdateReminder.Command(id)
-            {
-                
-            };
+            var command = dto.Adapt<UpdateReminder.Command>();
             var reminder = await _mediator.Send(command);
             return Ok(reminder);
-        }*/
+        }
 
         [HttpPatch("TurnOn/{id}")]
         public async Task<IActionResult> TurnOnReminder(Guid id)

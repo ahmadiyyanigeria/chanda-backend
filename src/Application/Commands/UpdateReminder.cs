@@ -13,9 +13,9 @@ namespace Application.Commands
 {
     public class UpdateReminder
     {
-        public record Command(Guid Id) : IRequest<ReminderResponse>
+        public record Command : IRequest<ReminderResponse>
         {
-            //public Guid Id { get; set; }
+            public Guid Id { get; set; }
             public int Day { get; init; }
             public int Hour { get; init; }
             public int Minute { get; init; }
