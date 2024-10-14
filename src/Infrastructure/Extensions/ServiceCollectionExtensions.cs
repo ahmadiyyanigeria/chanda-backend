@@ -1,7 +1,8 @@
 ﻿using Application.Contracts;
 using Application.Mailing;
 using Application.Repositories;
-using Domain.Constants;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Infrastructure.Mailing;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
@@ -31,7 +32,32 @@ namespace Infrastructure.Extensions
                 .AddScoped<IPaymentRepository, PaymentRepository>()
                 .AddScoped<ICurrentUser, CurrentUser>()
                 .AddScoped<IUnitOfWork, UnitOfWork>()
-                .AddScoped<IFileService, FileService>();
+                .AddScoped<IFileService, FileService>()
+                .AddScoped<IReminderRepository, ReminderRepository>()
+                .AddScoped<IReminderService, ReminderService>();
+        }
+
+        public static IServiceCollection AddHangfireService(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            services.AddHangfire(config =>
+            {
+                config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                      .UseSimpleAssemblyNameTypeSerializer()
+                      .UseRecommendedSerializerSettings()
+                      .UsePostgreSqlStorage(
+                          connectionString, // Reuse your existing connection string
+                          new PostgreSqlStorageOptions
+                          {
+                              QueuePollInterval = TimeSpan.FromSeconds(15), // Adjust polling interval as needed
+                              SchemaName = "hangfire" // Optional: Use a custom schema for Hangfire tables
+                          });
+            });
+
+            services.AddHangfireServer();
+
+            return services;
         }
 
         public static IServiceCollection AddPaymentService(this IServiceCollection services, IConfiguration config)

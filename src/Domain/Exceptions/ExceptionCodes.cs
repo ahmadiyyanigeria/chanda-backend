@@ -26,6 +26,7 @@ namespace Domain.Exceptions
         InvoiceNotFound, 
         PaymentNotFound,
         InvalidFile,
-        NotInYourJamaat
+        NotInYourJamaat,
+        ReminderNotFound
     }
 }

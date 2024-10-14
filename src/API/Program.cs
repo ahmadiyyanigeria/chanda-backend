@@ -1,5 +1,7 @@
 using API.Extensions;
+using API.Filters;
 using Application.Queries;
+using Hangfire;
 using Infrastructure.Extensions;
 using Infrastructure.Mailing;
 using Prometheus;
@@ -23,6 +25,7 @@ builder.Host.UseSerilog((context, loggerConfiguration) =>
 
 builder.Services.AddControllers();
 builder.Services.AddDatabase(configuration);
+builder.Services.AddHangfireService(configuration);
 builder.Services.AddPaymentService(configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,6 +48,11 @@ if (builder.Environment.IsDevelopment())
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new AllowAllUsersAuthorizationFilter() }
+});
 
 // Configure the HTTP request pipeline.
 app.ConfigureExceptionHandler();
