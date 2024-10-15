@@ -4,6 +4,7 @@ using Application.Queries;
 using Hangfire;
 using Infrastructure.Extensions;
 using Infrastructure.Mailing;
+using Infrastructure.Middleware;
 using Prometheus;
 using Serilog;
 
@@ -73,6 +74,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseMiddleware<ActionTrackingMiddleware>();
 app.MapHealthChecks("/healthz");
 
 app.Run();

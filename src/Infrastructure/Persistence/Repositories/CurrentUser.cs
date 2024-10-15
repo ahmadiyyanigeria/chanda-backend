@@ -36,6 +36,19 @@ namespace Infrastructure.Persistence.Repositories
             };
         }
 
+        public string GetUserId()
+        {
+            var getId = Guid.TryParse(GetClaimValue(ClaimTypes.PrimarySid), out Guid id);
+            return getId ? id.ToString() : "";
+        }
+
+        public string GetUserNameAndChandaNo()
+        {
+            var name = GetClaimValue(ClaimTypes.Name);
+            var chandaNo = GetClaimValue(ClaimTypes.NameIdentifier);
+            return $"{name}({chandaNo})";
+        }
+
         private string GetClaimValue(string claimType)
         {
             return User?.FindFirst(claimType)?.Value ?? string.Empty;

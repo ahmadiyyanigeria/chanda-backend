@@ -10,5 +10,7 @@ namespace Application.Repositories
     public interface ICurrentUser
     {
         MemberDetials? GetMemberDetails();
+        string GetUserId();
+        string GetUserNameAndChandaNo();
     }
 }
