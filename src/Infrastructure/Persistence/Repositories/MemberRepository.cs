@@ -2,6 +2,7 @@
 using Application.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Linq.Expressions;
 
 namespace Infrastructure.Persistence.Repositories
@@ -30,6 +31,11 @@ namespace Infrastructure.Persistence.Repositories
         public bool ExistsByChandaNo(string chandaNo)
         {
             return _context.Members.Any(m => m.ChandaNo == chandaNo);
+        }
+
+        public Member? GetMember(Guid? id)
+        {
+            return _context.Members.Include(m => m.Jamaat).ThenInclude(j => j.Circuit).SingleOrDefault(m => m.Id == id);
         }
 
         public async Task<Member?> GetMemberAsync(Expression<Func<Member, bool>> expression)

@@ -20,6 +20,7 @@ namespace Infrastructure.Persistence.Repositories
         public MemberDetials? GetMemberDetails()
         {
             var getJamaatId = Guid.TryParse(GetClaimValue(ClaimTypes.GroupSid), out Guid jamaatId);
+            var getCircuitId = Guid.TryParse(GetClaimValue(ClaimTypes.PrimaryGroupSid), out Guid circuitId);
             var getId = Guid.TryParse(GetClaimValue(ClaimTypes.PrimarySid), out Guid id);
 
             jamaatId = getJamaatId ? jamaatId : default;
@@ -32,6 +33,7 @@ namespace Infrastructure.Persistence.Repositories
                 Email = GetClaimValue(ClaimTypes.Email),
                 ChandaNo = GetClaimValue(ClaimTypes.NameIdentifier),
                 JamaatId = jamaatId,
+                CircuitId = circuitId,
                 Roles = GetClaimValue(ClaimTypes.Role)
             };
         }
