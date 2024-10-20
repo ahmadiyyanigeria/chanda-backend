@@ -24,5 +24,40 @@ namespace API.Controllers
             var response = await _mediator.Send(query);
             return Ok(response);
         }
+
+        [HttpGet("jamaat")]
+        public async Task<IActionResult> GetJamaatReport([FromQuery] GetJamaatReport.Query query)
+        {
+            var response = await _mediator.Send(query);
+            return Ok(response);
+        }
+
+        [HttpGet("jamaatMembers")]
+        public async Task<IActionResult> GetJamaatMembersReport([FromQuery] GetJamaatMembersReport.Query query)
+        {
+            var response = await _mediator.Send(query);
+            return Ok(response);
+        }
+
+        [HttpGet("circuit")]
+        public async Task<IActionResult> GetCircuitReport([FromQuery] GetCircuitReport.Query query)
+        {
+            var response = await _mediator.Send(query);
+            return Ok(response);
+        }
+
+        [HttpGet("circuitJamaats")]
+        public async Task<IActionResult> GetCircuitJamaatsReport([FromQuery] GetCircuitJamaatsReport.Query query)
+        {
+            var response = await _mediator.Send(query);
+            return Ok(response);
+        }
+
+        [HttpGet("overrall")]
+        public async Task<IActionResult> GetOverrallSummary([FromQuery] GetOverrallSummary.Query query)
+        {
+            var response = await _mediator.Send(query);
+            return Ok(response);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Paging;
+using Application.Queries;
 using Application.Repositories;
 using Domain.Entities;
 using Infrastructure.Mapping.Extensions;
@@ -16,6 +17,31 @@ namespace Infrastructure.Persistence.Repositories
             _context = context;
         }
 
+        public Task<GetCircuitJamaatsReport.CircuitJamaatsReport> GetCircuitJamaatsReportAsync(Guid circuitId, string? chandaType, PageRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetCircuitReport.CircuitReport> GetCircuitReportAsync(Guid circuitId, string? chandaType, PageRequest request, bool usePaging)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<MemberReport> GetJamaatMembersReportAsync(Guid jamaatId, string? chandaType, PageRequest request, bool usePaging)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetJamaatMembersReport.JamaatMembersReport> GetJamaatMembersReportAsync(Guid jamaatId, string? chandaType, PageRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetJamaatReport.JamaatReport> GetJamaatReportAsync(Guid jamaatId, string? chandaType, PageRequest request, bool usePaging)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<MemberReport> GetMemberReportAsync(Guid? id, string? chandaType, PageRequest request, bool usePaging)
         {
             var query = _context.InvoiceItems.Include(ii => ii.Member).Include(ii => ii.ChandaItems).ThenInclude(ci => ci.ChandaType)
@@ -24,7 +50,7 @@ namespace Infrastructure.Persistence.Repositories
             if (!string.IsNullOrEmpty(request.Filter))
             {
                 var filter = request.Filter.ToLower().Replace(" ", "");
-                query = PeriodicFilter(query, filter, request.StartDate, request.EndDate);
+                query = PeriodicFilter(query, filter, request.Year, request.Month, request.StartDate, request.EndDate);
             }
             else
             {
@@ -111,13 +137,18 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        private IQueryable<InvoiceItem> PeriodicFilter(IQueryable<InvoiceItem> query, string filter, DateTime startDate, DateTime endDate)
+        public Task<GetOverrallSummary.OverrallReport> GetOverrallReportAsync(string? chandaType, PageRequest request, bool usePaging)
+        {
+            throw new NotImplementedException();
+        }
+
+        private IQueryable<InvoiceItem> PeriodicFilter(IQueryable<InvoiceItem> query, string filter, int year, int month, DateTime startDate, DateTime endDate)
         {
             switch (filter)
             {
                 case "lastyear":
-                    var year = DateTime.Now.Year - 1;
-                    query = query.Where(ii => ii.CreatedOn.Year == year);
+                    var latYear = DateTime.Now.Year - 1;
+                    query = query.Where(ii => ii.CreatedOn.Year == latYear);
                     break;
 
                 case "thismonth":
@@ -125,11 +156,25 @@ namespace Infrastructure.Persistence.Repositories
                     break;
 
                 case "lastmonth":
-                    var month = DateTime.Now.Month - 1;
-                    query = query.Where(ii => ii.CreatedOn.Month == month);
+                    var lastMonth = DateTime.Now.Month - 1;
+                    query = query.Where(ii => ii.CreatedOn.Month == lastMonth);
                     break;
                 case "betweendates":
                     query = query.Where(ii => ii.CreatedOn.Date >= startDate.Date && ii.CreatedOn.Date <= endDate.Date);
+                    break;
+
+                case "month":
+                    if(month > 0 && month < 13)
+                    {
+                        query = query.Where(ii => ii.CreatedOn.Month == month);
+                    }
+                    break;
+
+                case "year":
+                    if (year > 0)
+                    {
+                        query = query.Where(ii => ii.CreatedOn.Year == year);
+                    }
                     break;
 
                 default:

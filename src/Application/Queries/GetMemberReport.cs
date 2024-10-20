@@ -5,11 +5,6 @@ using Domain.Constants;
 using Domain.Enums;
 using Domain.Exceptions;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Queries
 {
@@ -21,8 +16,6 @@ namespace Application.Queries
         {
             public decimal TotalAmountSummary { get; set; }
             public int NoOfMonthsPaid { get; set; }
-            
-            //public int PaidByNoOfMembers { get; set; }
             public PaginatedList<MemberReportResponse> ReportResponses { get; set;} = new PaginatedList<MemberReportResponse>();
         }
 
