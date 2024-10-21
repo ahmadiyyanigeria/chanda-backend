@@ -12,8 +12,8 @@ namespace Application.Repositories
     public interface IJamaatRepository
     {
         Task<Jamaat> AddAsync(Jamaat jamaat);
-        Task<Jamaat> Update(Jamaat jamaat);
-        Task<Jamaat?> Get(Expression<Func<Jamaat, bool>> expression);
+        Task<Jamaat> UpdateAsync(Jamaat jamaat);
+        Task<Jamaat?> GetAsync(Expression<Func<Jamaat, bool>> expression);
         Task<PaginatedList<Jamaat>> GetAllAsync(PageRequest pageRequest, Expression<Func<Jamaat, bool>> expression, bool usePaging);
 
     }

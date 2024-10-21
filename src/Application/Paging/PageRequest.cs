@@ -14,5 +14,9 @@ namespace Application.Paging
         public string? Filter { get; init; }
         public string? Keyword { get; init; }
         public bool IsDescending { get; init; } = false;
+        public DateTime StartDate { get; init; }
+        public DateTime EndDate { get; init; }
+        public int Year { get; init; } = 0;
+        public int Month { get; init; } = 0;
     }
 }

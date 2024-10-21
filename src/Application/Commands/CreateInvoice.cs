@@ -85,7 +85,7 @@ namespace Application.Commands
 
                     if (chandaItems.Any())
                     {
-                        var invoiceItem = new InvoiceItem(invoiceItemId, payer.Id, invoiceId, item.ReceiptNo, itemReference, invoiceItemAmount, item.MonthPaidFor, item.Year, initiator.ChandaNo);
+                        var invoiceItem = new InvoiceItem(invoiceItemId, payer.Id, payer.JamaatId, invoiceId, item.ReceiptNo, itemReference, invoiceItemAmount, item.MonthPaidFor, item.Year, initiator.ChandaNo);
                         invoiceItem.AddChandaItems(chandaItems);
                         invoiceAmount += invoiceItemAmount;
                         invoiceItems.Add(invoiceItem);

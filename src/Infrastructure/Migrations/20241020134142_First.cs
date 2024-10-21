@@ -17,6 +17,23 @@ namespace Infrastructure.Migrations
                 .Annotation("Npgsql:CollationDefinition:case_insensitive", "en-u-ks-primary,en-u-ks-primary,icu,False");
 
             migrationBuilder.CreateTable(
+                name: "AuditEntries",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    EntityName = table.Column<string>(type: "text", nullable: false, collation: "case_insensitive"),
+                    Action = table.Column<string>(type: "text", nullable: false, collation: "case_insensitive"),
+                    ActionName = table.Column<string>(type: "text", nullable: false, collation: "case_insensitive"),
+                    UserId = table.Column<string>(type: "text", nullable: false, collation: "case_insensitive"),
+                    UserName = table.Column<string>(type: "text", nullable: false, collation: "case_insensitive"),
+                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditEntries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "chanda_type",
                 columns: table => new
                 {
@@ -208,6 +225,7 @@ namespace Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     payer_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    jamaat_id = table.Column<Guid>(type: "uuid", nullable: false),
                     invoice_id = table.Column<Guid>(type: "uuid", nullable: false),
                     receipt_no = table.Column<string>(type: "text", nullable: true, collation: "case_insensitive"),
                     reference_no = table.Column<string>(type: "text", nullable: false, collation: "case_insensitive"),
@@ -228,6 +246,12 @@ namespace Infrastructure.Migrations
                         column: x => x.invoice_id,
                         principalTable: "invoices",
                         principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_invoice_items_jamaats_jamaat_id",
+                        column: x => x.jamaat_id,
+                        principalTable: "jamaats",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_invoice_items_members_payer_id",
@@ -401,21 +425,21 @@ namespace Infrastructure.Migrations
                 columns: new[] { "id", "CreatedBy", "created_date", "description", "IsDeleted", "ModifiedBy", "modified_date", "name" },
                 values: new object[,]
                 {
-                    { new Guid("265e29b4-fa66-4e74-9d04-adc3432b4005"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Full administrative access across the system.", false, null, null, "Admin" },
-                    { new Guid("2c67b3e7-8a79-4b24-b29c-504673bcefc9"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat President.", false, null, null, "Jamaat-President" },
-                    { new Guid("329e7e95-811d-4785-9647-b83b0a668c79"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Naib Amir", false, null, null, "Naib-Amir" },
-                    { new Guid("33b0b70b-4390-42fc-89ad-da916b985e28"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat General Secretary.", false, null, null, "Jamaat-Gen-Sec" },
-                    { new Guid("770391fd-d12b-46f4-bafd-4f03f2433f7d"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National Financial Secretary", false, null, null, "National-Fin-Sec" },
-                    { new Guid("7913e605-ffb3-4e9c-9f1b-d3de2dc30be2"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Acting Head of AMJN", false, null, null, "Acting-Amir" },
-                    { new Guid("7cdf008d-a3cf-4909-acf0-75de7bfd13fb"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit General Secretary.", false, null, null, "Circuit-Gen-Sec" },
-                    { new Guid("9020157f-f50d-480a-a70c-0f2c489e5a86"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Vice Circuit President.", false, null, null, "VCP" },
-                    { new Guid("a9e4da59-2d70-4bb2-b907-e34eb22e144b"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat Member.", false, null, null, "Member" },
-                    { new Guid("aa8b3ebd-cda4-4b3c-9187-902d7a108dfb"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit Financial Secretary.", false, null, null, "Circuit-Fin-Sec" },
-                    { new Guid("af747380-e0b2-4bd0-b206-ac99768387be"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit President.", false, null, null, "CP" },
-                    { new Guid("ba15df72-2151-4ed0-bb3a-0136c3f132dc"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National Tajneed Secretary", false, null, null, "National-Tajneed" },
-                    { new Guid("db997308-b260-43a1-a4ae-bebfcfd99e23"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat Financial Secretary.", false, null, null, "Jamaat-Fin-Sec" },
-                    { new Guid("f629688f-6586-4a45-b23b-7dda5ad18166"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National General Secretary.", false, null, null, "Nationa-Gen-Sec" },
-                    { new Guid("fee25f54-d742-4bdc-9c5a-a0e2825b661f"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Head of AMJN", false, null, null, "Amir" }
+                    { new Guid("2100e19d-699a-4ce2-be0b-ac7f56cc59d2"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat President.", false, null, null, "Jamaat-President" },
+                    { new Guid("27d159c7-310a-449d-ab22-a3bcf2f3e585"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Head of AMJN", false, null, null, "Amir" },
+                    { new Guid("54e5e167-1ce3-49a7-b372-76e31af6326c"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Acting Head of AMJN", false, null, null, "Acting-Amir" },
+                    { new Guid("63f17b42-e04f-44ff-a38e-d0808125a45f"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National Financial Secretary", false, null, null, "National-Fin-Sec" },
+                    { new Guid("67e91d08-6237-49a1-98f4-b18ddf693520"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat General Secretary.", false, null, null, "Jamaat-Gen-Sec" },
+                    { new Guid("9810b39a-3a25-4204-aee7-bb093df6f13a"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Vice Circuit President.", false, null, null, "VCP" },
+                    { new Guid("99f78295-f3c2-417b-a2b0-d9e9eedc7210"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit Financial Secretary.", false, null, null, "Circuit-Fin-Sec" },
+                    { new Guid("9ff7d3e5-e32b-4528-8a4d-eaa57a561c33"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat Financial Secretary.", false, null, null, "Jamaat-Fin-Sec" },
+                    { new Guid("a8e40cba-51c9-45de-83c8-3e1d1fb415d7"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Jamaat Member.", false, null, null, "Member" },
+                    { new Guid("b19f4a12-5fcb-408f-9b81-e7001fc0d0bf"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National General Secretary.", false, null, null, "Nationa-Gen-Sec" },
+                    { new Guid("cbaf21ea-a91f-4e41-b89e-521ce5cc0d4b"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit President.", false, null, null, "CP" },
+                    { new Guid("d38c87ba-e03c-4844-a590-cef509a992b0"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Circuit General Secretary.", false, null, null, "Circuit-Gen-Sec" },
+                    { new Guid("da2712fa-6181-4f4c-a572-db014eac3dc3"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "National Tajneed Secretary", false, null, null, "National-Tajneed" },
+                    { new Guid("fc384e77-9456-4176-b3f8-aa7b5043dcb5"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Full administrative access across the system.", false, null, null, "Admin" },
+                    { new Guid("fe8e4f67-6212-47b7-bb90-b6fbf52c0ef0"), "Admin", new DateTime(2024, 1, 1, 3, 10, 28, 488, DateTimeKind.Utc), "Naib Amir", false, null, null, "Naib-Amir" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -450,6 +474,11 @@ namespace Infrastructure.Migrations
                 name: "IX_invoice_items_invoice_id",
                 table: "invoice_items",
                 column: "invoice_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_invoice_items_jamaat_id",
+                table: "invoice_items",
+                column: "jamaat_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_invoice_items_payer_id",
@@ -552,6 +581,9 @@ namespace Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AuditEntries");
+
             migrationBuilder.DropTable(
                 name: "chanda_items");
 

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.Constants;
+using Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -19,7 +20,8 @@ namespace API.Authentication
                 new Claim(ClaimTypes.NameIdentifier, user.ChandaNo),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(ClaimTypes.GroupSid, user.JamaatId.ToString()),
-                new Claim(ClaimTypes.Role, String.Join(",",user.MemberRoles.Select(m => m.RoleName).ToArray())),
+                new Claim(ClaimTypes.PrimaryGroupSid, user.Jamaat.CircuitId.ToString()),
+                new Claim(ClaimTypes.Role, /*string.Join(",",user.MemberRoles.Select(m => m.RoleName).ToArray())*/ Roles.CP),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 

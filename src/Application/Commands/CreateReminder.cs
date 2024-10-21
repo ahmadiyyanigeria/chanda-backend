@@ -51,7 +51,7 @@ namespace Application.Commands
                     throw new NotFoundException($"Please login to create a reminder.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
-                var member = await _memberRepo.GetMemberAsync(m => m.ChandaNo == initiator.ChandaNo);
+                var member = _memberRepo.GetMember(initiator.Id);
 
                 if (member is null)
                 {

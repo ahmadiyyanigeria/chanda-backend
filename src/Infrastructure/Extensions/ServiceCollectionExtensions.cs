@@ -35,7 +35,8 @@ namespace Infrastructure.Extensions
                 .AddScoped<IFileService, FileService>()
                 .AddScoped<IReminderRepository, ReminderRepository>()
                 .AddScoped<IReminderService, ReminderService>()
-                .AddScoped<IAuditEntryRepository, AuditEntryRepository>();
+                .AddScoped<IAuditEntryRepository, AuditEntryRepository>()
+                .AddScoped<IInvoiceItemRepository, InvoiceItemRepository>();
         }
 
         public static IServiceCollection AddHangfireService(this IServiceCollection services, IConfiguration configuration)
