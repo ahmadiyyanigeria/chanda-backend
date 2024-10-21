@@ -6,6 +6,7 @@ using Infrastructure.Mapping.Extensions;
 using Microsoft.EntityFrameworkCore;
 using static Application.Queries.GetCircuitJamaatsReport;
 using static Application.Queries.GetCircuitReport;
+using static Application.Queries.GetJamaatDefaulters;
 using static Application.Queries.GetJamaatMembersReport;
 using static Application.Queries.GetJamaatReport;
 using static Application.Queries.GetMemberReport;
@@ -661,6 +662,71 @@ namespace Infrastructure.Persistence.Repositories
                     TotalAmountSummary = totalAmountSummary,
                     PaidByNoOfCircuits = paidByNoOfCircuit.Distinct().Count(),
                     ReportResponses = result
+                };
+            }
+        }
+
+        public async Task<JamaatDefaulter> GetJamaatDefaulterAsync(Guid jamaatId, string chandaType, PageRequest request, bool usePaging)
+        {
+            var month = request.Month <= 0 || request.Month > 12 ? DateTime.Now.Month : request.Month;
+            var year = request.Year <= 0 ? DateTime.Now.Year : request.Year;
+            var members = await _context.Members.Include(m => m.Jamaat).Where(m => m.JamaatId == jamaatId).ToListAsync();
+            
+            var payments =  _context.InvoiceItems.Include(ii => ii.ChandaItems).ThenInclude(ci => ci.ChandaType)
+                .Where(ii => ii.MonthPaidFor == (MonthOfTheYear)month && ii.Year == year 
+                    && ii.ChandaItems.Any(ci => ci.ChandaType.Name == chandaType)).GroupBy(i => i.PayerId)
+                .ToDictionary(g => g.Key, g => g.SelectMany(ii => ii.ChandaItems).ToList());
+
+            var defaulters = members.Where(m => !payments.TryGetValue(m.Id, out var memberPay));
+
+            var name = "";
+            var reports = new List<Defaulter>();
+            foreach ( var member in defaulters )
+            {
+                name = member.Jamaat.Name;
+                reports.Add(new Defaulter
+                {
+                    MemberId = member.Id,
+                    MemberName = member.Name,
+                    ChandaNo = member.ChandaNo,
+                    PhoneNO = member.PhoneNo,
+                    Email = member.Email
+                });
+            }
+
+            var totalCount = reports.Count();
+
+            if (usePaging)
+            {
+                var offset = (request.Page - 1) * request.PageSize;
+
+                reports = (string.IsNullOrWhiteSpace(request.Keyword)) ? reports.Skip(offset).Take(request.PageSize).ToList() : reports.SearchByKeyword(request.Keyword).Skip(offset).Take(request.PageSize).ToList();
+
+                var result = reports.ToPaginatedList(totalCount, request.Page, request.PageSize);
+                return new JamaatDefaulter
+                {
+                    JamaatId = jamaatId,
+                    JamaatName = name,
+                    Month = (MonthOfTheYear)month,
+                    Year = year,
+                    ChandaType = chandaType,
+                    NoOfDefaulters = totalCount,
+                    Defaulters = result
+                };
+            }
+            else
+            {
+                reports = (string.IsNullOrWhiteSpace(request.Keyword)) ? reports : [.. reports.SearchByKeyword(request.Keyword)];
+                var result = reports.ToPaginatedList(totalCount, 1, totalCount);
+                return new JamaatDefaulter
+                {
+                    JamaatId = jamaatId,
+                    JamaatName = name,
+                    Month = (MonthOfTheYear)month,
+                    Year = year,
+                    ChandaType = chandaType,
+                    NoOfDefaulters = totalCount,
+                    Defaulters = result
                 };
             }
         }

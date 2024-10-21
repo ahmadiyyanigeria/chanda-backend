@@ -59,5 +59,12 @@ namespace API.Controllers
             var response = await _mediator.Send(query);
             return Ok(response);
         }
+
+        [HttpGet("jamaatDefaulters")]
+        public async Task<IActionResult> GetJamaatDefaulters([FromQuery] GetJamaatDefaulters.Query query)
+        {
+            var response = await _mediator.Send(query);
+            return Ok(response);
+        }
     }
 }
