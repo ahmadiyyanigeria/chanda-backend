@@ -14,7 +14,7 @@ namespace Application.Repositories
         Task<JamaatMembersReport> GetJamaatMembersReportAsync(Guid jamaatId, string? chandaType, PageRequest request);
         Task<JamaatReport> GetJamaatReportAsync(Guid jamaatId, string? chandaType, PageRequest request, bool usePaging);
         Task<CircuitReport> GetCircuitReportAsync(Guid circuitId, string? chandaType, PageRequest request, bool usePaging);
-        Task<CircuitJamaatsReport> GetCircuitJamaatsReportAsync(Guid circuitId, string? chandaType, PageRequest request);
+        Task<CircuitJamaatsReport> GetCircuitJamaatsReportAsync(Guid circuitId, string? chandaType, PageRequest request, bool usePaging);
         Task<OverrallReport> GetOverrallReportAsync(string? chandaType, PageRequest request, bool usePaging);
     }
 }

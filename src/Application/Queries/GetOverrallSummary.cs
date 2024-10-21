@@ -1,10 +1,9 @@
-﻿using Application.Paging;
+﻿using Application.Exceptions;
+using Application.Paging;
+using Application.Repositories;
+using Domain.Constants;
+using Domain.Exceptions;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Application.Queries.GetCircuitReport;
 
 namespace Application.Queries
@@ -18,6 +17,40 @@ namespace Application.Queries
             public decimal TotalAmountSummary { get; set; }
             public int PaidByNoOfCircuits { get; set; }
             public PaginatedList<CircuitReportResponse> ReportResponses { get; set; } = new PaginatedList<CircuitReportResponse>();
+        }
+
+        public class Handler : IRequestHandler<Query, OverrallReport>
+        {
+            private readonly ICurrentUser _currentUser;
+            private readonly IInvoiceItemRepository _invoiceItemRepository;
+
+            public Handler(ICurrentUser currentUser, IInvoiceItemRepository invoiceItemRepository)
+            {
+                _currentUser = currentUser;
+                _invoiceItemRepository = invoiceItemRepository;
+            }
+
+            public async Task<OverrallReport> Handle(Query request, CancellationToken cancellationToken)
+            {
+                var initiator = _currentUser.GetMemberDetails();
+                if (initiator == null)
+                {
+                    throw new NotFoundException($"Please login to view report.", ExceptionCodes.MemberNotFound.ToString(), 403);
+                }
+
+                var roles = initiator.Roles.Split(",");
+                if (!roles.Any(r => r.Equals(Roles.Admin))
+                    && !roles.Any(r => r.Equals(Roles.Amir))
+                    && !roles.Any(r => r.Equals(Roles.ActingAmir))
+                    && !roles.Any(r => r.Equals(Roles.NaibAmir))
+                    && !roles.Any(r => r.Equals(Roles.NationaGenSec))
+                    && !roles.Any(r => r.Equals(Roles.NationlFinSec)))
+                {
+                    throw new NotFoundException($"You do not have permission to view this report.", ExceptionCodes.MemberNotFound.ToString(), 403);
+                }
+
+                return await _invoiceItemRepository.GetOverrallReportAsync(request.ChandaType, request, request.UsePaging);
+            }
         }
     }
 }

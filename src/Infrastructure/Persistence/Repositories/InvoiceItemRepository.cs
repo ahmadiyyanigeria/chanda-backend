@@ -1,5 +1,4 @@
 ﻿using Application.Paging;
-using Application.Queries;
 using Application.Repositories;
 using Domain.Entities;
 using Domain.Enums;
@@ -10,6 +9,7 @@ using static Application.Queries.GetCircuitReport;
 using static Application.Queries.GetJamaatMembersReport;
 using static Application.Queries.GetJamaatReport;
 using static Application.Queries.GetMemberReport;
+using static Application.Queries.GetOverrallSummary;
 
 namespace Infrastructure.Persistence.Repositories
 {
@@ -159,7 +159,7 @@ namespace Infrastructure.Persistence.Repositories
                         var item = obj.ChandaItems.Where(ci => ci.ChandaType.Name.Equals(chandaType, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                         if (item != null)
                         {
-                            allMembers.Add(obj.Member.Id.ToString());
+                            allMembers.Add(obj.PayerId.ToString());
                             totalAmountPaid += item.Amount;
                             if(chandaItems.Any(c => c.ChandaType == item.ChandaType.Name))
                             {
@@ -174,7 +174,7 @@ namespace Infrastructure.Persistence.Repositories
                     }
                     else
                     {
-                        allMembers.Add(obj.Member.Id.ToString());
+                        allMembers.Add(obj.PayerId.ToString());
                         foreach (var item in obj.ChandaItems)
                         {
                             totalAmountPaid += item.Amount;
@@ -256,8 +256,8 @@ namespace Infrastructure.Persistence.Repositories
             }
             var count = await query.CountAsync();
 
-            var paidByNoOfMember = new List<string>();
             var totalAmountSummary = 0m;
+            var paidByNoOfMember = new List<string>();
             var invoiceItems = new List<MemberReportResponse>();
             foreach (var obj in query)
             {
@@ -431,14 +431,238 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        public Task<CircuitJamaatsReport> GetCircuitJamaatsReportAsync(Guid circuitId, string? chandaType, PageRequest request)
+        public async Task<CircuitJamaatsReport> GetCircuitJamaatsReportAsync(Guid circuitId, string? chandaType, PageRequest request, bool usePaging)
         {
-            throw new NotImplementedException();
+            var query = _context.InvoiceItems.Include(ii => ii.Jamaat).ThenInclude(j => j.Circuit).Include(ii => ii.ChandaItems).ThenInclude(ci => ci.ChandaType).Where(ii => ii.Jamaat.CircuitId == circuitId);
+
+            if (!string.IsNullOrEmpty(request.Filter))
+            {
+                var filters = request.Filter.ToLower().Replace(" ", "").Split(",");
+                foreach (var filter in filters)
+                    query = PeriodicFilter(query, filter, request.Year, request.Month, request.StartDate, request.EndDate);
+            }
+            else
+            {
+                query = query.Where(ii => ii.Year == DateTime.Now.Year);
+            }
+
+            if (request.IsDescending)
+            {
+                query = query.OrderByDescending(i => i.CreatedOn);
+            }
+            var count = await query.CountAsync();
+
+            var queryGrp = query.GroupBy(ii => new { ii.MonthPaidFor, ii.Year, ii.JamaatId });
+
+            var totalAmountSummary = 0m;
+            var paidByNoOfJamaat = new List<string>();
+            var reports = new List<JamaatReportResponse>();
+            foreach (var eachGrp in queryGrp)
+            {
+                var name = "";
+                var totalAmountPaid = 0m;
+                var allMembers = new List<string>();
+                var chandaItems = new List<ItemObject>();
+                foreach (var obj in eachGrp)
+                {
+                    name = obj.Jamaat.Name;
+                    if (!string.IsNullOrEmpty(chandaType))
+                    {
+                        var item = obj.ChandaItems.Where(ci => ci.ChandaType.Name.Equals(chandaType, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                        if (item != null)
+                        {
+                            paidByNoOfJamaat.Add(obj.JamaatId.ToString());
+                            allMembers.Add(obj.PayerId.ToString());
+                            totalAmountPaid += item.Amount;
+                            if (chandaItems.Any(c => c.ChandaType == item.ChandaType.Name))
+                            {
+                                chandaItems.Where(c => c.ChandaType == item.ChandaType.Name).First().Amount += item.Amount;
+                            }
+                            else
+                            {
+                                chandaItems.Add(new ItemObject { ChandaType = item.ChandaType.Name, Amount = item.Amount });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        allMembers.Add(obj.PayerId.ToString());
+                        paidByNoOfJamaat.Add(obj.JamaatId.ToString());
+                        foreach (var item in obj.ChandaItems)
+                        {
+                            totalAmountPaid += item.Amount;
+                            if (chandaItems.Any(c => c.ChandaType == item.ChandaType.Name))
+                            {
+                                chandaItems.Where(c => c.ChandaType == item.ChandaType.Name).First().Amount += item.Amount;
+                            }
+                            else
+                            {
+                                chandaItems.Add(new ItemObject { ChandaType = item.ChandaType.Name, Amount = item.Amount });
+                            }
+                        }
+                    }
+                }
+                if (chandaItems.Count > 0)
+                {
+                    totalAmountSummary += totalAmountPaid;
+                    reports.Add(new JamaatReportResponse
+                    {
+                        JamaatId = eachGrp.Key.JamaatId,
+                        JamaatName = name,
+                        Items = chandaItems,
+                        Month = eachGrp.Key.MonthPaidFor,
+                        Year = eachGrp.Key.Year,
+                        NoOfMembers = allMembers.Distinct().Count(),
+                        MonthAmount = totalAmountPaid
+                    });
+                }
+            }
+
+            var totalCount = reports.Count();
+
+            if (usePaging)
+            {
+                var offset = (request.Page - 1) * request.PageSize;
+
+                reports = (string.IsNullOrWhiteSpace(request.Keyword)) ? reports.Skip(offset).Take(request.PageSize).ToList() : reports.SearchByKeyword(request.Keyword).Skip(offset).Take(request.PageSize).ToList();
+
+                var result = reports.ToPaginatedList(totalCount, request.Page, request.PageSize);
+                return new CircuitJamaatsReport
+                {
+                    TotalAmountSummary = totalAmountSummary,
+                    PaidByNoOfJamaats = paidByNoOfJamaat.Distinct().Count(),
+                    ReportResponses = result
+                };
+            }
+            else
+            {
+                reports = (string.IsNullOrWhiteSpace(request.Keyword)) ? reports : [.. reports.SearchByKeyword(request.Keyword)];
+                var result = reports.ToPaginatedList(totalCount, 1, totalCount);
+                return new CircuitJamaatsReport
+                {
+                    TotalAmountSummary = totalAmountSummary,
+                    PaidByNoOfJamaats = paidByNoOfJamaat.Distinct().Count(),
+                    ReportResponses = result
+                };
+            }
         }
 
-        public Task<GetOverrallSummary.OverrallReport> GetOverrallReportAsync(string? chandaType, PageRequest request, bool usePaging)
+        public async Task<OverrallReport> GetOverrallReportAsync(string? chandaType, PageRequest request, bool usePaging)
         {
-            throw new NotImplementedException();
+            var query = _context.InvoiceItems.Include(ii => ii.Jamaat).ThenInclude(j => j.Circuit).Include(ii => ii.ChandaItems).ThenInclude(ci => ci.ChandaType).AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.Filter))
+            {
+                var filters = request.Filter.ToLower().Replace(" ", "").Split(",");
+                foreach (var filter in filters)
+                    query = PeriodicFilter(query, filter, request.Year, request.Month, request.StartDate, request.EndDate);
+            }
+            else
+            {
+                query = query.Where(ii => ii.Year == DateTime.Now.Year);
+            }
+
+            if (request.IsDescending)
+            {
+                query = query.OrderByDescending(i => i.CreatedOn);
+            }
+            var count = await query.CountAsync();
+
+            var queryGrp = query.GroupBy(ii => new { ii.MonthPaidFor, ii.Year, ii.Jamaat.Circuit.Id });
+
+            var totalAmountSummary = 0m;
+            var paidByNoOfCircuit = new List<string>();
+            var reports = new List<CircuitReportResponse>();
+            foreach (var eachGrp in queryGrp)
+            {
+                Guid id = default;
+                var name = "";
+                var totalAmountPaid = 0m;
+                var allJamaats = new List<string>();
+                var chandaItems = new List<ItemObject>();
+                foreach (var obj in eachGrp)
+                {
+                    id = obj.Jamaat.CircuitId;
+                    name = obj.Jamaat.Circuit.Name;
+                    if (!string.IsNullOrEmpty(chandaType))
+                    {
+                        var item = obj.ChandaItems.Where(ci => ci.ChandaType.Name.Equals(chandaType, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                        if (item != null)
+                        {
+                            paidByNoOfCircuit.Add(obj.Jamaat.CircuitId.ToString());
+                            allJamaats.Add(obj.JamaatId.ToString());
+                            totalAmountPaid += item.Amount;
+                            if (chandaItems.Any(c => c.ChandaType == item.ChandaType.Name))
+                            {
+                                chandaItems.Where(c => c.ChandaType == item.ChandaType.Name).First().Amount += item.Amount;
+                            }
+                            else
+                            {
+                                chandaItems.Add(new ItemObject { ChandaType = item.ChandaType.Name, Amount = item.Amount });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        allJamaats.Add(obj.JamaatId.ToString());
+                        paidByNoOfCircuit.Add(obj.Jamaat.CircuitId.ToString());
+                        foreach (var item in obj.ChandaItems)
+                        {
+                            totalAmountPaid += item.Amount;
+                            if (chandaItems.Any(c => c.ChandaType == item.ChandaType.Name))
+                            {
+                                chandaItems.Where(c => c.ChandaType == item.ChandaType.Name).First().Amount += item.Amount;
+                            }
+                            else
+                            {
+                                chandaItems.Add(new ItemObject { ChandaType = item.ChandaType.Name, Amount = item.Amount });
+                            }
+                        }
+                    }
+                }
+                if (chandaItems.Count > 0)
+                {
+                    totalAmountSummary += totalAmountPaid;
+                    reports.Add(new CircuitReportResponse
+                    {
+                        CircuitId = id,
+                        CircuitName = name,
+                        Items = chandaItems,
+                        Month = eachGrp.Key.MonthPaidFor,
+                        Year = eachGrp.Key.Year,
+                        NoOfJamaats = allJamaats.Distinct().Count(),
+                        MonthAmount = totalAmountPaid
+                    });
+                }
+            }
+
+            var totalCount = reports.Count();
+
+            if (usePaging)
+            {
+                var offset = (request.Page - 1) * request.PageSize;
+
+                reports = (string.IsNullOrWhiteSpace(request.Keyword)) ? reports.Skip(offset).Take(request.PageSize).ToList() : reports.SearchByKeyword(request.Keyword).Skip(offset).Take(request.PageSize).ToList();
+
+                var result = reports.ToPaginatedList(totalCount, request.Page, request.PageSize);
+                return new OverrallReport
+                {
+                    TotalAmountSummary = totalAmountSummary,
+                    PaidByNoOfCircuits = paidByNoOfCircuit.Distinct().Count(),
+                    ReportResponses = result
+                };
+            }
+            else
+            {
+                reports = (string.IsNullOrWhiteSpace(request.Keyword)) ? reports : [.. reports.SearchByKeyword(request.Keyword)];
+                var result = reports.ToPaginatedList(totalCount, 1, totalCount);
+                return new OverrallReport
+                {
+                    TotalAmountSummary = totalAmountSummary,
+                    PaidByNoOfCircuits = paidByNoOfCircuit.Distinct().Count(),
+                    ReportResponses = result
+                };
+            }
         }
 
         private IQueryable<InvoiceItem> PeriodicFilter(IQueryable<InvoiceItem> query, string filter, int year, int month, DateTime startDate, DateTime endDate)
@@ -487,6 +711,5 @@ namespace Infrastructure.Persistence.Repositories
             return query;
         }
 
-        //private MemberReport 
     }
 }
