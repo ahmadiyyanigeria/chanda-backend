@@ -6,6 +6,7 @@ namespace Application.Repositories
 {
     public interface IMemberRepository
     {
+        Member? GetMember(Guid? id);
         Task<Member> CreateAsync(Member member);
         Task<Member?> GetMemberAsync(Expression<Func<Member, bool>> expression);
         bool ExistsByChandaNo(string chandaNo);

@@ -12,6 +12,7 @@ namespace Application.DTOs
         public string Name { get; init; } = string.Empty;
         public string ChandaNo { get; init; } = string.Empty;
         public Guid JamaatId { get; init; }
+        public Guid CircuitId { get; init; }
         public string Email { get; init; } = string.Empty;
         public string Roles { get; init; } = string.Empty;
     }

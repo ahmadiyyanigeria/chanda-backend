@@ -19,7 +19,7 @@ namespace Infrastructure.Persistence.Repositories
             return jamaat;
         }
 
-        public async Task<Jamaat?> Get(Expression<Func<Jamaat, bool>> expression)
+        public async Task<Jamaat?> GetAsync(Expression<Func<Jamaat, bool>> expression)
         {
             return await _context.Jamaats.SingleOrDefaultAsync(expression);
         }
@@ -52,7 +52,7 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        public Task<Jamaat> Update(Jamaat jamaat)
+        public Task<Jamaat> UpdateAsync(Jamaat jamaat)
         {
             _context.Entry(jamaat).State = EntityState.Modified;
             return Task.FromResult(jamaat);

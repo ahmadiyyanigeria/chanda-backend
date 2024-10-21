@@ -25,7 +25,7 @@ namespace Application.Queries
             }
             public async Task<JamaatResponse> Handle(Query request, CancellationToken cancellationToken)
             {
-                var jamaat = await _jamaatRepository.Get(j => j.Id == request.Id);
+                var jamaat = await _jamaatRepository.GetAsync(j => j.Id == request.Id);
                 if (jamaat == null)
                 {
                     throw new DomainException(

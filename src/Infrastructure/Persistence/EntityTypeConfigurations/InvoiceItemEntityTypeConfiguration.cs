@@ -23,6 +23,10 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
                 .HasColumnName("payer_id")
                 .IsRequired();
 
+            builder.Property(ii => ii.JamaatId)
+                .HasColumnName("jamaat_id")
+                .IsRequired();
+
             builder.Property(ii => ii.InvoiceId)
                 .HasColumnName("invoice_id")
                 .IsRequired();
@@ -79,7 +83,12 @@ namespace Infrastructure.Persistence.EntityTypeConfigurations
             .WithMany() 
             .HasForeignKey(ii => ii.PayerId)
             .OnDelete(DeleteBehavior.Restrict);
-                       
+
+            builder.HasOne(ii => ii.Jamaat)
+            .WithMany()
+            .HasForeignKey(ii => ii.JamaatId)
+            .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasOne(ii => ii.Invoice)
                 .WithMany(i => i.InvoiceItems)
                 .HasForeignKey(ii => ii.InvoiceId)

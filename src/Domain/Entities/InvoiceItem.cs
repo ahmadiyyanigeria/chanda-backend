@@ -5,6 +5,7 @@ namespace Domain.Entities
     public class InvoiceItem: BaseEntity
     {
         public Guid PayerId { get; private set; }
+        public Guid JamaatId { get; private set; }
         public Guid InvoiceId { get; private set; }
         public string? ReceiptNo { get; private set; }
         public string ReferenceNo { get; private set; }
@@ -12,6 +13,7 @@ namespace Domain.Entities
         public int Year {  get; private set; }
         public decimal Amount { get; private set; }
         public Member Member { get; private set; } = default!;
+        public Jamaat Jamaat { get; private set; } = default!;
         public Invoice Invoice { get; private set; } = default!;
         public IList<ChandaItem> ChandaItems 
         { 
@@ -32,10 +34,11 @@ namespace Domain.Entities
             }
         }
 
-        public InvoiceItem(Guid id, Guid payerId, Guid invoiceId, string? receiptNo, string referenceNo, decimal amount, MonthOfTheYear monthPaidFor, int year, string createdBy)
+        public InvoiceItem(Guid id, Guid payerId, Guid jamaatId, Guid invoiceId, string? receiptNo, string referenceNo, decimal amount, MonthOfTheYear monthPaidFor, int year, string createdBy)
         {
             Id = id;
             PayerId = payerId;
+            JamaatId = jamaatId;
             InvoiceId = invoiceId;
             ReceiptNo = receiptNo;
             ReferenceNo = referenceNo;

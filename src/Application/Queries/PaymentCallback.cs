@@ -1,5 +1,6 @@
 ﻿using Application.Contracts;
 using Application.Exceptions;
+using Application.Mailing;
 using Application.Repositories;
 using Domain.Entities;
 using Domain.Enums;
@@ -23,14 +24,16 @@ namespace Application.Queries
 
         public class Handler : IRequestHandler<Query, CallbackResponse>
         {
+            private readonly IMailProvider _email;
             private readonly IUnitOfWork _unitOfWork;
             private readonly ILedgerRepository _ledgerRepository;
             private readonly IPaymentRepository _paymentRepository;
             private readonly IInvoiceRepository _invoiceRepository;
             private readonly IPaymentGatewayFactory _paymentServiceFactory;
 
-            public Handler(IUnitOfWork unitOfWork, ILedgerRepository ledgerRepository, IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository, IPaymentGatewayFactory paymentServiceFactory)
+            public Handler(IUnitOfWork unitOfWork, ILedgerRepository ledgerRepository, IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository, IPaymentGatewayFactory paymentServiceFactory, IMailProvider email)
             {
+                _email = email;
                 _unitOfWork = unitOfWork;
                 _ledgerRepository = ledgerRepository;
                 _paymentRepository = paymentRepository;
@@ -81,6 +84,9 @@ namespace Application.Queries
                     await _invoiceRepository.UpdateAsync(invoice);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+                    //Send mail for each payment...
+                    await SendPaymentConfirmationEmail(invoice.InvoiceItems);
+
                     //TODO:
                     //Publish ledgers to General Ledger Account....
 
@@ -96,6 +102,23 @@ namespace Application.Queries
                 {
                     Message = response!.Message,
                 };
+            }
+
+            private async Task SendPaymentConfirmationEmail(IReadOnlyList<InvoiceItem> invoiceItems)
+            {
+                foreach (var item in invoiceItems)
+                {
+                    var purpose = string.Join(", ", item.ChandaItems.Select(i => i.ChandaType.Name).ToList());
+                    var body = $"Asalam alaykum waramotulah wabarakatuhu," +
+                        $"Dear {item.Member.Name}," +
+                        $"\n\nThis is to notify you of successful payment of the sum of {item.Amount} for {purpose} in the month of {item.MonthPaidFor} in the year {item.Year}." +
+                        $"" +
+                        $"\nJazakumllah Khairan.";
+
+                    var mailRequest = new MailRequest(item.Member.Email, $"Payment Confirmation", body, "info.amjn@amjn.com");
+
+                    await _email.SendAsync(mailRequest, CancellationToken.None);                    
+                }
             }
         }
     }

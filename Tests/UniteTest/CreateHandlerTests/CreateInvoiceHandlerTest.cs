@@ -127,7 +127,7 @@ namespace UniteTest.CreateHandlerTests
 
             _currentUserMock.Setup(m => m.GetMemberDetails()).Returns(memberDetails);
 
-            _jamaatRepositoryMock.Setup(j => j.Get(It.IsAny<Expression<Func<Jamaat, bool>>>()))
+            _jamaatRepositoryMock.Setup(j => j.GetAsync(It.IsAny<Expression<Func<Jamaat, bool>>>()))
                 .ReturnsAsync(jamaat);
 
             _chandaTypeRepositoryMock.Setup(c => c.GetChandaTypes(It.IsAny<List<string>>()))
