@@ -20,6 +20,10 @@ namespace Infrastructure.Persistence.Repositories
             return chandaType;
         }
 
+        public bool Any(Expression<Func<ChandaType, bool>> predicate)
+        {
+            return _context.ChandaTypes.Any(predicate);
+        }
 
         public async Task<PaginatedList<ChandaType>> GetAllAsync(PageRequest pageRequest, Expression<Func<ChandaType, bool>> predicate, bool usePaging)
         {

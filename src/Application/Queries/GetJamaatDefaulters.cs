@@ -6,29 +6,41 @@ using Domain.Enums;
 using Domain.Exceptions;
 using FluentValidation;
 using MediatR;
-using static Application.Queries.GetMemberReport;
 
 namespace Application.Queries
 {
-    public class GetJamaatMembersReport
+    public class GetJamaatDefaulters
     {
-        public record Query(Guid JamaatId, string? ChandaType, bool UsePaging) : PageRequest, IRequest<JamaatMembersReport>;
+        public record Query(Guid JamaatId, string ChandaType, bool UsePaging): PageRequest, IRequest<JamaatDefaulter>;
 
-        public record JamaatMembersReport
+        public record JamaatDefaulter
         {
-            public decimal TotalAmountSummary { get; set; }
-            public int PaidByNoOfMembers { get; set; }
-            public PaginatedList<MemberReportResponse> ReportResponses { get; set; } = new PaginatedList<MemberReportResponse>();
+            public Guid JamaatId { get; set; }
+            public string JamaatName { get; set; } = default!;
+            public MonthOfTheYear Month {  get; set; }
+            public int Year { get; set; }
+            public string ChandaType { get; set; } = default!;
+            public int NoOfDefaulters { get; set; }
+            public PaginatedList<Defaulter> Defaulters { get; set; } = new PaginatedList<Defaulter>();
         }
 
-        public class Handler : IRequestHandler<Query, JamaatMembersReport>
+        public record Defaulter
+        {
+            public Guid MemberId { get; set; } = default!;
+            public string MemberName { get; set; } = default!;
+            public string ChandaNo { get; set; } = default!;
+            public string PhoneNO { get; set; } = default!;
+            public string Email { get; set; } = default!;
+        }
+
+        public class Handler : IRequestHandler<Query, JamaatDefaulter>
         {
             private readonly ICurrentUser _currentUser;
             private readonly IJamaatRepository _jamaatRepository;
             private readonly IChandaTypeRepository _chandaTypeRepository;
             private readonly IInvoiceItemRepository _invoiceItemRepository;
 
-            public Handler(IInvoiceItemRepository invoiceItemRepository, ICurrentUser currentUser, IJamaatRepository jamaatRepository, IChandaTypeRepository chandaTypeRepository)
+            public Handler(ICurrentUser currentUser, IJamaatRepository jamaatRepository, IInvoiceItemRepository invoiceItemRepository, IChandaTypeRepository chandaTypeRepository)
             {
                 _currentUser = currentUser;
                 _jamaatRepository = jamaatRepository;
@@ -36,7 +48,7 @@ namespace Application.Queries
                 _invoiceItemRepository = invoiceItemRepository;
             }
 
-            public async Task<JamaatMembersReport> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<JamaatDefaulter> Handle(Query request, CancellationToken cancellationToken)
             {
                 var initiator = _currentUser.GetMemberDetails();
                 if (initiator == null)
@@ -44,12 +56,9 @@ namespace Application.Queries
                     throw new NotFoundException($"Please login to view report.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
-                if(!string.IsNullOrEmpty(request.ChandaType))
+                if (!_chandaTypeRepository.Any(ct => ct.Name == request.ChandaType))
                 {
-                    if (!_chandaTypeRepository.Any(ct => ct.Name == request.ChandaType))
-                    {
-                        throw new NotFoundException($"ChandaType not exist.", ExceptionCodes.MemberNotFound.ToString(), 404);
-                    }
+                    throw new NotFoundException($"ChandaType not exist.", ExceptionCodes.MemberNotFound.ToString(), 404);
                 }
 
                 var roles = initiator.Roles.Split(",");
@@ -83,16 +92,18 @@ namespace Application.Queries
                     throw new NotFoundException($"You do not have permission to view this report.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
-                return await _invoiceItemRepository.GetJamaatMembersReportAsync(request.JamaatId, request.ChandaType, request);
+                return await _invoiceItemRepository.GetJamaatDefaulterAsync(request.JamaatId, jamaat.Name, request.ChandaType, request, request.UsePaging);
             }
+        }
 
-            public class QueryValidator : AbstractValidator<Query>
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            public QueryValidator()
             {
-                public QueryValidator()
-                {
-                    RuleFor(q => q.JamaatId)
-                        .NotNull().NotEmpty().WithMessage("JamaatId is required.");
-                }
+                RuleFor(q => q.JamaatId)
+                    .NotNull().NotEmpty().WithMessage("JamaatId is required.");
+                RuleFor(q => q.ChandaType)
+                    .NotNull().NotEmpty().WithMessage("ChandaType is required.");
             }
         }
     }
