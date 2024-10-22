@@ -2,25 +2,39 @@
 using Application.Paging;
 using Application.Repositories;
 using Domain.Constants;
+using Domain.Enums;
 using Domain.Exceptions;
 using FluentValidation;
 using MediatR;
-using static Application.Queries.GetJamaatReport;
 
 namespace Application.Queries
 {
-    public class GetCircuitJamaatsReport
+    public class GetCircuitDefaulters
     {
-        public record Query(Guid CircuitId, string? ChandaType, bool UsePaging) : PageRequest, IRequest<CircuitJamaatsReport>;
+        public record Query(Guid CircuitId, string ChandaType, bool UsePaging): PageRequest, IRequest<CircuitDefaulters>;
 
-        public record CircuitJamaatsReport
+        public record CircuitDefaulters
         {
-            public decimal TotalAmountSummary { get; set; }
-            public int PaidByNoOfJamaats { get; set; }
-            public PaginatedList<JamaatReportResponse> ReportResponses { get; set; } = new PaginatedList<JamaatReportResponse>();
+            public Guid CircuitId { get; set; }
+            public string CircuitName { get; set; } = default!;
+            public MonthOfTheYear Month { get; set; }
+            public int Year { get; set; }
+            public string ChandaType { get; set; } = default!;
+            public int NoOfDefaulters { get; set; }
+            public PaginatedList<DefaulterMember> DefaulterMembers { get; set; } = new PaginatedList<DefaulterMember>();
         }
 
-        public class Handler : IRequestHandler<Query, CircuitJamaatsReport>
+        public record DefaulterMember
+        {
+            public Guid MemberId { get; set; } = default!;
+            public string MemberName { get; set; } = default!;
+            public string ChandaNo { get; set; } = default!;
+            public string PhoneNO { get; set; } = default!;
+            public string Email { get; set; } = default!;
+            public string JamaatName { get; set; } = default!;
+        }
+
+        public class Handler : IRequestHandler<Query, CircuitDefaulters>
         {
             private readonly ICurrentUser _currentUser;
             private readonly ICircuitRepository _circuitRepository;
@@ -31,24 +45,16 @@ namespace Application.Queries
             {
                 _currentUser = currentUser;
                 _circuitRepository = circuitRepository;
-                _invoiceItemRepository = invoiceItemRepository;
                 _chandaTypeRepository = chandaTypeRepository;
+                _invoiceItemRepository = invoiceItemRepository;
             }
 
-            public async Task<CircuitJamaatsReport> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<CircuitDefaulters> Handle(Query request, CancellationToken cancellationToken)
             {
                 var initiator = _currentUser.GetMemberDetails();
                 if (initiator == null)
                 {
                     throw new NotFoundException($"Please login to view report.", ExceptionCodes.MemberNotFound.ToString(), 403);
-                }
-
-                if (!string.IsNullOrEmpty(request.ChandaType))
-                {
-                    if (!_chandaTypeRepository.Any(ct => ct.Name == request.ChandaType))
-                    {
-                        throw new NotFoundException($"ChandaType not exist.", ExceptionCodes.MemberNotFound.ToString(), 404);
-                    }
                 }
 
                 var roles = initiator.Roles.Split(",");
@@ -64,6 +70,11 @@ namespace Application.Queries
                     throw new NotFoundException($"You do not have permission to view this report.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
+                if(!_chandaTypeRepository.Any(ct => ct.Name == request.ChandaType))
+                {
+                    throw new NotFoundException($"ChandaType not exist.", ExceptionCodes.MemberNotFound.ToString(), 404);
+                }
+
                 var circuit = await _circuitRepository.GetAsync(c => c.Id == request.CircuitId);
                 if (circuit == null)
                 {
@@ -75,7 +86,7 @@ namespace Application.Queries
                     throw new NotFoundException($"You do not have permission to view this report.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
-                return await _invoiceItemRepository.GetCircuitJamaatsReportAsync(request.CircuitId, request.ChandaType, request, request.UsePaging);
+                return await _invoiceItemRepository.GetCircuitDefaulterAsync(request.CircuitId, circuit.Name, request.ChandaType, request, request.UsePaging);
             }
         }
 
@@ -85,6 +96,8 @@ namespace Application.Queries
             {
                 RuleFor(q => q.CircuitId)
                     .NotNull().NotEmpty().WithMessage("CircuitId is required.");
+                RuleFor(q => q.ChandaType)
+                    .NotNull().NotEmpty().WithMessage("ChandaType is required.");
             }
         }
     }

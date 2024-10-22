@@ -1,7 +1,6 @@
 ﻿using Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -62,6 +61,13 @@ namespace API.Controllers
 
         [HttpGet("jamaatDefaulters")]
         public async Task<IActionResult> GetJamaatDefaulters([FromQuery] GetJamaatDefaulters.Query query)
+        {
+            var response = await _mediator.Send(query);
+            return Ok(response);
+        }
+
+        [HttpGet("circuitDefaulters")]
+        public async Task<IActionResult> GetCircuitDefaulters([FromQuery] GetCircuitDefaulters.Query query)
         {
             var response = await _mediator.Send(query);
             return Ok(response);

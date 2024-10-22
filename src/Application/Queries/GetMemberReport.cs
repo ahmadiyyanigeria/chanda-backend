@@ -39,12 +39,14 @@ namespace Application.Queries
         {
             private readonly ICurrentUser _currentUser;
             private readonly IMemberRepository _memberRepository;
+            private readonly IChandaTypeRepository _chandaTypeRepository;
             private readonly IInvoiceItemRepository _invoiceItemRepository;
 
-            public Handler(IInvoiceItemRepository invoiceItemRepository, ICurrentUser currentUser, IMemberRepository memberRepository)
+            public Handler(IInvoiceItemRepository invoiceItemRepository, ICurrentUser currentUser, IMemberRepository memberRepository, IChandaTypeRepository chandaTypeRepository)
             {
                 _currentUser = currentUser;
                 _memberRepository = memberRepository;
+                _chandaTypeRepository = chandaTypeRepository;
                 _invoiceItemRepository = invoiceItemRepository;
             }
 
@@ -54,6 +56,14 @@ namespace Application.Queries
                 if (initiator == null)
                 {
                     throw new NotFoundException($"Please login to view report.", ExceptionCodes.MemberNotFound.ToString(), 403);
+                }
+
+                if(!string.IsNullOrEmpty(request.ChandaType))
+                {
+                    if (!_chandaTypeRepository.Any(ct => ct.Name == request.ChandaType))
+                    {
+                        throw new NotFoundException($"ChandaType not exist.", ExceptionCodes.MemberNotFound.ToString(), 404);
+                    }
                 }
 
                 Guid? id = request.Id;

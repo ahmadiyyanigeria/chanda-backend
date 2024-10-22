@@ -6,11 +6,6 @@ using Domain.Enums;
 using Domain.Exceptions;
 using FluentValidation;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Queries
 {
@@ -42,12 +37,14 @@ namespace Application.Queries
         {
             private readonly ICurrentUser _currentUser;
             private readonly IJamaatRepository _jamaatRepository;
+            private readonly IChandaTypeRepository _chandaTypeRepository;
             private readonly IInvoiceItemRepository _invoiceItemRepository;
 
-            public Handler(ICurrentUser currentUser, IJamaatRepository jamaatRepository, IInvoiceItemRepository invoiceItemRepository)
+            public Handler(ICurrentUser currentUser, IJamaatRepository jamaatRepository, IInvoiceItemRepository invoiceItemRepository, IChandaTypeRepository chandaTypeRepository)
             {
                 _currentUser = currentUser;
                 _jamaatRepository = jamaatRepository;
+                _chandaTypeRepository = chandaTypeRepository;
                 _invoiceItemRepository = invoiceItemRepository;
             }
 
@@ -57,6 +54,11 @@ namespace Application.Queries
                 if (initiator == null)
                 {
                     throw new NotFoundException($"Please login to view report.", ExceptionCodes.MemberNotFound.ToString(), 403);
+                }
+
+                if (!_chandaTypeRepository.Any(ct => ct.Name == request.ChandaType))
+                {
+                    throw new NotFoundException($"ChandaType not exist.", ExceptionCodes.MemberNotFound.ToString(), 404);
                 }
 
                 var roles = initiator.Roles.Split(",");
@@ -90,7 +92,7 @@ namespace Application.Queries
                     throw new NotFoundException($"You do not have permission to view this report.", ExceptionCodes.MemberNotFound.ToString(), 403);
                 }
 
-                return await _invoiceItemRepository.GetJamaatDefaulterAsync(request.JamaatId, request.ChandaType, request, request.UsePaging);
+                return await _invoiceItemRepository.GetJamaatDefaulterAsync(request.JamaatId, jamaat.Name, request.ChandaType, request, request.UsePaging);
             }
         }
 

@@ -11,6 +11,7 @@ namespace Application.Repositories
 {
     public interface IChandaTypeRepository
     {
+        bool Any(Expression<Func<ChandaType, bool>> predicate);
         Task<ChandaType> AddAsync(ChandaType chandaType);
         ChandaType Update(ChandaType chandaType);
         Task<ChandaType?> GetByIdAsync(Guid id);

@@ -4,6 +4,7 @@ using Application.Repositories;
 using Domain.Constants;
 using Domain.Enums;
 using Domain.Exceptions;
+using FluentValidation;
 using MediatR;
 using static Application.Queries.GetJamaatReport;
 
@@ -35,13 +36,15 @@ namespace Application.Queries
         {
             private readonly ICurrentUser _currentUser;
             private readonly ICircuitRepository _circuitRepository;
+            private readonly IChandaTypeRepository _chandaTypeRepository;
             private readonly IInvoiceItemRepository _invoiceItemRepository;
 
-            public Handler(ICurrentUser currentUser, ICircuitRepository circuitRepository, IInvoiceItemRepository invoiceItemRepository)
+            public Handler(ICurrentUser currentUser, ICircuitRepository circuitRepository, IInvoiceItemRepository invoiceItemRepository, IChandaTypeRepository chandaTypeRepository)
             {
                 _currentUser = currentUser;
                 _circuitRepository = circuitRepository;
                 _invoiceItemRepository = invoiceItemRepository;
+                _chandaTypeRepository = chandaTypeRepository;
             }
 
             public async Task<CircuitReport> Handle(Query request, CancellationToken cancellationToken)
@@ -50,6 +53,14 @@ namespace Application.Queries
                 if (initiator == null)
                 {
                     throw new NotFoundException($"Please login to view report.", ExceptionCodes.MemberNotFound.ToString(), 403);
+                }
+
+                if (!string.IsNullOrEmpty(request.ChandaType))
+                {
+                    if (!_chandaTypeRepository.Any(ct => ct.Name == request.ChandaType))
+                    {
+                        throw new NotFoundException($"ChandaType not exist.", ExceptionCodes.MemberNotFound.ToString(), 404);
+                    }
                 }
 
                 var roles = initiator.Roles.Split(",");
@@ -77,6 +88,15 @@ namespace Application.Queries
                 }
 
                 return await _invoiceItemRepository.GetCircuitReportAsync(request.CircuitId, request.ChandaType, request, request.UsePaging);
+            }
+        }
+
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            public QueryValidator()
+            {
+                RuleFor(q => q.CircuitId)
+                    .NotNull().NotEmpty().WithMessage("CircuitId is required.");
             }
         }
     }

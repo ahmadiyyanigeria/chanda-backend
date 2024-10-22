@@ -22,12 +22,14 @@ namespace Application.Queries
         public class Handler : IRequestHandler<Query, OverrallReport>
         {
             private readonly ICurrentUser _currentUser;
+            private readonly IChandaTypeRepository _chandaTypeRepository;
             private readonly IInvoiceItemRepository _invoiceItemRepository;
 
-            public Handler(ICurrentUser currentUser, IInvoiceItemRepository invoiceItemRepository)
+            public Handler(ICurrentUser currentUser, IInvoiceItemRepository invoiceItemRepository, IChandaTypeRepository chandaTypeRepository)
             {
                 _currentUser = currentUser;
                 _invoiceItemRepository = invoiceItemRepository;
+                _chandaTypeRepository = chandaTypeRepository;
             }
 
             public async Task<OverrallReport> Handle(Query request, CancellationToken cancellationToken)
@@ -36,6 +38,14 @@ namespace Application.Queries
                 if (initiator == null)
                 {
                     throw new NotFoundException($"Please login to view report.", ExceptionCodes.MemberNotFound.ToString(), 403);
+                }
+
+                if (!string.IsNullOrEmpty(request.ChandaType))
+                {
+                    if (!_chandaTypeRepository.Any(ct => ct.Name == request.ChandaType))
+                    {
+                        throw new NotFoundException($"ChandaType not exist.", ExceptionCodes.MemberNotFound.ToString(), 404);
+                    }
                 }
 
                 var roles = initiator.Roles.Split(",");

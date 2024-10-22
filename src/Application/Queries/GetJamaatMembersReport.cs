@@ -4,6 +4,7 @@ using Application.Repositories;
 using Domain.Constants;
 using Domain.Enums;
 using Domain.Exceptions;
+using FluentValidation;
 using MediatR;
 using static Application.Queries.GetMemberReport;
 
@@ -24,12 +25,14 @@ namespace Application.Queries
         {
             private readonly ICurrentUser _currentUser;
             private readonly IJamaatRepository _jamaatRepository;
+            private readonly IChandaTypeRepository _chandaTypeRepository;
             private readonly IInvoiceItemRepository _invoiceItemRepository;
 
-            public Handler(IInvoiceItemRepository invoiceItemRepository, ICurrentUser currentUser, IJamaatRepository jamaatRepository)
+            public Handler(IInvoiceItemRepository invoiceItemRepository, ICurrentUser currentUser, IJamaatRepository jamaatRepository, IChandaTypeRepository chandaTypeRepository)
             {
                 _currentUser = currentUser;
                 _jamaatRepository = jamaatRepository;
+                _chandaTypeRepository = chandaTypeRepository;
                 _invoiceItemRepository = invoiceItemRepository;
             }
 
@@ -39,6 +42,14 @@ namespace Application.Queries
                 if (initiator == null)
                 {
                     throw new NotFoundException($"Please login to view report.", ExceptionCodes.MemberNotFound.ToString(), 403);
+                }
+
+                if(!string.IsNullOrEmpty(request.ChandaType))
+                {
+                    if (!_chandaTypeRepository.Any(ct => ct.Name == request.ChandaType))
+                    {
+                        throw new NotFoundException($"ChandaType not exist.", ExceptionCodes.MemberNotFound.ToString(), 404);
+                    }
                 }
 
                 var roles = initiator.Roles.Split(",");
@@ -73,6 +84,15 @@ namespace Application.Queries
                 }
 
                 return await _invoiceItemRepository.GetJamaatMembersReportAsync(request.JamaatId, request.ChandaType, request);
+            }
+
+            public class QueryValidator : AbstractValidator<Query>
+            {
+                public QueryValidator()
+                {
+                    RuleFor(q => q.JamaatId)
+                        .NotNull().NotEmpty().WithMessage("JamaatId is required.");
+                }
             }
         }
     }
