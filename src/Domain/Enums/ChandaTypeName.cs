@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum ChandaType
+    public enum ChandaTypeName
     {
         ChandaWassiyat = 1,
         ChandaAam,

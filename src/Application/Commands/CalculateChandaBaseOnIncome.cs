@@ -13,7 +13,7 @@ namespace Application.Commands
     {
         public class ChandaResponse
         {
-            public ChandaType ChandaType { get; set; }
+            public ChandaTypeName ChandaType { get; set; }
             public decimal ChandaAmount { get; set; }
             public decimal Income { get; set; }
 
@@ -22,7 +22,7 @@ namespace Application.Commands
         public record Command : IRequest<ChandaResponse> 
         {
             public decimal Income { get; set; }
-            public ChandaType ChandaType { get; set; }
+            public ChandaTypeName ChandaType { get; set; }
         } 
 
         public class Handler : IRequestHandler<Command, ChandaResponse> 
@@ -35,15 +35,15 @@ namespace Application.Commands
 
                 switch (request.ChandaType)
                 {
-                    case ChandaType.ChandaWassiyat:
+                    case ChandaTypeName.ChandaWassiyat:
                         chandaAmount = request.Income * 0.10m;
                         break;
 
-                    case ChandaType.ChandaAam:
+                    case ChandaTypeName.ChandaAam:
                         chandaAmount = request.Income * 0.06m;
                         break;
 
-                    case ChandaType.ChandaJalsa:
+                    case ChandaTypeName.ChandaJalsa:
                         chandaAmount = request.Income * 0.10m;
                         break;
 
