@@ -109,11 +109,12 @@ namespace Application.Queries
                 foreach (var item in invoiceItems)
                 {
                     var purpose = string.Join(", ", item.ChandaItems.Select(i => i.ChandaType.Name).ToList());
-                    var body = $"Asalam alaykum waramotulah wabarakatuhu," +
-                        $"Dear {item.Member.Name}," +
-                        $"\n\nThis is to notify you of successful payment of the sum of {item.Amount} for {purpose} in the month of {item.MonthPaidFor} in the year {item.Year}." +
-                        $"" +
-                        $"\nJazakumllah Khairan.";
+                    var body = @"Asalam alaykum waramotulah wabarakatuhu,
+
+Dear "+item.Member.Name+", " +
+"This is to notify you of successful payment of the sum of "+item.Amount+" for "+purpose+" in the month of "+item.MonthPaidFor+" in the year "+item.Year+". " +
+                        "" +
+                        "Jazakumllah Khairan.";
 
                     var mailRequest = new MailRequest(item.Member.Email, $"Payment Confirmation", body, "info.amjn@amjn.com");
 

@@ -33,7 +33,13 @@ namespace Infrastructure.Services
         public async Task SendReminderNotification(ReminderDto reminder)
         {
             var topic = string.IsNullOrEmpty(reminder.Description) ? reminder.ReminderTitle : $"{reminder.ReminderTitle} ({reminder.Description})";
-            var body = $"Asalam alaykum waramotulah wabarakatuhu,\n\nDear {reminder.Name},\n\nThis is to remind you base on your setting about {topic}.\nJazakumllah Khairan.";
+            var body = @"Asalam alaykum waramotulah wabarakatuhu,
+
+Dear "+reminder.Name+"," +
+
+"This is to remind you base on your setting about "+topic+"." +
+"" +
+"Jazakumllah Khairan.";
             
             if (reminder.ViaMail)
             {
